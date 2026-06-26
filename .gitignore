@@ -19,7 +19,8 @@ env/
 data/
 results/
 checkpoints/
-models/
+models/*
+!models/*.pth
 runs/
 wandb/
 
