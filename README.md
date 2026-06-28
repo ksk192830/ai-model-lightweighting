@@ -107,7 +107,7 @@ Prediction JSON and annotated segmentation images are written under
 Create deterministic front/rear calibration and test lists:
 
 ```bash
-python3 scripts/create_calibration_splits.py
+python3 scripts/data_preparation/create_calibration_splits.py
 ```
 
 Calibration uses `numeric_id % 5 == 0`; test uses
@@ -119,11 +119,11 @@ After extracting complete Roboflow COCO Segmentation exports, create labeled
 test subsets:
 
 ```bash
-python3 scripts/extract_coco_subset.py \
+python3 scripts/data_preparation/extract_coco_subset.py \
   --camera front \
   --source data/roboflow/front
 
-python3 scripts/extract_coco_subset.py \
+python3 scripts/data_preparation/extract_coco_subset.py \
   --camera rear \
   --source data/roboflow/rear
 ```

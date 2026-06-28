@@ -217,7 +217,7 @@ test: image000002.png, image000007.png, image000012.png, ...
 다음 명령으로 전면·후면 calibration/test 목록을 동시에 생성한다.
 
 ```bash
-python3 scripts/create_calibration_splits.py
+python3 scripts/data_preparation/create_calibration_splits.py
 ```
 
 목록과 재현용 메타데이터는 `splits/`에 저장하며 원본 이미지는 복사하지

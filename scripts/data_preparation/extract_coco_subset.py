@@ -15,7 +15,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_ROOT = REPOSITORY_ROOT / "data" / "labeled_test"
 CAMERA_NUMBER_PATTERN = re.compile(r"(?:image|frame)[_-]?0*(\d+)", re.IGNORECASE)
 ANY_NUMBER_PATTERN = re.compile(r"(\d+)")

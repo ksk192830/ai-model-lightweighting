@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 ROBOFLOW_SUFFIX = re.compile(r"(.+)_(png|jpe?g)$", re.IGNORECASE)
 IMAGE_NUMBER = re.compile(r"(?:image|frame)[_-]?0*(\d+)", re.IGNORECASE)
 IMAGE_EXTENSIONS = {".jpeg", ".jpg", ".png"}
