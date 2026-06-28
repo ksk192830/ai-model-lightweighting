@@ -6,6 +6,10 @@
 일반적인 경량화 작업에서는 Google Drive에서 정리된 다음 폴더를
 `data/` 아래에 내려받으면 되며, 이 스크립트들을 실행할 필요가 없다.
 
+```bash
+python3 scripts/download_data.py
+```
+
 ```text
 data/
 ├── calibration/

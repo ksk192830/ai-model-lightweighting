@@ -30,8 +30,8 @@ Install `rclone` on macOS:
 brew install rclone
 ```
 
-Authenticate with a Google account that has viewer access to both dataset
-folders:
+Authenticate with a Google account that has viewer access to the curated
+data folder:
 
 ```bash
 rclone config
@@ -48,27 +48,27 @@ The image datasets are stored in Google Drive and are not committed to Git.
 The Drive folders remain restricted. Each authorized user must be explicitly
 added as a viewer and authenticate their own Google account through `rclone`.
 
-Download both front and rear camera datasets:
+Download both the INT8 calibration data and labeled test data:
 
 ```bash
 python3 scripts/download_data.py
 ```
 
-After a successful download, the downloader creates a local
-`.download_complete` marker. Completed datasets are skipped on later runs;
-missing or interrupted datasets are downloaded again automatically.
+The configured Drive root contains `calibration/` and `labeled_test/`; they are
+downloaded to the same paths under local `data/`. After a successful download,
+each subset receives a `.download_complete` marker and is skipped on later runs.
 
-Download only one dataset:
+Download only one subset:
 
 ```bash
-python3 scripts/download_data.py --camera front
-python3 scripts/download_data.py --camera rear
+python3 scripts/download_data.py --subset calibration
+python3 scripts/download_data.py --subset labeled-test
 ```
 
-Download again even if local images already exist:
+Download again even when a subset is already marked complete:
 
 ```bash
-python3 scripts/download_data.py --camera front --force
+python3 scripts/download_data.py --subset calibration --force
 ```
 
 Preview the download paths without downloading:
@@ -88,7 +88,7 @@ Run front-camera inference on a downloaded sample:
 ```bash
 python3 scripts/infer_baseline.py \
   --camera front \
-  --image data/front/image000001.png
+  --image data/labeled_test/front/images/image000002.png
 ```
 
 Run rear-camera inference by changing both the camera and image:
@@ -96,13 +96,17 @@ Run rear-camera inference by changing both the camera and image:
 ```bash
 python3 scripts/infer_baseline.py \
   --camera rear \
-  --image data/rear/image000001.png
+  --image data/labeled_test/rear/images/image000002.png
 ```
 
 Prediction JSON and annotated segmentation images are written under
 `results/baseline/<camera>/`.
 
-## Dataset splits
+## Optional dataset regeneration
+
+The curated Drive data is ready to use, so the following utilities are not
+required for normal lightweighting work. Use them only to reproduce how the
+data was selected.
 
 Create deterministic front/rear calibration and test lists:
 
@@ -139,7 +143,7 @@ Benchmark the FP32 baseline with warmup and repeated end-to-end inference:
 ```bash
 python3 scripts/benchmark_baseline.py \
   --camera front \
-  --image data/front/image000001.png \
+  --image data/labeled_test/front/images/image000002.png \
   --device cuda \
   --warmup 10 \
   --runs 100
@@ -209,8 +213,8 @@ independent method.
 ├── artifacts/      # Generated lightweight models (not committed)
 ├── configs/        # Dataset and baseline model configuration
 ├── data/           # Downloaded datasets (not committed)
-│   ├── front/
-│   └── rear/
+│   ├── calibration/
+│   └── labeled_test/
 ├── models/         # Baseline model checkpoints
 ├── notebooks/      # Exploration and experiment notebooks
 ├── scripts/        # Reproducible experiment scripts
@@ -220,8 +224,8 @@ independent method.
 
 ## Notes
 
-- `models/parking_front.pth` corresponds to `data/front/`.
-- `models/parking_rear.pth` corresponds to `data/rear/`.
+- `models/parking_front.pth` uses front-camera data.
+- `models/parking_rear.pth` uses rear-camera data.
 - Keep raw datasets and large generated outputs out of Git.
 - Commit scripts, configuration, small result summaries, and figure-generation code.
 

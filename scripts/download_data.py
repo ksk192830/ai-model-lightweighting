@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download the front and rear camera datasets from Google Drive."""
+"""Download the curated lightweighting datasets from Google Drive."""
 
 from __future__ import annotations
 
@@ -19,13 +19,16 @@ COMPLETION_MARKER = ".download_complete"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Download configured camera datasets from Google Drive."
+        description=(
+            "Download curated calibration and labeled test datasets "
+            "from Google Drive."
+        )
     )
     parser.add_argument(
-        "--camera",
-        choices=("all", "front", "rear"),
+        "--subset",
+        choices=("all", "calibration", "labeled-test"),
         default="all",
-        help="Dataset to download (default: all).",
+        help="Data subset to download (default: all).",
     )
     parser.add_argument(
         "--config",
@@ -45,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Download even when images already exist locally.",
+        help="Sync again even when the local subset is marked complete.",
     )
     return parser.parse_args()
 
@@ -57,58 +60,73 @@ def load_config(config_path: Path) -> dict:
 
     if not isinstance(config, dict):
         raise ValueError(f"Invalid configuration in {resolved_path}")
-
-    datasets = config.get("datasets")
-    if not isinstance(datasets, dict):
+    if not config.get("drive_root_folder_id"):
+        raise ValueError(
+            f"'drive_root_folder_id' is missing from {resolved_path}"
+        )
+    if not isinstance(config.get("datasets"), dict):
         raise ValueError(f"'datasets' mapping is missing from {resolved_path}")
-
     return config
+
+
+def missing_required_paths(output_dir: Path, dataset: dict) -> list[str]:
+    return [
+        value
+        for value in dataset.get("required_paths", [])
+        if not (output_dir / value).is_file()
+    ]
 
 
 def download_dataset(
     name: str,
-    dataset: dict[str, str],
+    dataset: dict,
     remote: str,
+    root_folder_id: str,
     dry_run: bool,
     force: bool,
 ) -> None:
-    folder_id = dataset.get("drive_folder_id")
+    source_dir = dataset.get("source_dir")
     output_value = dataset.get("output_dir")
-    if not folder_id or not output_value:
+    if not source_dir or not output_value:
         raise ValueError(
-            f"Dataset '{name}' requires drive_folder_id and output_dir."
+            f"Dataset '{name}' requires source_dir and output_dir."
         )
 
     output_dir = REPOSITORY_ROOT / output_value
     completion_marker = output_dir / COMPLETION_MARKER
-
-    if completion_marker.is_file() and not force:
-        print(f"[{name}] skipped: download already completed in {output_dir}")
+    missing = missing_required_paths(output_dir, dataset)
+    if completion_marker.is_file() and not missing and not force:
+        print(f"[{name}] skipped: already complete in {output_dir}")
         return
 
     rclone = shutil.which("rclone")
-
     command = [
         rclone or "rclone",
         "copy",
-        f"{remote}:",
+        f"{remote}:{source_dir}",
         str(output_dir),
         "--drive-root-folder-id",
-        folder_id,
+        root_folder_id,
         "--progress",
     ]
-
-    print(f"[{name}] Google Drive folder {folder_id}")
+    print(f"[{name}] {remote}:{source_dir}")
+    print(f"       Drive root: {root_folder_id}")
     print(f"       -> {output_dir}")
     if dry_run:
+        print("       command:", " ".join(command))
         return
     if rclone is None:
         raise RuntimeError(
             "rclone is not installed. Install it and run 'rclone config' first."
         )
 
-    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(command, cwd=REPOSITORY_ROOT, check=True)
+    missing = missing_required_paths(output_dir, dataset)
+    if missing:
+        raise RuntimeError(
+            f"Dataset '{name}' is incomplete; missing: {', '.join(missing)}"
+        )
     completion_marker.touch()
     print(f"[{name}] download complete")
 
@@ -122,9 +140,19 @@ def main() -> int:
         if not remote:
             raise ValueError("'rclone_remote' is missing from the configuration.")
 
-        selected = datasets if args.camera == "all" else {args.camera: datasets[args.camera]}
+        if args.subset == "all":
+            selected = datasets
+        else:
+            selected = {args.subset: datasets[args.subset]}
         for name, dataset in selected.items():
-            download_dataset(name, dataset, remote, args.dry_run, args.force)
+            download_dataset(
+                name=name,
+                dataset=dataset,
+                remote=remote,
+                root_folder_id=config["drive_root_folder_id"],
+                dry_run=args.dry_run,
+                force=args.force,
+            )
     except (
         KeyError,
         OSError,
@@ -134,7 +162,6 @@ def main() -> int:
     ) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
-
     return 0
 
 

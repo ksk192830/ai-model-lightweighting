@@ -1,15 +1,20 @@
-version: 1
+version: 2
 rclone_remote: kips-drive
+drive_root_folder_id: 1R5lKUurZMH6xGiUp-WRDZlCg-sc0bt7B
 
 datasets:
-  front:
-    description: Front camera dataset
-    drive_folder_id: 1bZFL_K3UxrYAds_ErPykTogQUWrQSVAQ
-    output_dir: data/front
-    model: models/parking_front.pth
+  calibration:
+    description: INT8 calibration images for front and rear models
+    source_dir: calibration
+    output_dir: data/calibration
+    required_paths:
+      - front/manifest.json
+      - rear/manifest.json
 
-  rear:
-    description: Rear camera dataset
-    drive_folder_id: 1nqFxSDG6jNNWUuXHsMe-d5TCG0xzx7F7
-    output_dir: data/rear
-    model: models/parking_rear.pth
+  labeled-test:
+    description: Labeled COCO test data for front and rear models
+    source_dir: labeled_test
+    output_dir: data/labeled_test
+    required_paths:
+      - front/_annotations.coco.json
+      - rear/_annotations.coco.json

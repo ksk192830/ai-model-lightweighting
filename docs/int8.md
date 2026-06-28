@@ -64,8 +64,8 @@ Calibration 이미지는 실제 운영 데이터를 대표해야 한다.
 각 모델에 맞는 이미지를 별도로 사용한다.
 
 ```text
-전면 모델 calibration → data/front
-후면 모델 calibration → data/rear
+전면 모델 calibration → data/calibration/front
+후면 모델 calibration → data/calibration/rear
 ```
 
 권장 원칙:
