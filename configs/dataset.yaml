@@ -1,0 +1,15 @@
+version: 1
+rclone_remote: kips-drive
+
+datasets:
+  front:
+    description: Front camera dataset
+    drive_folder_id: 1bZFL_K3UxrYAds_ErPykTogQUWrQSVAQ
+    output_dir: data/front
+    model: models/parking_front.pth
+
+  rear:
+    description: Rear camera dataset
+    drive_folder_id: 1nqFxSDG6jNNWUuXHsMe-d5TCG0xzx7F7
+    output_dir: data/rear
+    model: models/parking_rear.pth

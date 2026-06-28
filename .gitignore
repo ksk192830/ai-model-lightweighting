@@ -17,6 +17,7 @@ env/
 
 # Data and experiment outputs
 data/
+artifacts/
 results/
 checkpoints/
 models/*

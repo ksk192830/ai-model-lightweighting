@@ -1,0 +1,22 @@
+version: 1
+
+models:
+  front:
+    checkpoint: models/parking_front.pth
+    architecture: RFDETRSegLarge
+    rfdetr_version: 1.8.1
+    classes:
+      - front
+      - out_line
+      - parking_lot
+      - parking_space
+
+  rear:
+    checkpoint: models/parking_rear.pth
+    architecture: RFDETRSegLarge
+    rfdetr_version: 1.8.1
+    classes:
+      - rear
+      - end_line
+      - parking_lot
+      - parking_space
