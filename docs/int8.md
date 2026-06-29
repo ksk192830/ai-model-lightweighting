@@ -239,15 +239,15 @@ NVIDIA GPU, CUDA 지원 PyTorch 및 TensorRT Python 패키지가 설치된
 카메라 하나만 변환하려면 다음 명령을 실행한다.
 
 ```bash
-python3 scripts/build_tensorrt_int8.py --camera front
-python3 scripts/build_tensorrt_int8.py --camera rear
+.venv/bin/python scripts/lightweighting/build_tensorrt_int8.py --camera front
+.venv/bin/python scripts/lightweighting/build_tensorrt_int8.py --camera rear
 ```
 
 ONNX, TensorRT FP16, TensorRT INT8을 전면·후면 모델에 한 번에 적용하려면
 다음 명령을 실행한다.
 
 ```bash
-python3 scripts/run_lightweighting.py \
+.venv/bin/python scripts/lightweighting/run_lightweighting.py \
   --camera all \
   --methods onnx tensorrt-fp16 tensorrt-int8
 ```
@@ -256,7 +256,7 @@ NVIDIA 장비로 옮기기 전에 입력 파일과 실행 명령을 확인하려
 `--dry-run`을 사용한다.
 
 ```bash
-python3 scripts/run_lightweighting.py \
+.venv/bin/python scripts/lightweighting/run_lightweighting.py \
   --camera all \
   --methods tensorrt-int8 \
   --dry-run

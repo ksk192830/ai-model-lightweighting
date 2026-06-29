@@ -14,8 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS_DIR = REPOSITORY_ROOT / "scripts"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+SCRIPTS_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "results" / "lightweighting"
 DEFAULT_CALIBRATION_DIR = REPOSITORY_ROOT / "data" / "calibration"
 SUPPORTED_METHODS = ("onnx", "tensorrt-fp16", "tensorrt-int8")

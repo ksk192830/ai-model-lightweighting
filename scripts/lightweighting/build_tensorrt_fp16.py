@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ONNX_DIR = REPOSITORY_ROOT / "artifacts" / "onnx"
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "artifacts" / "tensorrt"
 
@@ -37,6 +37,46 @@ def command_version(command: list[str]) -> str:
     return (result.stdout or result.stderr).strip()
 
 
+def build_with_python(
+    onnx_path: Path,
+    engine_path: Path,
+    workspace_mib: int,
+    enable_fp16: bool = True,
+) -> str:
+    try:
+        import tensorrt as trt
+    except ImportError as error:
+        raise RuntimeError(
+            "Neither trtexec nor the TensorRT Python package is available."
+        ) from error
+
+    logger = trt.Logger(trt.Logger.INFO)
+    builder = trt.Builder(logger)
+    network = builder.create_network(
+        1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
+    )
+    parser = trt.OnnxParser(network, logger)
+    if not parser.parse(onnx_path.read_bytes()):
+        errors = "\n".join(
+            str(parser.get_error(index))
+            for index in range(parser.num_errors)
+        )
+        raise RuntimeError(f"TensorRT could not parse {onnx_path}:\n{errors}")
+
+    config = builder.create_builder_config()
+    config.set_memory_pool_limit(
+        trt.MemoryPoolType.WORKSPACE,
+        workspace_mib * 1024 * 1024,
+    )
+    if enable_fp16:
+        config.set_flag(trt.BuilderFlag.FP16)
+    serialized = builder.build_serialized_network(network, config)
+    if serialized is None:
+        raise RuntimeError("TensorRT FP16 engine build failed.")
+    engine_path.write_bytes(serialized)
+    return trt.__version__
+
+
 def main() -> int:
     args = parse_args()
     if args.workspace_mib < 1:
@@ -55,11 +95,6 @@ def main() -> int:
         return 0
 
     trtexec = shutil.which("trtexec")
-    if trtexec is None and not args.dry_run:
-        raise RuntimeError(
-            "trtexec was not found. Run this script on the target NVIDIA "
-            "machine with TensorRT installed."
-        )
 
     output_dir.mkdir(parents=True, exist_ok=True)
     command = [
@@ -71,11 +106,27 @@ def main() -> int:
         "--useCudaGraph",
         "--useSpinWait",
     ]
-    print(" ".join(command))
+    build_backend = "trtexec" if trtexec else "tensorrt-python"
+    if trtexec:
+        print(" ".join(command))
+    else:
+        print(
+            f"TensorRT Python FP16 build: {onnx_path} -> {engine_path}"
+        )
     if args.dry_run:
         return 0
 
-    subprocess.run(command, cwd=REPOSITORY_ROOT, check=True)
+    if trtexec:
+        subprocess.run(command, cwd=REPOSITORY_ROOT, check=True)
+        tensorrt_version = ""
+        trtexec_version = command_version([trtexec, "--version"])
+    else:
+        tensorrt_version = build_with_python(
+            onnx_path,
+            engine_path,
+            args.workspace_mib,
+        )
+        trtexec_version = ""
     metadata = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "camera": args.camera,
@@ -84,7 +135,9 @@ def main() -> int:
         "engine_path": str(engine_path.relative_to(REPOSITORY_ROOT)),
         "engine_size_bytes": engine_path.stat().st_size,
         "platform": platform.platform(),
-        "trtexec_version": command_version([trtexec, "--version"]),
+        "build_backend": build_backend,
+        "tensorrt_version": tensorrt_version,
+        "trtexec_version": trtexec_version,
         "workspace_mib": args.workspace_mib,
         "build_command": command,
     }

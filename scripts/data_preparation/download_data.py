@@ -12,7 +12,7 @@ from pathlib import Path
 import yaml
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "dataset.yaml"
 COMPLETION_MARKER = ".download_complete"
 

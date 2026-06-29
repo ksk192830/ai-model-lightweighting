@@ -1,0 +1,14 @@
+# Scripts
+
+Scripts are grouped by workflow:
+
+- `data_preparation/`: download, select, and materialize datasets
+- `lightweighting/`: check the environment and build ONNX/TensorRT models
+- `evaluation/`: run inference, benchmark models, and visualize results
+
+Run every command from the repository root with the project virtual
+environment:
+
+```bash
+.venv/bin/python scripts/<group>/<script>.py
+```

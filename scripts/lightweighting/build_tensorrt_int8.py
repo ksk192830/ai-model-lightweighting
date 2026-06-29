@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ONNX_DIR = REPOSITORY_ROOT / "artifacts" / "onnx"
 DEFAULT_CALIBRATION_DIR = REPOSITORY_ROOT / "data" / "calibration"
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "artifacts" / "tensorrt"

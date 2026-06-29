@@ -7,7 +7,7 @@
 `data/` 아래에 내려받으면 되며, 이 스크립트들을 실행할 필요가 없다.
 
 ```bash
-python3 scripts/download_data.py
+.venv/bin/python scripts/data_preparation/download_data.py
 ```
 
 ```text

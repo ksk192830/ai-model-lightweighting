@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 os.environ.setdefault(
     "MPLCONFIGDIR",
     str(REPOSITORY_ROOT / "results" / ".cache" / "matplotlib"),

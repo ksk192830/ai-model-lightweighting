@@ -11,7 +11,7 @@ import torch
 from rfdetr import RFDETRSegLarge  # noqa: F401
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_VERSIONS = {
     "rfdetr": "1.8.1",
     "torch": "2.12.1",
