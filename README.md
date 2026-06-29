@@ -21,7 +21,7 @@ python3 -m pip install -r requirements.txt
 Verify the RF-DETR runtime and baseline checkpoints:
 
 ```bash
-python3 scripts/check_environment.py
+.venv/bin/python scripts/lightweighting/check_environment.py
 ```
 
 Install `rclone` on macOS:
@@ -51,7 +51,7 @@ added as a viewer and authenticate their own Google account through `rclone`.
 Download both the INT8 calibration data and labeled test data:
 
 ```bash
-python3 scripts/download_data.py
+.venv/bin/python scripts/data_preparation/download_data.py
 ```
 
 The configured Drive root contains `calibration/` and `labeled_test/`; they are
@@ -61,46 +61,53 @@ each subset receives a `.download_complete` marker and is skipped on later runs.
 Download only one subset:
 
 ```bash
-python3 scripts/download_data.py --subset calibration
-python3 scripts/download_data.py --subset labeled-test
+.venv/bin/python scripts/data_preparation/download_data.py --subset calibration
+.venv/bin/python scripts/data_preparation/download_data.py --subset labeled-test
 ```
 
 Download again even when a subset is already marked complete:
 
 ```bash
-python3 scripts/download_data.py --subset calibration --force
+.venv/bin/python scripts/data_preparation/download_data.py --subset calibration --force
 ```
 
 Preview the download paths without downloading:
 
 ```bash
-python3 scripts/download_data.py --dry-run
+.venv/bin/python scripts/data_preparation/download_data.py --dry-run
 ```
 
 Dataset and baseline model mappings are defined in
 [`configs/dataset.yaml`](configs/dataset.yaml) and
 [`configs/baseline.yaml`](configs/baseline.yaml).
 
-## Baseline inference
+## Inference visualization
 
-Run front-camera inference on a downloaded sample:
+Compare TensorRT FP32, FP16, and INT8 predictions on one downloaded sample:
 
 ```bash
-python3 scripts/infer_baseline.py \
+.venv/bin/python scripts/evaluation/infer_baseline.py \
+  --backend all \
   --camera front \
-  --image data/labeled_test/front/images/image000002.png
+  --image data/labeled_test/front/images/image000002.png \
+  --device cuda
 ```
 
-Run rear-camera inference by changing both the camera and image:
+Run sequential inference on a directory and update the live window once per
+second:
 
 ```bash
-python3 scripts/infer_baseline.py \
-  --camera rear \
-  --image data/labeled_test/rear/images/image000002.png
+.venv/bin/python scripts/evaluation/visualize_inference_stream.py \
+  --camera front \
+  --image-dir data/labeled_test/front/images \
+  --backend all \
+  --interval 1 \
+  --live
 ```
 
-Prediction JSON and annotated segmentation images are written under
-`results/baseline/<camera>/`.
+Omit `--live` to create a 1 FPS MP4 under `results/inference_stream/`. Use
+`--max-images` to limit the number of frames. Single-image prediction JSON and
+annotated segmentation images are written under `results/inference/`.
 
 ## Optional dataset regeneration
 
@@ -136,12 +143,14 @@ Filtered images and COCO annotations are written under
 `data/labeled_test/<camera>/`. Images with no objects are preserved as negative
 test samples.
 
-## Baseline benchmark
+## Inference benchmark
 
-Benchmark the FP32 baseline with warmup and repeated end-to-end inference:
+Benchmark the TensorRT FP32 reference with warmup and repeated end-to-end
+inference:
 
 ```bash
-python3 scripts/benchmark_baseline.py \
+.venv/bin/python scripts/evaluation/benchmark_baseline.py \
+  --backend fp32 \
   --camera front \
   --image data/labeled_test/front/images/image000002.png \
   --device cuda \
@@ -149,12 +158,28 @@ python3 scripts/benchmark_baseline.py \
   --runs 100
 ```
 
+Benchmark the generated TensorRT FP16 or INT8 engine with the same measurement
+logic by changing `--backend`:
+
+```bash
+.venv/bin/python scripts/evaluation/benchmark_baseline.py \
+  --backend int8 \
+  --camera front \
+  --image data/labeled_test/front/images/image000002.png \
+  --device cuda \
+  --warmup 10 \
+  --runs 100
+```
+
+The default engine is selected from `--backend fp32|fp16|int8`. Use `--engine`
+to benchmark another engine.
+
 The measured interval includes preprocessing, model execution, and
-postprocessing, but excludes image loading and model loading. Use `--optimize`
-to benchmark RF-DETR's optimized inference path. Results are appended to
-`results/benchmarks/summary.csv`, with raw timings saved in a separate JSON
-file. Final paper measurements must be collected on the same NVIDIA GPU with
-identical arguments for every model.
+postprocessing, but excludes image loading and model loading. Results are
+appended to `results/benchmarks/summary.csv`, with raw timings saved in a
+separate JSON file. Final paper measurements must be collected on the same
+NVIDIA GPU with the same image, threshold, warmup, and run count for every
+TensorRT precision.
 
 ## TensorRT FP16
 
@@ -167,15 +192,15 @@ python3 -m pip install -r requirements-export.txt
 Export the front and rear checkpoints to ONNX:
 
 ```bash
-python3 scripts/export_onnx.py --camera front
-python3 scripts/export_onnx.py --camera rear
+.venv/bin/python scripts/lightweighting/export_onnx.py --camera front
+.venv/bin/python scripts/lightweighting/export_onnx.py --camera rear
 ```
 
 On the target NVIDIA machine with TensorRT installed, build FP16 engines:
 
 ```bash
-python3 scripts/build_tensorrt_fp16.py --camera front
-python3 scripts/build_tensorrt_fp16.py --camera rear
+.venv/bin/python scripts/lightweighting/build_tensorrt_fp16.py --camera front
+.venv/bin/python scripts/lightweighting/build_tensorrt_fp16.py --camera rear
 ```
 
 TensorRT engines are hardware and TensorRT-version dependent. Build and
@@ -185,13 +210,13 @@ benchmark them on the deployment GPU. ONNX models and engines are written under
 Run the complete front/rear ONNX + TensorRT FP16 pipeline with one command:
 
 ```bash
-python3 scripts/run_lightweighting.py
+.venv/bin/python scripts/lightweighting/run_lightweighting.py
 ```
 
 Run selected cameras or methods:
 
 ```bash
-python3 scripts/run_lightweighting.py \
+.venv/bin/python scripts/lightweighting/run_lightweighting.py \
   --camera front \
   --methods tensorrt-fp16
 ```
@@ -199,7 +224,7 @@ python3 scripts/run_lightweighting.py \
 Preview every command without running it:
 
 ```bash
-python3 scripts/run_lightweighting.py --dry-run
+.venv/bin/python scripts/lightweighting/run_lightweighting.py --dry-run
 ```
 
 The pipeline automatically creates an ONNX dependency before TensorRT and
@@ -237,14 +262,14 @@ Prepare the selected calibration images under `data/calibration/front/` and
 the TensorRT Python bindings, build calibrated INT8 engines with:
 
 ```bash
-python3 scripts/build_tensorrt_int8.py --camera front
-python3 scripts/build_tensorrt_int8.py --camera rear
+.venv/bin/python scripts/lightweighting/build_tensorrt_int8.py --camera front
+.venv/bin/python scripts/lightweighting/build_tensorrt_int8.py --camera rear
 ```
 
 Run every currently supported export for both camera models with one command:
 
 ```bash
-python3 scripts/run_lightweighting.py \
+.venv/bin/python scripts/lightweighting/run_lightweighting.py \
   --camera all \
   --methods onnx tensorrt-fp16 tensorrt-int8
 ```
