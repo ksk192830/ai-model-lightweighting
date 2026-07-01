@@ -1,1 +1,2 @@
 models/*.pth filter=lfs diff=lfs merge=lfs -text
+shared-models/*.onnx filter=lfs diff=lfs merge=lfs -text

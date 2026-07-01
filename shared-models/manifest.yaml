@@ -1,0 +1,46 @@
+version: 1
+format: onnx
+onnx_opset: 17
+
+models:
+  - file: B01-front-baseline.onnx
+    experiment_ids: [B01, B02, B03]
+    camera: front
+    description: Baseline ONNX shared by TensorRT FP32, FP16, and INT8 builds.
+    size_bytes: 130677728
+    sha256: c600beac9ec02007612914b6ed15397f3942e1ae956de82b87bdb59f8fb178a4
+
+  - file: B01-rear-baseline.onnx
+    experiment_ids: [B01, B02, B03]
+    camera: rear
+    description: Baseline ONNX shared by TensorRT FP32, FP16, and INT8 builds.
+    size_bytes: 130677726
+    sha256: e547b49ac52cb5cf0233ce7e4a47cab640611d93022bd55997ed9fbdb3dfbccf
+
+  - file: U01-front-magnitude-s10.onnx
+    experiment_ids: [U01]
+    camera: front
+    description: Global magnitude unstructured pruning at 10 percent sparsity.
+    size_bytes: 130677811
+    sha256: d7f9f68f6ef4fd3b9709166928b412d24b5813b3d02b6591505c57fff6520a4a
+
+  - file: U02-front-magnitude-s30.onnx
+    experiment_ids: [U02]
+    camera: front
+    description: Global magnitude unstructured pruning at 30 percent sparsity.
+    size_bytes: 130677811
+    sha256: 4525ddb75fa909aa733d31f130dba99c5692d8c67539a798ce310f52c49fd31f
+
+  - file: U03-front-magnitude-s50.onnx
+    experiment_ids: [U03]
+    camera: front
+    description: Global magnitude unstructured pruning at 50 percent sparsity.
+    size_bytes: 130677811
+    sha256: c24ec56e88c1de97207fc0e5a232d12f18e7a319da0f77a051da2135ec803503
+
+  - file: M01-M02-front-2to4-recovery.onnx
+    experiment_ids: [M01, M02]
+    camera: front
+    description: Fine-tuned NVIDIA 2:4 ONNX shared by dense and sparse tactic builds.
+    size_bytes: 130677785
+    sha256: 19f70a9916fbdd16401046144e8ce38e61deb6b588a2114b959e849d1b4c00b0

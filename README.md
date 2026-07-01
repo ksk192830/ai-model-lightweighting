@@ -12,6 +12,7 @@ Code and experiments for the KIPS paper project on AI model lightweighting.
 - [NVIDIA 2:4 eligibility](docs/2to4-eligibility.md)
 - [NVIDIA 2:4 recovery fine-tuning](docs/2to4-fine-tuning.md)
 - [Portable recovery training](docs/training-portability.md)
+- [Shared ONNX models](shared-models/README.md)
 
 ## Setup
 
