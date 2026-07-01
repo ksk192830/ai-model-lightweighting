@@ -9,6 +9,18 @@ recovery fine-tuning을 수행하라.
 목표는 S01~S04 front 후보를 고성능 GPU에서 recovery fine-tuning하고,
 학습 결과를 기존 변환 데스크탑으로 전달할 수 있도록 정리하는 것이다.
 
+인계 기준 Git branch와 학습 데이터:
+
+- Repository: git@github.com:ksk192830/kips-ai-model-lightweighting.git
+- Branch: feature/lightweighting-pipeline
+- Dataset file: parking-front-v8-coco-segmentation.tar.gz
+- Google Drive file ID: 1JiEhJBDuSm-KtgpJjBwDvQSd1pyP28El
+- Google Drive:
+  https://drive.google.com/file/d/1JiEhJBDuSm-KtgpJjBwDvQSd1pyP28El/view
+- Size: 1,179,503,114 bytes
+- SHA-256:
+  599b231fdab3fd4c5b409e841f3217e4ad706569e5a8d63ccd597007181a1b8b
+
 먼저 다음 문서를 읽어라.
 
 1. docs/experiment-workflow.md
@@ -63,6 +75,14 @@ recovery fine-tuning을 수행하라.
 
 기본 명령:
 
+저장소가 없다면 SSH로 clone한다.
+
+git clone --branch feature/lightweighting-pipeline \
+  git@github.com:ksk192830/kips-ai-model-lightweighting.git
+cd kips-ai-model-lightweighting
+
+이미 clone돼 있다면 다음을 실행한다.
+
 git status
 git branch --show-current
 git pull --ff-only origin feature/lightweighting-pipeline
@@ -78,6 +98,24 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements-train.txt
 
 2. 학습 데이터 검증
+
+학습 데이터는 Git에 포함되지 않는다. 프로젝트 루트에서 다음과 같이
+Google Drive 파일을 받는다.
+
+python -m pip install gdown
+gdown 1JiEhJBDuSm-KtgpJjBwDvQSd1pyP28El \
+  -O /tmp/parking-front-v8-coco-segmentation.tar.gz
+
+다운로드 파일의 SHA-256을 반드시 검증한다.
+
+echo "599b231fdab3fd4c5b409e841f3217e4ad706569e5a8d63ccd597007181a1b8b  /tmp/parking-front-v8-coco-segmentation.tar.gz" \
+  | sha256sum -c -
+
+검증 성공 후 압축을 해제한다.
+
+mkdir -p data/training/front
+tar -xzf /tmp/parking-front-v8-coco-segmentation.tar.gz \
+  -C data/training/front
 
 다음 파일을 확인하라.
 
@@ -214,6 +252,25 @@ artifacts/experiments/<ID>/front/recovery/recovery-training.json
 각 파일의 SHA-256, 크기, Git commit, GPU/driver/CUDA/PyTorch/RF-DETR
 버전, 실제 학습 조건, 완료 epoch, 실패·재개 이력과 구조 검증 결과도
 정리한다. TensorRT engine은 환경 종속이므로 전달하지 않는다.
+
+검증이 끝나면 네 후보 결과를 하나의 인계 파일로 묶는다.
+
+mkdir -p /tmp/structured-recovery-handoff
+for id in S01 S02 S03 S04; do
+  mkdir -p "/tmp/structured-recovery-handoff/$id"
+  cp "artifacts/experiments/$id/front/recovery/checkpoint_best_total.pth" \
+    "/tmp/structured-recovery-handoff/$id/"
+  cp "artifacts/experiments/$id/front/recovery/recovery-training.json" \
+    "/tmp/structured-recovery-handoff/$id/"
+done
+
+tar -C /tmp -czf /tmp/structured-recovery-front-S01-S04.tar.gz \
+  structured-recovery-handoff
+sha256sum /tmp/structured-recovery-front-S01-S04.tar.gz
+
+최종 보고에 `/tmp/structured-recovery-front-S01-S04.tar.gz`의 크기와
+SHA-256을 포함한다. 사용자가 이 파일을 Drive로 옮길 수 있도록 정확한
+경로를 보고한다.
 
 10. Git 작업
 

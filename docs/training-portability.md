@@ -4,6 +4,11 @@ AI에게 전체 작업을 위임할 때는
 [고성능 데스크탑 Recovery 학습용 AI 프롬프트](high-performance-recovery-prompt.md)를
 그대로 전달한다.
 
+학습 데이터는 Google Drive의
+[parking-front-v8-coco-segmentation.tar.gz](https://drive.google.com/file/d/1JiEhJBDuSm-KtgpJjBwDvQSd1pyP28El/view)에
+보관한다. 파일 크기는 1,179,503,114 bytes이며 SHA-256은
+`599b231fdab3fd4c5b409e841f3217e4ad706569e5a8d63ccd597007181a1b8b`다.
+
 RF-DETR recovery fine-tuning은 저장소 경로를 기준으로 실행하며 특정 사용자
 홈 디렉터리나 RTX 3080에 의존하지 않는다. 다른 NVIDIA 데스크탑에서는
 코드, 학습 데이터, 실험 checkpoint만 같은 상대 경로로 준비하면 된다.
