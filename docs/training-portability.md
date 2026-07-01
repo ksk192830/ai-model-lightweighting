@@ -129,19 +129,25 @@ done
 ```bash
 for id in S01 S02 S03 S04; do
   .venv/bin/python scripts/experiments/train_candidate.py \
-    "$id" --camera front --device auto
+    "$id" --camera front --device cuda \
+    --batch-size 2 --grad-accum-steps 8
 done
 ```
 
 S01~S04의 output 디렉터리는 experiment별
 `artifacts/experiments/<ID>/front/recovery/`로 자동 분리된다.
+후보 간 공정한 비교를 위해 본 학습은 GPU 성능과 무관하게 batch size 2,
+gradient accumulation 8, effective batch size 16으로 고정한다. 이 조건에서
+OOM이 발생하면 임의로 값을 변경하지 않고 blocker로 보고한다.
 
 여러 GPU 중 특정 GPU를 고를 때 RF-DETR 호환성을 위해 `cuda:N` 대신
 환경변수로 노출 장치를 제한한다.
 
 ```bash
 CUDA_VISIBLE_DEVICES=1 .venv/bin/python \
-  scripts/experiments/train_candidate.py S02 --camera front --device cuda
+  scripts/experiments/train_candidate.py \
+  S02 --camera front --device cuda \
+  --batch-size 2 --grad-accum-steps 8
 ```
 
 ## 학습 결과를 변환 장비에서 반영

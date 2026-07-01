@@ -42,6 +42,9 @@ recovery fine-tuning을 수행하라.
 - 결과는 artifacts/experiments/<ID>/front/recovery/에 저장한다.
 - configs/experiments/defaults.yaml의 recovery_structured를 사용한다.
 - S01~S04는 서로 다른 output 디렉터리를 사용한다.
+- GPU 성능이나 VRAM에 따라 학습 hyperparameter를 자동 조절하지 않는다.
+- S01~S04 본 학습은 batch size 2, gradient accumulation 8,
+  effective batch size 16으로 고정한다.
 - 장시간 학습 전에 각 후보의 1-batch smoke test를 수행한다.
 - 실패 시 무조건 재시도하지 말고 원인을 기록한다.
 - checkpoint_best_total.pth와 recovery-training.json을 함께 보존한다.
@@ -130,14 +133,16 @@ smoke test가 성공한 후보만 본 학습한다.
 
 for id in S01 S02 S03 S04; do
   .venv/bin/python scripts/experiments/train_candidate.py \
-    "$id" --camera front --device auto
+    "$id" --camera front --device cuda \
+    --batch-size 2 --grad-accum-steps 8
 done
 
 특정 GPU를 선택할 때는 --device cuda:N 대신 다음처럼 실행한다.
 
 CUDA_VISIBLE_DEVICES=1 .venv/bin/python \
   scripts/experiments/train_candidate.py \
-  S02 --camera front --device cuda
+  S02 --camera front --device cuda \
+  --batch-size 2 --grad-accum-steps 8
 
 실행 전 다음 조건을 보고하고 기록한다.
 
@@ -147,14 +152,34 @@ CUDA_VISIBLE_DEVICES=1 .venv/bin/python \
 - GPU 이름과 VRAM
 - dataset 및 output 경로
 
-사용자 승인 없이 epoch나 learning rate를 변경하지 않는다.
+S01~S04에 다음 조건을 동일하게 적용한다.
+
+- epochs: 10
+- learning rate: 1.0e-5
+- encoder learning rate: 1.5e-5
+- weight decay: 1.0e-4
+- batch size: 2
+- gradient accumulation: 8
+- effective batch size: 16
+- scheduler: cosine
+- warmup epochs: 1
+- EMA: enabled, decay 0.993
+- early stopping: enabled, patience 3
+- checkpoint interval: 1
+- random seed: 42
+
+GPU 성능이나 VRAM을 근거로 batch size, accumulation, epoch, learning rate
+등을 자동 변경하지 않는다. batch size 2에서 CUDA OOM이 발생하면 micro
+batch를 임의로 줄이지 말고 해당 후보 학습을 중단하여 blocker로 보고하고
+사용자 승인을 기다린다.
 
 7. 중단된 학습 재개
 
 기존 output을 삭제하지 말고 Lightning CKPT로 재개한다.
 
 .venv/bin/python scripts/experiments/train_candidate.py \
-  S02 --camera front --device auto \
+  S02 --camera front --device cuda \
+  --batch-size 2 --grad-accum-steps 8 \
   --resume artifacts/experiments/S02/front/recovery/checkpoint_<epoch>.ckpt
 
 PTH는 변환용이고 CKPT는 optimizer/scheduler를 포함한 재개용이다.
