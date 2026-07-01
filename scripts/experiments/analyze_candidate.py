@@ -431,6 +431,14 @@ def main() -> int:
                 current_onnx["onnx_nodes"],
                 baseline_onnx["onnx_nodes"],
             ),
+            "estimated_macs": difference(
+                current_onnx.get("estimated_macs"),
+                baseline_onnx.get("estimated_macs"),
+            ),
+            "estimated_flops": difference(
+                current_onnx.get("estimated_flops"),
+                baseline_onnx.get("estimated_flops"),
+            ),
             "prunable_parameters": difference(
                 current_checkpoint.get("prunable_parameters", 0),
                 baseline_checkpoint.get("prunable_parameters", 0),

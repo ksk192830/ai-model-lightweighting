@@ -48,6 +48,13 @@ every model.
 .venv/bin/python scripts/experiments/sync_metadata.py
 .venv/bin/python scripts/experiments/update_index.py
 
+# Promote returned recovery PTH files and rebuild ONNX/engine/comparisons.
+.venv/bin/python scripts/experiments/finalize_recovery.py \
+  S01 S02 S03 S04 --camera front --force
+
+# Verify required artifacts, metadata references, and SHA-256 records.
+.venv/bin/python scripts/experiments/audit_artifacts.py
+
 # Assemble selected experiments for evaluator handoff.
 .venv/bin/python scripts/experiments/package_delivery.py \
   --experiments B01 B02 B03 U02 --camera front

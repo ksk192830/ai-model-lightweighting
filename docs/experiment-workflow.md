@@ -143,17 +143,22 @@ S02 prototype 결과:
 
 S01~S04 TensorRT FP32 변환 결과:
 
-| ID | 구조 | Engine 크기 | B01 대비 | Runtime 역직렬화 |
-|---|---|---:|---:|---|
-| B01 | 원본 baseline | 135,608,716 bytes | 기준 | 성공 |
-| S01 | decoder 5→4 | 129,252,636 bytes | -4.69% | 성공 |
-| S02 | decoder 5→3 | 122,930,876 bytes | -9.35% | 성공 |
-| S03 | FFN 2048→1632 | 131,273,148 bytes | -3.20% | 성공 |
-| S04 | FFN 2048→1216 | 127,076,028 bytes | -6.29% | 성공 |
+| ID | 구조 | Engine 크기 | Engine B01 대비 | FLOPs lower-bound | FLOPs B01 대비 | 역직렬화 |
+|---|---|---:|---:|---:|---:|---|
+| B01 | 원본 baseline | 135,608,716 bytes | 기준 | 108.167 GFLOPs | 기준 | 성공 |
+| S01 | decoder 5→4 | 129,252,636 bytes | -4.69% | 107.566 GFLOPs | -0.56% | 성공 |
+| S02 | decoder 5→3 | 122,930,876 bytes | -9.35% | 106.964 GFLOPs | -1.11% | 성공 |
+| S03 | FFN 2048→1632 | 131,273,148 bytes | -3.20% | 107.741 GFLOPs | -0.39% | 성공 |
+| S04 | FFN 2048→1216 | 127,076,028 bytes | -6.29% | 107.315 GFLOPs | -0.79% | 성공 |
 
 모든 structured engine은 TensorRT 10.16.1.11, FP32, batch 1,
 입력 504×504, workspace 4096 MiB 조건에서 생성됐다. TensorRT runtime
 역직렬화와 input 1개·output 3개의 총 4개 I/O tensor 확인을 통과했다.
+FLOPs는 ONNX Conv/MatMul/Gemm을 대상으로 MAC 1회를 2 FLOPs로 계산한
+보수적 lower-bound다. shape inference가 복원하지 못한 symbolic dimension은
+1로 두며, 미지원 또는 미해결 연산과 계산 coverage를 각
+`static-analysis.json`에 함께 기록한다. 따라서 절대 하드웨어 처리량이 아니라
+동일 export 조건에서의 후보 간 정적 비교값으로 사용한다.
 
 정적 분석에서 다음을 모두 만족하지 못하면 TensorRT 평가 후보에서
 제외한다.
@@ -269,3 +274,16 @@ PTQ INT8의 출력이 비정상적이거나 평가 정확도 손실이 크다는
 2. S01~S04의 FLOPs 감소를 operator-aware 방식으로 보완한다.
 3. recovery checkpoint에서 ONNX와 TensorRT engine을 재생성한다.
 4. 평가 결과가 우수한 structured 후보를 C01/C02 결합 실험으로 승격한다.
+
+## 8. Artifact 무결성 검사
+
+다음 명령은 registry에 등록된 전체 실험을 대상으로 필수 artifact 존재 여부,
+metadata 필수 필드와 참조 경로, 원본 및 artifact checkpoint SHA-256,
+실제 파일 inventory hash를 검사한다.
+
+```bash
+.venv/bin/python scripts/experiments/audit_artifacts.py
+```
+
+결과는 `artifacts/experiments/audit-report.json`에 저장된다. 2026-07-01
+기준 18개 camera 실험을 검사했으며 오류는 0건이다.

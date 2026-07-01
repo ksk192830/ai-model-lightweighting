@@ -85,6 +85,8 @@ def main() -> int:
             artifact_source_id = experiment.get(
                 "artifact_source", experiment_id
             )
+            if experiment["family"] == "precision":
+                artifact_source_id = "B01"
             artifact_source_paths = artifact_paths(artifact_source_id, camera)
             recovery_training = (
                 artifact_source_paths.directory

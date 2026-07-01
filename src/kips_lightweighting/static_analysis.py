@@ -8,6 +8,146 @@ from typing import Any
 import torch
 
 
+def _known_shape(
+    shape: list[int | str] | None,
+    *,
+    symbolic_as_one: bool = False,
+) -> list[int] | None:
+    if shape is None:
+        return None
+    resolved = []
+    for value in shape:
+        if isinstance(value, int) and value >= 1:
+            resolved.append(int(value))
+        elif symbolic_as_one:
+            resolved.append(1)
+        else:
+            return None
+    return resolved
+
+
+def onnx_operation_analysis(model: Any) -> dict[str, Any]:
+    """Estimate dense ONNX MACs/FLOPs for shape-inferred compute operators.
+
+    Multiplication and accumulation are reported as one MAC and two FLOPs.
+    Elementwise/control/data-movement operators are deliberately excluded so
+    the estimate remains comparable across candidates without pretending to
+    model backend-specific kernel costs.
+    """
+    import math
+    import onnx
+
+    inferred = onnx.shape_inference.infer_shapes(model, strict_mode=False)
+
+    def shape_from_value(value: Any) -> list[int | str]:
+        return [
+            dimension.dim_value
+            if dimension.dim_value
+            else dimension.dim_param or "?"
+            for dimension in value.type.tensor_type.shape.dim
+        ]
+
+    shapes: dict[str, list[int | str]] = {}
+    for value in (
+        list(inferred.graph.input)
+        + list(inferred.graph.value_info)
+        + list(inferred.graph.output)
+    ):
+        shapes[value.name] = shape_from_value(value)
+    for initializer in inferred.graph.initializer:
+        shapes[initializer.name] = list(initializer.dims)
+
+    initializers = {
+        initializer.name: initializer for initializer in inferred.graph.initializer
+    }
+    supported_nodes = 0
+    unresolved_nodes = 0
+    nodes_with_symbolic_assumptions = 0
+    macs = 0
+    by_operator: dict[str, dict[str, int]] = {}
+    unsupported_types: dict[str, int] = {}
+
+    def record(op_type: str, node_macs: int) -> None:
+        nonlocal macs, supported_nodes
+        macs += node_macs
+        supported_nodes += 1
+        entry = by_operator.setdefault(op_type, {"nodes": 0, "macs": 0})
+        entry["nodes"] += 1
+        entry["macs"] += node_macs
+
+    for node in inferred.graph.node:
+        node_macs: int | None = None
+        raw_output_shape = shapes.get(node.output[0]) if node.output else None
+        output_shape = _known_shape(
+            raw_output_shape,
+            symbolic_as_one=True,
+        )
+        used_symbolic_assumption = bool(
+            raw_output_shape
+            and any(not isinstance(value, int) or value < 1 for value in raw_output_shape)
+        )
+        if node.op_type == "Conv" and len(node.input) > 1 and output_shape:
+            weight_shape = _known_shape(shapes.get(node.input[1]))
+            if weight_shape and len(weight_shape) >= 3:
+                kernel_volume = math.prod(weight_shape[1:])
+                node_macs = math.prod(output_shape) * kernel_volume
+        elif node.op_type == "MatMul" and len(node.input) == 2 and output_shape:
+            left_shape = shapes.get(node.input[0])
+            right_shape = shapes.get(node.input[1])
+            if left_shape and right_shape and len(left_shape) >= 2 and len(right_shape) >= 2:
+                left_reduction = left_shape[-1]
+                right_reduction = right_shape[-2]
+                if (
+                    isinstance(left_reduction, int)
+                    and left_reduction >= 1
+                    and left_reduction == right_reduction
+                ):
+                    reduction = left_reduction
+                    node_macs = math.prod(output_shape) * reduction
+        elif node.op_type == "Gemm" and len(node.input) > 1 and output_shape:
+            left_shape = shapes.get(node.input[0])
+            if (
+                left_shape
+                and len(left_shape) == 2
+                and isinstance(left_shape[-1], int)
+                and left_shape[-1] >= 1
+            ):
+                node_macs = math.prod(output_shape) * int(left_shape[-1])
+
+        if node_macs is not None:
+            record(node.op_type, node_macs)
+            if used_symbolic_assumption:
+                nodes_with_symbolic_assumptions += 1
+        elif node.op_type in {"Conv", "MatMul", "Gemm"}:
+            unresolved_nodes += 1
+        else:
+            unsupported_types[node.op_type] = (
+                unsupported_types.get(node.op_type, 0) + 1
+            )
+
+    compute_nodes = supported_nodes + unresolved_nodes
+    return {
+        "estimated_macs": macs,
+        "estimated_flops": macs * 2,
+        "convention": "1 multiply-accumulate (MAC) = 2 FLOPs",
+        "scope": (
+            "Conv, MatMul, and Gemm; unresolved symbolic dimensions are set "
+            "to one, so totals are conservative lower-bound estimates"
+        ),
+        "supported_compute_nodes": supported_nodes,
+        "unresolved_compute_nodes": unresolved_nodes,
+        "compute_node_coverage": (
+            supported_nodes / compute_nodes if compute_nodes else 1.0
+        ),
+        "nodes_with_symbolic_dimensions_assumed_one": (
+            nodes_with_symbolic_assumptions
+        ),
+        "by_operator": by_operator,
+        "excluded_operator_types": unsupported_types,
+        "constant_initializers": len(initializers),
+    }
+
+
 def is_prunable(name: str, tensor: Any) -> bool:
     return (
         isinstance(tensor, torch.Tensor)
@@ -75,13 +215,18 @@ def onnx_analysis(path: Path) -> dict[str, Any]:
         for initializer in model.graph.initializer
         if initializer.dims
     )
+    operation_analysis = onnx_operation_analysis(model)
     return {
         "onnx_size_bytes": path.stat().st_size,
         "onnx_nodes": len(model.graph.node),
         "onnx_initializers": len(model.graph.initializer),
         "onnx_initializer_parameters": initializers,
-        "estimated_flops": None,
-        "flops_status": "pending operator-aware shape analysis",
+        **operation_analysis,
+        "flops_status": (
+            "estimated-lower-bound"
+            if operation_analysis["unresolved_compute_nodes"] == 0
+            else "partial"
+        ),
         "onnx_checker_valid": True,
         "inputs": {
             value.name: value_shape(value) for value in model.graph.input
