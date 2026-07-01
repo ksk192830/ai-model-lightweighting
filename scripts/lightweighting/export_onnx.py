@@ -30,6 +30,15 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export RF-DETR to ONNX.")
     parser.add_argument("--camera", choices=("front", "rear"), required=True)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument(
+        "--checkpoint",
+        type=Path,
+        help="Override the checkpoint configured for the selected camera.",
+    )
+    parser.add_argument(
+        "--output-name",
+        help="Output filename without extension (defaults to parking_<camera>).",
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--opset", type=int, default=17)
     parser.add_argument("--batch-size", type=int, default=1)
@@ -56,10 +65,19 @@ def main() -> int:
         raise ValueError("--batch-size must be at least one.")
 
     model_config = load_model_config(args.config, args.camera)
-    checkpoint = resolve_path(Path(model_config["checkpoint"]))
+    checkpoint = resolve_path(
+        args.checkpoint
+        if args.checkpoint is not None
+        else Path(model_config["checkpoint"])
+    )
+    if not checkpoint.is_file():
+        raise FileNotFoundError(f"Checkpoint not found: {checkpoint}")
     class_names = list(model_config["classes"])
     output_dir = resolve_path(args.output_dir) / args.camera
-    output_path = output_dir / f"parking_{args.camera}.onnx"
+    output_name = args.output_name or f"parking_{args.camera}"
+    if Path(output_name).name != output_name:
+        raise ValueError("--output-name must be a filename, not a path.")
+    output_path = output_dir / f"{output_name.removesuffix('.onnx')}.onnx"
     metadata_path = output_path.with_suffix(".json")
 
     if output_path.exists() and not args.force:
@@ -83,8 +101,8 @@ def main() -> int:
             verbose=False,
             notes={
                 "camera": args.camera,
-                "source_checkpoint": str(checkpoint.relative_to(REPOSITORY_ROOT)),
-                "purpose": "TensorRT FP16 conversion",
+                "source_checkpoint": str(checkpoint),
+                "purpose": "ONNX/TensorRT conversion",
             },
         )
     )
@@ -105,7 +123,7 @@ def main() -> int:
     metadata = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "camera": args.camera,
-        "source_checkpoint": str(checkpoint.relative_to(REPOSITORY_ROOT)),
+        "source_checkpoint": str(checkpoint),
         "onnx_path": str(output_path.relative_to(REPOSITORY_ROOT)),
         "onnx_size_bytes": output_path.stat().st_size,
         "opset": args.opset,

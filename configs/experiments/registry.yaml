@@ -1,0 +1,199 @@
+version: 1
+
+experiments:
+  B01:
+    name: baseline-fp32
+    family: baseline
+    method: none
+    cameras: [front, rear]
+    precision: fp32
+    stage: tensorrt
+    status: engine-built
+    hypothesis: Original TensorRT FP32 reference.
+
+  B02:
+    name: baseline-fp16
+    family: precision
+    method: tensorrt-fp16
+    cameras: [front, rear]
+    precision: fp16
+    stage: tensorrt
+    status: engine-built
+    hypothesis: FP16 reduces engine size and latency with little accuracy loss.
+
+  B03:
+    name: baseline-int8
+    family: precision
+    method: tensorrt-int8-ptq
+    cameras: [front, rear]
+    precision: int8
+    stage: tensorrt
+    status: engine-built
+    hypothesis: INT8 maximizes precision-based compression with possible accuracy loss.
+
+  U01:
+    name: unstructured-magnitude-10
+    family: unstructured
+    method: global-magnitude
+    cameras: [front]
+    pruning:
+      sparsity: 0.10
+    precision: fp32
+    stage: static-analysis
+    status: onnx-exported
+    hypothesis: Low sparsity preserves accuracy but does not reduce a dense graph.
+
+  U02:
+    name: unstructured-magnitude-30
+    family: unstructured
+    method: global-magnitude
+    cameras: [front]
+    pruning:
+      sparsity: 0.30
+    precision: fp32
+    stage: tensorrt
+    status: engine-built
+    hypothesis: Representative unstructured pruning does not accelerate dense TensorRT.
+
+  U03:
+    name: unstructured-magnitude-50
+    family: unstructured
+    method: global-magnitude
+    cameras: [front]
+    pruning:
+      sparsity: 0.50
+    precision: fp32
+    stage: static-analysis
+    status: onnx-exported
+    hypothesis: High unstructured sparsity exposes the accuracy and storage limit.
+
+  M01:
+    name: sparse-2to4-dense-control
+    family: semi-structured
+    method: nvidia-2to4
+    cameras: [front]
+    pruning:
+      pattern: "2:4"
+    precision: fp16
+    sparse_tactic: false
+    fine_tuning:
+      required: true
+      completed: true
+      status: completed
+      profile: recovery_2to4
+      epochs: 10
+      training_report: artifacts/experiments/M01/front/recovery/recovery-training.json
+    stage: tensorrt
+    status: engine-built
+    hypothesis: A dense-tactic control isolates sparse tactic acceleration.
+
+  M02:
+    name: sparse-2to4
+    family: semi-structured
+    method: nvidia-2to4
+    cameras: [front]
+    pruning:
+      pattern: "2:4"
+    precision: fp16
+    sparse_tactic: true
+    artifact_source: M01
+    depends_on: [M01]
+    fine_tuning:
+      required: true
+      completed: true
+      status: completed
+      profile: recovery_2to4
+      epochs: 10
+      training_report: artifacts/experiments/M01/front/recovery/recovery-training.json
+    stage: tensorrt
+    status: engine-built
+    hypothesis: Ampere sparse tactics accelerate compliant 2:4 weights.
+
+  S01:
+    name: structured-decoder-layer-1
+    family: structured
+    method: decoder-layer
+    cameras: [front]
+    pruning:
+      remove_layers: 1
+    precision: fp32
+    fine_tuning:
+      required: true
+    stage: planned
+    status: planned
+    hypothesis: Removing one decoder layer reduces the dense graph with tolerable loss.
+
+  S02:
+    name: structured-decoder-layer-2
+    family: structured
+    method: decoder-layer
+    cameras: [front]
+    pruning:
+      remove_layers: 2
+    precision: fp32
+    fine_tuning:
+      required: true
+    stage: planned
+    status: planned
+    hypothesis: Removing two decoder layers trades more accuracy for lower latency.
+
+  S03:
+    name: structured-ffn-20
+    family: structured
+    method: ffn-dimension
+    cameras: [front]
+    pruning:
+      reduction: 0.20
+    precision: fp32
+    fine_tuning:
+      required: true
+    stage: planned
+    status: planned
+    hypothesis: Moderate FFN reduction lowers transformer compute.
+
+  S04:
+    name: structured-ffn-40
+    family: structured
+    method: ffn-dimension
+    cameras: [front]
+    pruning:
+      reduction: 0.40
+    precision: fp32
+    fine_tuning:
+      required: true
+    stage: planned
+    status: planned
+    hypothesis: Aggressive FFN reduction explores the efficiency limit.
+
+  C01:
+    name: selected-structured-fp16
+    family: combined
+    method: structured-selected
+    cameras: [front]
+    precision: fp16
+    depends_on: [S01, S02, S03, S04]
+    stage: blocked
+    status: blocked
+    hypothesis: FP16 compounds the benefit of the selected structured model.
+
+  C02:
+    name: selected-structured-int8
+    family: combined
+    method: structured-selected
+    cameras: [front]
+    precision: int8
+    depends_on: [C01]
+    stage: blocked
+    status: blocked
+    hypothesis: INT8 compounds compression if calibration remains stable.
+
+  R01:
+    name: reduced-resolution-fp16
+    family: input
+    method: input-resolution
+    cameras: [front]
+    precision: fp16
+    input_shape: [1, 3, 420, 420]
+    stage: planned
+    status: planned
+    hypothesis: Lower input resolution directly reduces notebook inference compute.

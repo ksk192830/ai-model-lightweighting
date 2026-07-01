@@ -21,7 +21,8 @@ from infer_baseline import annotate
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "baseline.yaml"
-DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "tensorrt"
+DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "experiments"
+BASELINE_EXPERIMENTS = {"fp32": "B01", "fp16": "B02", "int8": "B03"}
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "results" / "inference_stream"
 IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".webp"}
 
@@ -183,8 +184,9 @@ def main() -> int:
             engine_override
             or (
                 DEFAULT_ENGINE_DIR
+                / BASELINE_EXPERIMENTS[backend]
                 / args.camera
-                / f"parking_{args.camera}_{backend}.engine"
+                / "model.engine"
             )
         )
         if not engine_path.is_file():

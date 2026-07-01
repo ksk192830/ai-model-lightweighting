@@ -33,7 +33,8 @@ from supervision import Detections  # noqa: E402
 
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "baseline.yaml"
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "results" / "benchmarks"
-DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "tensorrt"
+DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "experiments"
+BASELINE_EXPERIMENTS = {"fp32": "B01", "fp16": "B02", "int8": "B03"}
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 
@@ -72,6 +73,11 @@ def parse_args() -> argparse.Namespace:
         help="Call RF-DETR optimize_for_inference before benchmarking.",
     )
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument(
+        "--checkpoint",
+        type=Path,
+        help="Override the configured checkpoint for PyTorch benchmarking.",
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     return parser.parse_args()
 
@@ -250,7 +256,13 @@ def main() -> int:
         raise FileNotFoundError(f"Image not found: {image_path}")
 
     model_config = load_model_config(args.config, args.camera)
-    checkpoint = resolve_path(Path(model_config["checkpoint"]))
+    checkpoint = resolve_path(
+        args.checkpoint
+        if args.checkpoint is not None
+        else Path(model_config["checkpoint"])
+    )
+    if args.backend == "pytorch" and not checkpoint.is_file():
+        raise FileNotFoundError(f"Checkpoint not found: {checkpoint}")
     class_names = list(model_config["classes"])
     image = Image.open(image_path).convert("RGB")
 
@@ -279,8 +291,9 @@ def main() -> int:
             args.engine
             or (
                 DEFAULT_ENGINE_DIR
+                / BASELINE_EXPERIMENTS[precision_name]
                 / args.camera
-                / f"parking_{args.camera}_{precision_name}.engine"
+                / "model.engine"
             )
         )
         if not model_path.is_file():

@@ -28,7 +28,8 @@ from benchmark_baseline import TensorRTRunner  # noqa: E402
 
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "baseline.yaml"
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "results" / "inference"
-DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "tensorrt"
+DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "experiments"
+BASELINE_EXPERIMENTS = {"fp32": "B01", "fp16": "B02", "int8": "B03"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -230,8 +231,9 @@ def main() -> int:
                 engine_override
                 or (
                     DEFAULT_ENGINE_DIR
+                    / BASELINE_EXPERIMENTS[backend]
                     / args.camera
-                    / f"parking_{args.camera}_{backend}.engine"
+                    / "model.engine"
                 )
             )
             if not model_path.is_file():

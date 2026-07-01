@@ -131,16 +131,11 @@ PyTorch checkpoint
 예상 산출물:
 
 ```text
-artifacts/
-├── onnx/
-│   ├── front/parking_front.onnx
-│   └── rear/parking_rear.onnx
-├── calibration/
-│   ├── front/
-│   └── rear/
-└── tensorrt/
-    ├── front/parking_front_int8.engine
-    └── rear/parking_rear_int8.engine
+artifacts/experiments/
+├── B01/<camera>/model.onnx
+└── B03/<camera>/
+    ├── model.engine
+    └── calibration.cache
 ```
 
 TensorRT engine은 생성한 GPU 계열, TensorRT 버전 및 빌드 옵션에 영향을
@@ -236,35 +231,21 @@ NVIDIA GPU, CUDA 지원 PyTorch 및 TensorRT Python 패키지가 설치된
 컴퓨터에서 실행한다. calibration 이미지는 `data/calibration/front`와
 `data/calibration/rear`를 사용한다.
 
-카메라 하나만 변환하려면 다음 명령을 실행한다.
+등록된 INT8 실험을 변환하려면 다음 명령을 실행한다.
 
 ```bash
-.venv/bin/python scripts/lightweighting/build_tensorrt_int8.py --camera front
-.venv/bin/python scripts/lightweighting/build_tensorrt_int8.py --camera rear
+.venv/bin/python scripts/experiments/build_candidate.py B03 \
+  --camera front --target engine
 ```
 
-ONNX, TensorRT FP16, TensorRT INT8을 전면·후면 모델에 한 번에 적용하려면
-다음 명령을 실행한다.
+NVIDIA 장비에서 실행하기 전에 명령을 확인하려면 `--dry-run`을 사용한다.
 
 ```bash
-.venv/bin/python scripts/lightweighting/run_lightweighting.py \
-  --camera all \
-  --methods onnx tensorrt-fp16 tensorrt-int8
+.venv/bin/python scripts/experiments/build_candidate.py B03 \
+  --camera front --target engine --dry-run
 ```
 
-NVIDIA 장비로 옮기기 전에 입력 파일과 실행 명령을 확인하려면
-`--dry-run`을 사용한다.
-
-```bash
-.venv/bin/python scripts/lightweighting/run_lightweighting.py \
-  --camera all \
-  --methods tensorrt-int8 \
-  --dry-run
-```
-
-산출물은 `artifacts/tensorrt/<camera>/` 아래의 INT8 `.engine`, calibration
-`.cache`, 재현 정보 `.json`이다. JSON에는 사용한 ONNX 체크섬, calibration
-이미지 목록, 전처리 방식, GPU 및 TensorRT 버전이 기록된다.
+산출물은 `artifacts/experiments/B03/<camera>/`에 모인다.
 
 기본 설정은 INT8을 지원하지 않는 레이어에 FP16을 허용한다. 완전한 INT8
 제약을 시험하려면 `--no-fp16-fallback`을 사용한다.

@@ -16,3 +16,14 @@ Example:
   --image data/labeled_test/front/images/image000002.png \
   --device cuda
 ```
+
+Benchmark an unstructured-pruned PyTorch checkpoint:
+
+```bash
+.venv/bin/python scripts/evaluation/benchmark_baseline.py \
+  --camera front \
+  --backend pytorch \
+  --checkpoint artifacts/experiments/U01/front/model.pth \
+  --image data/labeled_test/front/images/image000522.png \
+  --device cuda
+```

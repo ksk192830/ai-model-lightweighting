@@ -26,12 +26,17 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--camera", choices=("front", "rear"), required=True)
     parser.add_argument("--onnx-dir", type=Path, default=DEFAULT_ONNX_DIR)
+    parser.add_argument("--onnx", type=Path, help="Override the input ONNX path.")
     parser.add_argument(
         "--calibration-dir",
         type=Path,
         default=DEFAULT_CALIBRATION_DIR,
     )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--output-name",
+        help="Engine filename without extension (defaults to parking_<camera>_int8).",
+    )
     parser.add_argument("--workspace-mib", type=int, default=4096)
     parser.add_argument(
         "--no-fp16-fallback",
@@ -142,14 +147,20 @@ def main() -> int:
         raise ValueError("--workspace-mib must be at least one.")
 
     onnx_path = (
-        resolve_path(args.onnx_dir)
+        resolve_path(args.onnx)
+        if args.onnx
+        else resolve_path(args.onnx_dir)
         / args.camera
         / f"parking_{args.camera}.onnx"
     )
     calibration_dir = resolve_path(args.calibration_dir) / args.camera
     output_dir = resolve_path(args.output_dir) / args.camera
-    engine_path = output_dir / f"parking_{args.camera}_int8.engine"
-    cache_path = output_dir / f"parking_{args.camera}_int8.cache"
+    output_name = args.output_name or f"parking_{args.camera}_int8"
+    if Path(output_name).name != output_name:
+        raise ValueError("--output-name must be a filename, not a path.")
+    output_name = output_name.removesuffix(".engine")
+    engine_path = output_dir / f"{output_name}.engine"
+    cache_path = output_dir / f"{output_name}.cache"
     metadata_path = engine_path.with_suffix(".json")
 
     if not onnx_path.is_file():
