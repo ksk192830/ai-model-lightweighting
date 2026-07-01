@@ -17,11 +17,14 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from kips_lightweighting.artifacts import artifact_paths  # noqa: E402
 from kips_lightweighting.metadata import (  # noqa: E402
+    refresh_experiment_documents,
     runtime_metadata,
     sha256,
     write_json,
 )
 from kips_lightweighting.pruning import (  # noqa: E402
+    prune_decoder_layers,
+    prune_ffn_dimensions,
     prune_global_magnitude,
     prune_two_of_four,
 )
@@ -63,10 +66,14 @@ def main() -> int:
         raise ValueError(
             f"{args.experiment_id} is not registered for camera {args.camera}."
         )
-    if experiment["family"] not in {"unstructured", "semi-structured"}:
+    if experiment["family"] not in {
+        "unstructured",
+        "semi-structured",
+        "structured",
+    }:
         raise NotImplementedError(
-            "Candidate creation currently supports unstructured and "
-            "semi-structured experiments."
+            "Candidate creation currently supports unstructured, "
+            "semi-structured, and registered structured experiments."
         )
     if (
         experiment["family"] == "semi-structured"
@@ -82,6 +89,7 @@ def main() -> int:
     paths = artifact_paths(args.experiment_id, args.camera)
     if paths.checkpoint.exists() and not args.force:
         print(f"exists: {paths.checkpoint}")
+        refresh_experiment_documents(args.experiment_id)
         return 0
 
     checkpoint = torch.load(source, map_location="cpu", weights_only=False)
@@ -93,7 +101,7 @@ def main() -> int:
             "ratio": ratio,
             "pruned_parameters": pruned,
         }
-    else:
+    elif experiment["family"] == "semi-structured":
         eligibility_path = paths.directory / "2to4-eligibility.json"
         if not eligibility_path.is_file():
             raise FileNotFoundError(
@@ -110,6 +118,33 @@ def main() -> int:
         if not pruning_result["valid"]:
             raise RuntimeError("Generated checkpoint does not satisfy 2:4.")
         write_json(paths.sparsity, pruning_result)
+    else:
+        if experiment["method"] not in {"decoder-layer", "ffn-dimension"}:
+            raise NotImplementedError(
+                "Unsupported structured candidate method."
+            )
+        if experiment["method"] == "decoder-layer":
+            from rfdetr import RFDETR
+
+            wrapper = RFDETR.from_checkpoint(
+                source,
+                device="cpu",
+                num_classes=len(config["classes"]),
+            )
+            pruning_result = prune_decoder_layers(
+                checkpoint,
+                int(experiment["pruning"]["remove_layers"]),
+                wrapper.model_config.model_dump(),
+            )
+        else:
+            pruning_result = prune_ffn_dimensions(
+                checkpoint,
+                float(experiment["pruning"]["reduction"]),
+            )
+        write_json(
+            paths.directory / "structured-pruning.json",
+            pruning_result,
+        )
     sync_lightning_state(checkpoint)
     checkpoint["optimizer_states"] = []
     checkpoint["lr_schedulers"] = []
@@ -148,6 +183,7 @@ def main() -> int:
     write_json(paths.metadata, metadata)
     print(f"checkpoint: {paths.checkpoint}")
     print(f"metadata: {paths.metadata}")
+    refresh_experiment_documents(args.experiment_id)
     return 0
 
 

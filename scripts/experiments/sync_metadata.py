@@ -55,6 +55,12 @@ def main() -> int:
             fine_tuning_preflight = (
                 paths.directory / "fine-tuning-preflight.json"
             )
+            structured_pruning = (
+                paths.directory / "structured-pruning.json"
+            )
+            prototype_validation = (
+                paths.directory / "prototype-validation.json"
+            )
             if (
                 experiment.get("sparse_tactic", False)
                 and paths.build_log.is_file()
@@ -71,6 +77,8 @@ def main() -> int:
                 and not onnx_2to4.is_file()
                 and not sparse_tactics.is_file()
                 and not fine_tuning_preflight.is_file()
+                and not structured_pruning.is_file()
+                and not prototype_validation.is_file()
             ):
                 continue
             source = REPOSITORY_ROOT / models[camera]["checkpoint"]
@@ -106,6 +114,14 @@ def main() -> int:
             if fine_tuning_preflight.is_file():
                 artifacts["fine_tuning_preflight"] = relative(
                     fine_tuning_preflight
+                )
+            if structured_pruning.is_file():
+                artifacts["structured_pruning"] = relative(
+                    structured_pruning
+                )
+            if prototype_validation.is_file():
+                artifacts["prototype_validation"] = relative(
+                    prototype_validation
                 )
             if recovery_training.is_file():
                 artifacts["recovery_training"] = relative(recovery_training)

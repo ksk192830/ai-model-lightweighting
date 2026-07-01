@@ -119,8 +119,11 @@ experiments:
     precision: fp32
     fine_tuning:
       required: true
-    stage: planned
-    status: planned
+      completed: false
+      status: pending
+      profile: recovery_structured
+    stage: tensorrt
+    status: engine-built
     hypothesis: Removing one decoder layer reduces the dense graph with tolerable loss.
 
   S02:
@@ -133,8 +136,11 @@ experiments:
     precision: fp32
     fine_tuning:
       required: true
-    stage: planned
-    status: planned
+      completed: false
+      status: pending
+      profile: recovery_structured
+    stage: tensorrt
+    status: engine-built
     hypothesis: Removing two decoder layers trades more accuracy for lower latency.
 
   S03:
@@ -147,8 +153,11 @@ experiments:
     precision: fp32
     fine_tuning:
       required: true
-    stage: planned
-    status: planned
+      completed: false
+      status: pending
+      profile: recovery_structured
+    stage: tensorrt
+    status: engine-built
     hypothesis: Moderate FFN reduction lowers transformer compute.
 
   S04:
@@ -161,8 +170,11 @@ experiments:
     precision: fp32
     fine_tuning:
       required: true
-    stage: planned
-    status: planned
+      completed: false
+      status: pending
+      profile: recovery_structured
+    stage: tensorrt
+    status: engine-built
     hypothesis: Aggressive FFN reduction explores the efficiency limit.
 
   C01:

@@ -87,6 +87,18 @@ GPU 메모리에 따른 기본 micro-batch는 다음과 같다.
 `.pth`는 배포·변환용 가중치이고 `.ckpt`는 optimizer와 scheduler까지 포함한
 학습 재개 파일이다. 재개에는 반드시 `.ckpt`를 사용한다.
 
+Structured decoder 후보는 별도 mask 없이 동일 실행기를 사용한다.
+
+```bash
+.venv/bin/python scripts/experiments/create_candidate.py S02 --camera front
+
+.venv/bin/python scripts/experiments/train_candidate.py \
+  S02 --camera front --device auto
+```
+
+S01/S02의 output 디렉터리는 experiment별
+`artifacts/experiments/<ID>/front/recovery/`로 자동 분리된다.
+
 ## 실행 기록
 
 각 output 디렉터리의 `recovery-training.json`에 다음 정보가 기록된다.

@@ -80,6 +80,22 @@ def main() -> int:
                     "[fine-tuning preflight]"
                     f"(../{relative_link(fine_tuning_preflight, document)})"
                 )
+            structured_pruning = (
+                paths.directory / "structured-pruning.json"
+            )
+            if structured_pruning.is_file():
+                links.append(
+                    "[structured pruning]"
+                    f"(../{relative_link(structured_pruning, document)})"
+                )
+            prototype_validation = (
+                paths.directory / "prototype-validation.json"
+            )
+            if prototype_validation.is_file():
+                links.append(
+                    "[prototype validation]"
+                    f"(../{relative_link(prototype_validation, document)})"
+                )
             source_experiment_id = experiment.get(
                 "artifact_source", experiment_id
             )

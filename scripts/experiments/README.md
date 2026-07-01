@@ -1,10 +1,21 @@
 # Experiment management
 
 All commands use `configs/experiments/registry.yaml` as the source of truth.
+Successful candidate creation, analysis, build, and training commands
+automatically synchronize metadata and regenerate
+`docs/model-artifact-index.md`. The explicit synchronization commands below
+are repair and verification commands, not steps that must be remembered after
+every model.
 
 ```bash
 # Create a registered pruning checkpoint.
 .venv/bin/python scripts/experiments/create_candidate.py U02 --camera front
+
+# Create a registered structured decoder-pruning checkpoint.
+.venv/bin/python scripts/experiments/create_candidate.py S01 --camera front
+
+# Create a registered structured FFN-pruning checkpoint.
+.venv/bin/python scripts/experiments/create_candidate.py S03 --camera front
 
 # Write checkpoint and ONNX static analysis.
 .venv/bin/python scripts/experiments/analyze_candidate.py U02 --camera front

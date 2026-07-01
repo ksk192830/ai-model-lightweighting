@@ -19,7 +19,10 @@ os.environ.setdefault(
 
 import onnx  # noqa: E402
 import yaml  # noqa: E402
-from rfdetr import RFDETR  # noqa: E402
+import sys  # noqa: E402
+
+sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
+from kips_lightweighting.rfdetr_compat import load_rfdetr_checkpoint  # noqa: E402
 
 
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "baseline.yaml"
@@ -86,7 +89,7 @@ def main() -> int:
         return 0
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    model = RFDETR.from_checkpoint(
+    model = load_rfdetr_checkpoint(
         checkpoint,
         device="cpu",
         num_classes=len(class_names),

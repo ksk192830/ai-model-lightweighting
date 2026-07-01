@@ -19,6 +19,7 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 from kips_lightweighting.artifacts import artifact_paths  # noqa: E402
 from kips_lightweighting.metadata import (  # noqa: E402
     read_json,
+    refresh_experiment_documents,
     runtime_metadata,
     write_json,
 )
@@ -299,6 +300,7 @@ def main() -> int:
         write_json(report_path, report)
         print(f"fine-tuning preflight: {report_path}")
         print(f"training allowed: {report['training_allowed']}")
+        refresh_experiment_documents(args.experiment_id)
         return 0
     if args.inspect_2to4:
         from rfdetr import RFDETR
@@ -325,6 +327,7 @@ def main() -> int:
         report_path = paths.directory / "2to4-eligibility.json"
         write_json(report_path, report)
         print(f"2:4 eligibility: {report_path}")
+        refresh_experiment_documents(args.experiment_id)
         return 0
 
     analysis = {**runtime_metadata(), "experiment_id": args.experiment_id}
@@ -385,7 +388,17 @@ def main() -> int:
         def size(path: Path) -> int | None:
             return path.stat().st_size if path.is_file() else None
 
-        def difference(candidate: int | float, reference: int | float) -> dict:
+        def difference(
+            candidate: int | float | None,
+            reference: int | float | None,
+        ) -> dict:
+            if candidate is None or reference is None:
+                return {
+                    "baseline": reference,
+                    "candidate": candidate,
+                    "delta": None,
+                    "delta_ratio": None,
+                }
             delta = candidate - reference
             return {
                 "baseline": reference,
@@ -454,6 +467,7 @@ def main() -> int:
         )
         write_json(comparison_path, comparison)
         print(f"comparison: {comparison_path}")
+    refresh_experiment_documents(args.experiment_id)
     return 0
 
 

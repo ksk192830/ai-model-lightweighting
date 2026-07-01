@@ -15,7 +15,11 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from kips_lightweighting.artifacts import artifact_paths  # noqa: E402
-from kips_lightweighting.metadata import read_json, write_json  # noqa: E402
+from kips_lightweighting.metadata import (  # noqa: E402
+    read_json,
+    refresh_experiment_documents,
+    write_json,
+)
 from kips_lightweighting.onnx_export import export_command  # noqa: E402
 from kips_lightweighting.registry import ExperimentRegistry  # noqa: E402
 from kips_lightweighting.tensorrt_build import (  # noqa: E402
@@ -91,6 +95,7 @@ def main() -> int:
     print("$ " + " ".join(command))
     if args.dry_run:
         print(f"command: {paths.build_command}")
+        refresh_experiment_documents(args.experiment_id)
         return 0
     with paths.build_log.open("w", encoding="utf-8") as log:
         result = subprocess.run(
@@ -127,6 +132,7 @@ def main() -> int:
         )
         write_json(paths.metadata, metadata)
     print(f"log: {paths.build_log}")
+    refresh_experiment_documents(args.experiment_id)
     return 0
 
 

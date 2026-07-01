@@ -6,6 +6,7 @@ import hashlib
 import json
 import platform
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -54,3 +55,28 @@ def read_json(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError(f"Expected a JSON object: {path}")
     return data
+
+
+def refresh_experiment_documents(*experiment_ids: str) -> None:
+    """Synchronize canonical metadata and the generated artifact index."""
+    sync_command = [
+        sys.executable,
+        str(
+            REPOSITORY_ROOT
+            / "scripts"
+            / "experiments"
+            / "sync_metadata.py"
+        ),
+        *experiment_ids,
+    ]
+    index_command = [
+        sys.executable,
+        str(
+            REPOSITORY_ROOT
+            / "scripts"
+            / "experiments"
+            / "update_index.py"
+        ),
+    ]
+    subprocess.run(sync_command, cwd=REPOSITORY_ROOT, check=True)
+    subprocess.run(index_command, cwd=REPOSITORY_ROOT, check=True)

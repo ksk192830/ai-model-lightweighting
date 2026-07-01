@@ -58,6 +58,12 @@ configs/experiments/schema.yaml
 일반 작업은 `scripts/experiments/`의 실행기를 사용하고,
 `scripts/lightweighting/`은 내부 변환 구현으로만 사용한다.
 
+Candidate 생성·분석·빌드·학습 명령은 성공 시 `metadata.json`과
+`docs/model-artifact-index.md`를 자동으로 갱신한다. 모델 생성 후 인덱스
+명령을 별도로 기억할 필요가 없다. 이 문서의 연구 판단과 체크리스트는
+검토를 거쳐 수정하고, 모델 경로와 artifact 상태는 자동 생성 인덱스를
+기준으로 한다.
+
 ### 1단계 — Baseline 확인
 
 - [x] front/rear 원본 PTH 확인
@@ -104,14 +110,50 @@ dense TensorRT에서 구조·FLOPs 감소로 이어지지 않는다는 점을 �
 먼저 구현 안정성이 높은 decoder layer pruning을 수행하고, 이후 FFN
 dimension pruning을 검토한다.
 
-- [ ] S01: decoder layer 1개 제거
-- [ ] S02: decoder layer 2개 제거
-- [ ] S03: FFN dimension 20% 축소
-- [ ] S04: FFN dimension 40% 축소
-- [ ] 연결된 tensor shape와 출력 shape 검증
-- [ ] parameter·FLOPs 감소 측정
+- [x] S01: decoder layer 1개 제거 prototype·ONNX·TensorRT 검증
+- [x] S02: decoder layer 2개 제거 prototype·ONNX·TensorRT 검증
+- [x] S03: FFN dimension 20% 축소(실제 2048→1632, TensorRT 검증)
+- [x] S04: FFN dimension 40% 축소(실제 2048→1216, TensorRT 검증)
+- [x] 연결된 tensor shape와 출력 shape 검증
+- [x] parameter 감소 측정(FLOPs는 operator-aware 분석 대기)
 - [ ] fine-tuning
-- [ ] ONNX export와 TensorRT FP32 변환
+- [x] ONNX export와 TensorRT FP32 변환
+
+S01 prototype 결과:
+
+- decoder layer: 5 → 4
+- segmentation block: 5 → 4
+- ONNX initializer parameter: 4.74% 감소
+- ONNX node: 8.04% 감소
+- baseline과 입력·출력 interface 동일
+- CPU detection/segmentation smoke inference 성공
+- parameter 5% 기준에는 0.27%p 미달하므로 FLOPs 분석과 recovery 결과를
+  확인하는 조건부 후보로 유지
+
+S02 prototype 결과:
+
+- decoder layer: 5 → 3
+- segmentation block: 5 → 3
+- ONNX initializer parameter: 9.47% 감소
+- ONNX node: 16.17% 감소
+- baseline과 입력·출력 interface 동일
+- CPU detection/segmentation smoke inference 성공
+- parameter 5% 기준을 통과해 recovery 학습 후보로 선정
+- portable recovery runner의 GPU 1-batch train/validation smoke test 성공
+
+S01~S04 TensorRT FP32 변환 결과:
+
+| ID | 구조 | Engine 크기 | B01 대비 | Runtime 역직렬화 |
+|---|---|---:|---:|---|
+| B01 | 원본 baseline | 135,608,716 bytes | 기준 | 성공 |
+| S01 | decoder 5→4 | 129,252,636 bytes | -4.69% | 성공 |
+| S02 | decoder 5→3 | 122,930,876 bytes | -9.35% | 성공 |
+| S03 | FFN 2048→1632 | 131,273,148 bytes | -3.20% | 성공 |
+| S04 | FFN 2048→1216 | 127,076,028 bytes | -6.29% | 성공 |
+
+모든 structured engine은 TensorRT 10.16.1.11, FP32, batch 1,
+입력 504×504, workspace 4096 MiB 조건에서 생성됐다. TensorRT runtime
+역직렬화와 input 1개·output 3개의 총 4개 I/O tensor 확인을 통과했다.
 
 정적 분석에서 다음을 모두 만족하지 못하면 TensorRT 평가 후보에서
 제외한다.
@@ -223,7 +265,7 @@ PTQ INT8의 출력이 비정상적이거나 평가 정확도 손실이 크다는
 
 ## 7. 현재 바로 할 다음 작업
 
-1. decoder layer 1개 제거 structured prototype을 만든다.
-2. S01 checkpoint 로드·shape·smoke inference를 검증한다.
-3. parameter/FLOPs 감소 기준을 통과하면 portable recovery 학습 패키지를
-   준비한다.
+1. S01~S04 recovery fine-tuning을 고성능 데스크탑에서 수행한다.
+2. S01~S04의 FLOPs 감소를 operator-aware 방식으로 보완한다.
+3. recovery checkpoint에서 ONNX와 TensorRT engine을 재생성한다.
+4. 평가 결과가 우수한 structured 후보를 C01/C02 결합 실험으로 승격한다.

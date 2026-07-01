@@ -57,3 +57,32 @@ fine_tuning:
     random_seed: 42
     required_splits: [train, valid]
     required_annotation_file: _annotations.coco.json
+
+  recovery_structured:
+    status: ready
+    dataset_file: roboflow
+    dataset_dir: data/training/front
+    dataset_source:
+      provider: roboflow
+      workspace: hmobility-fvu9x
+      project: parking_front
+      version: 8
+      export_format: coco-segmentation
+    output_dir: artifacts/experiments/{experiment_id}/{camera}/recovery
+    epochs: 10
+    lr: 1.0e-5
+    lr_encoder: 1.5e-5
+    batch_size: 2
+    grad_accum_steps: 8
+    effective_batch_size: 16
+    weight_decay: 1.0e-4
+    lr_scheduler: cosine
+    warmup_epochs: 1
+    use_ema: true
+    ema_decay: 0.993
+    early_stopping: true
+    early_stopping_patience: 3
+    checkpoint_interval: 1
+    random_seed: 42
+    required_splits: [train, valid]
+    required_annotation_file: _annotations.coco.json
