@@ -1,7 +1,8 @@
 # Shared ONNX Models
 
-이 디렉터리의 ONNX 파일은 Git LFS로 공유한다. TensorRT engine은 평가 또는
-배포 GPU에서 이 ONNX와 저장소의 실험 설정을 사용해 다시 생성한다.
+이 디렉터리의 PTH와 ONNX 파일은 Git LFS로 공유한다. TensorRT engine은
+평가 또는 배포 GPU에서 ONNX와 저장소의 실험 설정을 사용해 다시 생성한다.
+PTH는 fine-tuning, ONNX 재생성 및 pruning pattern 검증에 사용한다.
 
 ```bash
 git lfs install

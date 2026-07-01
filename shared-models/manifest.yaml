@@ -3,6 +3,13 @@ format: onnx
 onnx_opset: 17
 
 models:
+  - file: M01-M02-front-2to4-recovery.pth
+    experiment_ids: [M01, M02]
+    camera: front
+    description: Final 10-epoch recovery checkpoint shared by M01 and M02.
+    size_bytes: 142531025
+    sha256: 31d0db02679d552aeb03d8c0ca5d2709a2108760952abe7a0cda55bbf64d80ee
+
   - file: B01-front-baseline.onnx
     experiment_ids: [B01, B02, B03]
     camera: front
