@@ -194,6 +194,32 @@ separate JSON file. Final paper measurements must be collected on the same
 NVIDIA GPU with the same image, threshold, warmup, and run count for every
 TensorRT precision.
 
+## RF-DETR Engine Raw Benchmark
+
+Use `scripts/benchmark.py` to evaluate an RF-DETR TensorRT `.engine` file with
+the same FPS, latency, accuracy, size, and memory columns used in
+`results/results_raw.csv`.
+
+Front-camera engine example:
+
+```bash
+python3 scripts/benchmark.py \
+  --model models/parking_front_fp16.engine \
+  --baseline-model models/parking_front.pth \
+  --data data/Kips_Dataset/labeled_test/front \
+  --imgsz 672 \
+  --batch-size 1 \
+  --conf 0.25 \
+  --iou 0.7 \
+  --device cuda:0 \
+  --backend rfdetr_engine
+```
+
+For rear-camera engines, use `models/parking_rear.pth` as the baseline and
+`data/Kips_Dataset/labeled_test/rear` as the dataset path. TensorRT engines
+must be built and benchmarked on a compatible NVIDIA GPU/CUDA/TensorRT
+environment.
+
 ## TensorRT FP16
 
 Install the ONNX export dependencies:
