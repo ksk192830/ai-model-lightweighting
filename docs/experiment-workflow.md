@@ -29,7 +29,7 @@
 | S03~S04 | Structured FFN | FFN dimension 20/40% 축소 | Transformer 내부 연산 감소 |
 | C01 | 결합 | structured 대표 + FP16 | 구조 축소와 FP16 결합 |
 | C02 | 결합 | structured 대표 + INT8 | 구조 축소와 INT8 결합 |
-| R01 | 입력 최적화 | 입력 해상도 1단계 축소 + FP16 | 노트북 환경의 직접적인 연산량 감소 |
+| R01 | 입력 최적화 | 입력 해상도 504→432 + FP16 | 노트북 환경의 직접적인 연산량 감소 |
 
 `C01`과 `C02`의 structured 설정은 `S01~S04`의 정적 분석과 변환 결과를
 확인한 뒤 하나를 선택한다.
@@ -116,7 +116,7 @@ dimension pruning을 검토한다.
 - [x] S04: FFN dimension 40% 축소(실제 2048→1216, TensorRT 검증)
 - [x] 연결된 tensor shape와 출력 shape 검증
 - [x] parameter 감소 측정(FLOPs는 operator-aware 분석 대기)
-- [ ] fine-tuning
+- [x] recovery fine-tuning
 - [x] ONNX export와 TensorRT FP32 변환
 
 S01 prototype 결과:
@@ -160,6 +160,13 @@ FLOPs는 ONNX Conv/MatMul/Gemm을 대상으로 MAC 1회를 2 FLOPs로 계산한
 `static-analysis.json`에 함께 기록한다. 따라서 절대 하드웨어 처리량이 아니라
 동일 export 조건에서의 후보 간 정적 비교값으로 사용한다.
 
+S01~S04 recovery fine-tuning은 RTX 5070에서 완료했고 전달받은 checkpoint의
+SHA-256을 학습 보고서와 대조했다. 조기 종료 시점은 S01 4 epochs, S02 9
+epochs, S03/S04 6 epochs다. Recovery PTH와 ONNX는 변환 저장소에
+승격했으며, prototype TensorRT engine은 각 후보의
+`prototype-before-recovery/`에 보존했다. 최종 FP32 engine은 RTX 3080,
+TensorRT 10.16.1.11 환경에서 recovery ONNX를 기준으로 다시 생성했다.
+
 정적 분석에서 다음을 모두 만족하지 못하면 TensorRT 평가 후보에서
 제외한다.
 
@@ -174,10 +181,10 @@ FLOPs는 ONNX Conv/MatMul/Gemm을 대상으로 MAC 1회를 2 FLOPs로 계산한
 
 Structured 후보 중 변환이 안정적이고 감소량이 큰 모델 하나를 선택한다.
 
-- [ ] C01: 선택된 structured 모델 + FP16
-- [ ] C02: 선택된 structured 모델 + INT8
-- [ ] INT8 calibration과 fallback 기록
-- [ ] R01: 입력 해상도 1단계 축소 + FP16
+- [x] C01: S01 structured 모델 + FP16
+- [x] C02: S01 structured 모델 + INT8
+- [x] INT8 calibration과 FP16 fallback 기록
+- [x] R01: 입력 해상도 504→432 + FP16
 
 PTQ INT8의 출력이 비정상적이거나 평가 정확도 손실이 크다는 피드백이 있을
 때만 QAT를 추가한다.
@@ -198,10 +205,7 @@ PTQ INT8의 출력이 비정상적이거나 평가 정확도 손실이 크다는
 
 ### 7단계 — Rear 확장
 
-- [ ] 선정된 5~8개 설정만 rear checkpoint에 동일하게 적용
-- [ ] 동일한 ONNX/TensorRT 설정 사용
-- [ ] front와 rear의 metadata schema 통일
-- [ ] 평가자에게 최종 front/rear 패키지 전달
+현재 최종 범위는 front 모델로 한정한다. Rear 확장은 수행하지 않는다.
 
 ## 4. 정적 분석 탈락 기준
 
@@ -270,10 +274,8 @@ PTQ INT8의 출력이 비정상적이거나 평가 정확도 손실이 크다는
 
 ## 7. 현재 바로 할 다음 작업
 
-1. S01~S04 recovery fine-tuning을 고성능 데스크탑에서 수행한다.
-2. S01~S04의 FLOPs 감소를 operator-aware 방식으로 보완한다.
-3. recovery checkpoint에서 ONNX와 TensorRT engine을 재생성한다.
-4. 평가 결과가 우수한 structured 후보를 C01/C02 결합 실험으로 승격한다.
+1. 최종 front engine 패키지를 평가자에게 전달한다.
+2. 필요하면 FLOPs 감소를 operator-aware 방식으로 보완한다.
 
 ## 8. Artifact 무결성 검사
 

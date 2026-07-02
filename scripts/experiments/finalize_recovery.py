@@ -38,6 +38,15 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Required to replace prototype PTH/ONNX/engine artifacts.",
     )
+    parser.add_argument(
+        "--skip-engine",
+        action="store_true",
+        help=(
+            "Promote the recovery PTH, rebuild ONNX, and rerun analysis "
+            "without building TensorRT. Any stale prototype engine is moved "
+            "to the prototype snapshot and removed from the active artifact set."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -109,6 +118,12 @@ def main() -> int:
                     shutil.copy2(path, snapshot / path.name)
         if not args.dry_run:
             shutil.copy2(recovered, paths.checkpoint)
+            if args.skip_engine:
+                for path in (
+                    paths.engine,
+                    paths.directory / "engine-build.json",
+                ):
+                    path.unlink(missing_ok=True)
 
         run(
             [
@@ -123,19 +138,20 @@ def main() -> int:
             ],
             args.dry_run,
         )
-        run(
-            [
-                sys.executable,
-                str(REPOSITORY_ROOT / "scripts/experiments/build_candidate.py"),
-                experiment_id,
-                "--camera",
-                args.camera,
-                "--target",
-                "engine",
-                "--force",
-            ],
-            args.dry_run,
-        )
+        if not args.skip_engine:
+            run(
+                [
+                    sys.executable,
+                    str(REPOSITORY_ROOT / "scripts/experiments/build_candidate.py"),
+                    experiment_id,
+                    "--camera",
+                    args.camera,
+                    "--target",
+                    "engine",
+                    "--force",
+                ],
+                args.dry_run,
+            )
         run(
             [
                 sys.executable,

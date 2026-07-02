@@ -45,6 +45,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--opset", type=int, default=17)
     parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument(
+        "--resolution",
+        type=int,
+        help="Optional square export resolution.",
+    )
     parser.add_argument("--force", action="store_true")
     return parser.parse_args()
 
@@ -89,11 +94,21 @@ def main() -> int:
         return 0
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    model = load_rfdetr_checkpoint(
-        checkpoint,
-        device="cpu",
-        num_classes=len(class_names),
-    )
+    if args.resolution is None:
+        model = load_rfdetr_checkpoint(
+            checkpoint,
+            device="cpu",
+            num_classes=len(class_names),
+        )
+    else:
+        from rfdetr.variants import RFDETRSegLarge
+
+        model = RFDETRSegLarge(
+            pretrain_weights=str(checkpoint),
+            resolution=args.resolution,
+            device="cpu",
+            num_classes=len(class_names),
+        )
     exported_path = Path(
         model.export(
             output_dir=str(output_dir),
@@ -101,6 +116,11 @@ def main() -> int:
             opset_version=args.opset,
             batch_size=args.batch_size,
             dynamic_batch=False,
+            shape=(
+                (args.resolution, args.resolution)
+                if args.resolution is not None
+                else None
+            ),
             verbose=False,
             notes={
                 "camera": args.camera,
@@ -131,6 +151,7 @@ def main() -> int:
         "onnx_size_bytes": output_path.stat().st_size,
         "opset": args.opset,
         "batch_size": args.batch_size,
+        "resolution": args.resolution or model.model.resolution,
         "inputs": input_shapes,
         "outputs": output_names,
         "classes": class_names,

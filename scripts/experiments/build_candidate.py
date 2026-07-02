@@ -51,7 +51,10 @@ def main() -> int:
 
     if args.target == "onnx":
         checkpoint = paths.checkpoint
-        if not checkpoint.is_file() and experiment["family"] == "baseline":
+        if not checkpoint.is_file() and experiment["family"] in {
+            "baseline",
+            "input",
+        }:
             with (REPOSITORY_ROOT / "configs" / "baseline.yaml").open(
                 encoding="utf-8"
             ) as stream:
@@ -66,6 +69,7 @@ def main() -> int:
             paths.directory.parent,
             "model",
             defaults["export"]["onnx_opset"],
+            experiment.get("input_shape", defaults["export"]["input_shape"]),
             args.force,
         )
     else:

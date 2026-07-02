@@ -2,10 +2,31 @@ import unittest
 
 import torch
 
+from src.kips_lightweighting.rfdetr_compat import (
+    _DECODER_LAYER,
+    _contiguous_count,
+)
 from src.kips_lightweighting.pruning.structured import (
     prune_decoder_layers,
     prune_ffn_dimensions,
 )
+
+
+class StructuredCheckpointDetectionTest(unittest.TestCase):
+    def test_counts_contiguous_decoder_layers(self):
+        state = {
+            f"transformer.decoder.layers.{index}.linear1.weight": torch.ones(1)
+            for index in range(3)
+        }
+        self.assertEqual(_contiguous_count(state, _DECODER_LAYER), 3)
+
+    def test_rejects_noncontiguous_decoder_layers(self):
+        state = {
+            "transformer.decoder.layers.0.linear1.weight": torch.ones(1),
+            "transformer.decoder.layers.2.linear1.weight": torch.ones(1),
+        }
+        with self.assertRaises(ValueError):
+            _contiguous_count(state, _DECODER_LAYER)
 
 
 class StructuredDecoderPruningTest(unittest.TestCase):

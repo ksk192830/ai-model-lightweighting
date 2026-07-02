@@ -167,6 +167,15 @@ TensorRT engine 생성, B01 정적 비교와 문서 갱신까지 수행한다.
   S01 S02 S03 S04 --camera front --force
 ```
 
+CUDA/TensorRT가 없는 장비에서는 recovery PTH 승격, ONNX export와 정적
+분석까지만 수행한다. 이 경우 prototype engine은 snapshot에 보존되고 활성
+artifact에서는 제거되므로, 배포 GPU에서 반드시 engine을 다시 생성한다.
+
+```bash
+.venv/bin/python scripts/experiments/finalize_recovery.py \
+  S01 S02 S03 S04 --camera front --force --skip-engine
+```
+
 파일을 다른 위치에 받았다면 experiment 하나와 함께 직접 지정한다.
 
 ```bash

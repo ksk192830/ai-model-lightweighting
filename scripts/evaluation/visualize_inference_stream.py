@@ -23,6 +23,16 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "baseline.yaml"
 DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "experiments"
 BASELINE_EXPERIMENTS = {"fp32": "B01", "fp16": "B02", "int8": "B03"}
+FINAL_FRONT_EXPERIMENTS = (
+    ("B01", "B01 Baseline FP32"),
+    ("B02", "B02 Baseline FP16"),
+    ("B03", "B03 Baseline INT8"),
+    ("M01", "M01 2:4 Dense Control"),
+    ("M02", "M02 2:4 Sparse"),
+    ("S01", "S01 Decoder 5->4"),
+    ("C01", "C01 S01 + FP16"),
+    ("R01", "R01 432x432 + FP16"),
+)
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "results" / "inference_stream"
 IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".webp"}
 
@@ -35,10 +45,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image-dir", type=Path, required=True)
     parser.add_argument(
         "--backend",
-        choices=("pytorch", "fp32", "fp16", "int8", "all", "tensorrt", "both"),
+        choices=(
+            "pytorch",
+            "fp32",
+            "fp16",
+            "int8",
+            "all",
+            "final8",
+            "tensorrt",
+            "both",
+        ),
         default="all",
         help=(
             "Model variant. 'all' compares TensorRT FP32, FP16, and INT8. "
+            "'final8' shows the selected eight front engines in a 2x4 grid. "
             "'tensorrt' and 'both' are legacy aliases."
         ),
     )
@@ -47,6 +67,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fp16-engine", type=Path)
     parser.add_argument("--int8-engine", type=Path)
     parser.add_argument("--threshold", type=float, default=0.5)
+    parser.add_argument(
+        "--panel-width",
+        type=int,
+        default=480,
+        help="Display width of each panel in final8 mode (default: 480).",
+    )
     parser.add_argument(
         "--interval",
         type=float,
@@ -93,39 +119,64 @@ def load_model_config(path: Path, camera: str) -> dict:
     return config["models"][camera]
 
 
+def opencv_has_gui() -> bool:
+    return any(
+        marker in cv2.getBuildInformation()
+        for marker in ("GUI:                           GTK", "GUI:                           QT")
+    )
+
+
 def labeled_panel(
     image: Image.Image,
     detections,
     class_names: list[str],
     title: str,
+    panel_width: int | None = None,
 ) -> np.ndarray:
     visualization = Image.fromarray(annotate(image, detections, class_names))
+    if panel_width is not None and visualization.width != panel_width:
+        height = round(visualization.height * panel_width / visualization.width)
+        visualization = visualization.resize(
+            (panel_width, height),
+            Image.Resampling.BILINEAR,
+        )
     panel = Image.new(
         "RGB",
-        (visualization.width, visualization.height + 40),
+        (visualization.width, visualization.height + 44),
         "white",
     )
-    panel.paste(visualization, (0, 40))
-    ImageDraw.Draw(panel).text((12, 12), title, fill="black")
+    panel.paste(visualization, (0, 44))
+    ImageDraw.Draw(panel).text((10, 14), title, fill="black")
     return np.asarray(panel)
 
 
-def combine_panels(panels: list[np.ndarray]) -> np.ndarray:
-    height = max(panel.shape[0] for panel in panels)
+def combine_panels(
+    panels: list[np.ndarray],
+    columns: int | None = None,
+) -> np.ndarray:
+    columns = columns or len(panels)
+    cell_height = max(panel.shape[0] for panel in panels)
+    cell_width = max(panel.shape[1] for panel in panels)
     padded = []
     for panel in panels:
-        if panel.shape[0] < height:
-            panel = cv2.copyMakeBorder(
+        padded.append(
+            cv2.copyMakeBorder(
                 panel,
                 0,
-                height - panel.shape[0],
+                cell_height - panel.shape[0],
                 0,
-                0,
+                cell_width - panel.shape[1],
                 cv2.BORDER_CONSTANT,
                 value=(255, 255, 255),
             )
-        padded.append(panel)
-    return np.concatenate(padded, axis=1)
+        )
+    rows = []
+    blank = np.full_like(padded[0], 255)
+    for start in range(0, len(padded), columns):
+        row = padded[start : start + columns]
+        row.extend([blank] * (columns - len(row)))
+        rows.append(np.concatenate(row, axis=1))
+    return np.concatenate(rows, axis=0)
 
 
 def main() -> int:
@@ -136,6 +187,18 @@ def main() -> int:
         raise ValueError("--interval must be greater than zero.")
     if args.max_images is not None and args.max_images < 1:
         raise ValueError("--max-images must be at least one.")
+    if args.panel_width < 160:
+        raise ValueError("--panel-width must be at least 160.")
+    if args.backend == "final8" and args.camera != "front":
+        raise ValueError("final8 is defined only for the front camera.")
+    if args.live and not opencv_has_gui():
+        raise RuntimeError(
+            "OpenCV was installed without GUI support (GUI: NONE). "
+            "The environment contains both opencv-python and "
+            "opencv-python-headless, and the headless cv2 module is active. "
+            "Remove opencv-python-headless and reinstall opencv-python, or "
+            "omit --live to write an MP4."
+        )
     if not args.live and args.output_video is None:
         args.output_video = (
             DEFAULT_OUTPUT_DIR / f"{args.camera}_{args.backend}.mp4"
@@ -155,7 +218,22 @@ def main() -> int:
         "both": ("pytorch", "int8"),
         "tensorrt": ("int8",),
     }
-    backends = backend_groups.get(args.backend, (args.backend,))
+    final8 = args.backend == "final8"
+    backends = (
+        tuple(experiment_id for experiment_id, _ in FINAL_FRONT_EXPERIMENTS)
+        if final8
+        else backend_groups.get(args.backend, (args.backend,))
+    )
+    titles = (
+        dict(FINAL_FRONT_EXPERIMENTS)
+        if final8
+        else {
+            "pytorch": "PyTorch FP32",
+            "fp32": "TensorRT FP32",
+            "fp16": "TensorRT FP16",
+            "int8": "TensorRT INT8",
+        }
+    )
     predictors = {}
     if "pytorch" in backends:
         checkpoint = resolve_path(Path(model_config["checkpoint"]))
@@ -168,7 +246,19 @@ def main() -> int:
             image,
             threshold=args.threshold,
         )
-    for backend in ("fp32", "fp16", "int8"):
+    for backend in backends:
+        if backend == "pytorch":
+            continue
+        if final8:
+            engine_path = (
+                DEFAULT_ENGINE_DIR / backend / args.camera / "model.engine"
+            )
+            runner = TensorRTRunner(engine_path)
+            predictors[backend] = lambda image, runner=runner: runner.predict(
+                image,
+                threshold=args.threshold,
+            )
+            continue
         if backend not in backends:
             continue
         engine_override = (
@@ -212,27 +302,32 @@ def main() -> int:
             counts = {}
             timings_ms = {}
             for backend in backends:
+                torch.cuda.synchronize()
                 started = time.perf_counter()
                 detections = predictors[backend](image)
                 torch.cuda.synchronize()
                 timings_ms[backend] = (time.perf_counter() - started) * 1000
                 counts[backend] = len(detections)
-                backend_title = {
-                    "pytorch": "PyTorch FP32",
-                    "fp32": "TensorRT FP32",
-                    "fp16": "TensorRT FP16",
-                    "int8": "TensorRT INT8",
-                }[backend]
                 title = (
-                    f"{backend_title}"
+                    f"{titles[backend]}"
                     f" | {len(detections)} detections | "
                     f"{timings_ms[backend]:.1f} ms"
+                    f" | {1000.0 / timings_ms[backend]:.1f} FPS"
                 )
                 panels.append(
-                    labeled_panel(image, detections, class_names, title)
+                    labeled_panel(
+                        image,
+                        detections,
+                        class_names,
+                        title,
+                        args.panel_width if final8 else None,
+                    )
                 )
 
-            rgb_frame = combine_panels(panels)
+            rgb_frame = combine_panels(
+                panels,
+                columns=4 if final8 else None,
+            )
             bgr_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
             if output_path is not None:
                 if writer is None:
@@ -276,7 +371,7 @@ def main() -> int:
     finally:
         if writer is not None:
             writer.release()
-        if args.live:
+        if args.live and opencv_has_gui():
             cv2.destroyAllWindows()
 
     if output_path is not None:
@@ -286,6 +381,7 @@ def main() -> int:
                 {
                     "camera": args.camera,
                     "backend": args.backend,
+                    "models": list(backends),
                     "interval_seconds": args.interval,
                     "frames": records,
                 },

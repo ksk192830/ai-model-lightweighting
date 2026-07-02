@@ -29,6 +29,11 @@ def main() -> int:
         default=REPOSITORY_ROOT / "delivery",
     )
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--engines-only",
+        action="store_true",
+        help="Package only TensorRT engine files plus the generated manifest.",
+    )
     args = parser.parse_args()
 
     registry = ExperimentRegistry.load()
@@ -52,6 +57,8 @@ def main() -> int:
         destination.mkdir(parents=True, exist_ok=True)
         files = []
         for label, path in existing.items():
+            if args.engines_only and label != "engine":
+                continue
             target = destination / path.name
             shutil.copy2(path, target)
             files.append(

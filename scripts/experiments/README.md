@@ -52,10 +52,22 @@ every model.
 .venv/bin/python scripts/experiments/finalize_recovery.py \
   S01 S02 S03 S04 --camera front --force
 
+# On a machine without CUDA/TensorRT, promote PTH and rebuild ONNX only.
+.venv/bin/python scripts/experiments/finalize_recovery.py \
+  S01 S02 S03 S04 --camera front --force --skip-engine
+
 # Verify required artifacts, metadata references, and SHA-256 records.
 .venv/bin/python scripts/experiments/audit_artifacts.py
 
 # Assemble selected experiments for evaluator handoff.
 .venv/bin/python scripts/experiments/package_delivery.py \
   --experiments B01 B02 B03 U02 --camera front
+
+# Package portable ONNX inputs for another NVIDIA machine.
+.venv/bin/python scripts/experiments/package_notebook_bundle.py \
+  --suite final8 --force
+
+# Rebuild the final engine suite and run one-image smoke inference.
+.venv/bin/python scripts/experiments/build_engine_suite.py \
+  --suite final8 --force
 ```

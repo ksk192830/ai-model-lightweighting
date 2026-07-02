@@ -14,6 +14,7 @@ def export_command(
     output_dir: Path,
     output_name: str,
     opset: int,
+    input_shape: list[int] | tuple[int, ...] | None = None,
     force: bool = False,
 ) -> list[str]:
     command = [
@@ -30,6 +31,10 @@ def export_command(
         "--opset",
         str(opset),
     ]
+    if input_shape is not None:
+        if len(input_shape) != 4 or input_shape[2] != input_shape[3]:
+            raise ValueError(f"Expected square NCHW input shape: {input_shape}")
+        command.extend(["--resolution", str(input_shape[2])])
     if force:
         command.append("--force")
     return command

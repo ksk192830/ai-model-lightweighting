@@ -4,11 +4,30 @@ from __future__ import annotations
 
 from dataclasses import replace
 from pathlib import Path
+import re
 from typing import Any
 
 import torch
 
 from .static_analysis import checkpoint_state
+
+
+_DECODER_LAYER = re.compile(r"^transformer\.decoder\.layers\.(\d+)\.")
+_SEGMENTATION_BLOCK = re.compile(r"^segmentation_head\.blocks\.(\d+)\.")
+
+
+def _contiguous_count(state: dict[str, Any], pattern: re.Pattern[str]) -> int | None:
+    indices = {
+        int(match.group(1))
+        for name in state
+        if (match := pattern.match(name))
+    }
+    if not indices:
+        return None
+    count = max(indices) + 1
+    if indices != set(range(count)):
+        raise ValueError(f"Structured checkpoint indexes are not contiguous: {indices}")
+    return count
 
 
 def load_rfdetr_checkpoint(
@@ -23,8 +42,27 @@ def load_rfdetr_checkpoint(
         map_location="cpu",
         weights_only=False,
     )
+    state = checkpoint_state(checkpoint)
     architecture = checkpoint.get("structured_architecture")
-    if not isinstance(architecture, dict) or architecture.get("method") != "ffn-dimension":
+    ffn_architecture = (
+        architecture
+        if isinstance(architecture, dict)
+        and architecture.get("method") == "ffn-dimension"
+        else None
+    )
+    decoder_layers = _contiguous_count(state, _DECODER_LAYER)
+    segmentation_blocks = _contiguous_count(state, _SEGMENTATION_BLOCK)
+    if (
+        decoder_layers is not None
+        and segmentation_blocks is not None
+        and decoder_layers != segmentation_blocks
+    ):
+        raise ValueError(
+            "Decoder/segmentation structure mismatch: "
+            f"{decoder_layers} != {segmentation_blocks}"
+        )
+    is_decoder_pruned = decoder_layers is not None and decoder_layers != 5
+    if ffn_architecture is None and not is_decoder_pruned:
         from rfdetr import RFDETR
 
         return RFDETR.from_checkpoint(
@@ -51,17 +89,21 @@ def load_rfdetr_checkpoint(
             "num_classes": num_classes,
         }
     )
+    if is_decoder_pruned:
+        constructor["dec_layers"] = decoder_layers
     wrapper = RFDETRSegLarge(**constructor)
-    defaults = replace(
-        MODEL_DEFAULTS,
-        dim_feedforward=int(architecture["dim_feedforward"]),
-    )
+    defaults = MODEL_DEFAULTS
+    if ffn_architecture is not None:
+        defaults = replace(
+            defaults,
+            dim_feedforward=int(ffn_architecture["dim_feedforward"]),
+        )
     structured_model = build_model_from_config(
         wrapper.model_config,
         defaults=defaults,
     )
     incompatible = structured_model.load_state_dict(
-        checkpoint_state(checkpoint),
+        state,
         strict=False,
     )
     if incompatible.missing_keys or incompatible.unexpected_keys:
