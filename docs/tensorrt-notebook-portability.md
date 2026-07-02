@@ -32,8 +32,11 @@ python -m pip install --force-reinstall opencv-python==4.13.0.92
 ## Portable ONNX bundle 준비
 
 변환 데스크탑에서 최종 8개가 참조하는 ONNX만 묶는다.
+새 clone에서는 먼저 Git LFS 모델을 내려받는다.
 
 ```bash
+git lfs pull
+
 .venv/bin/python scripts/experiments/package_notebook_bundle.py \
   --suite final8 --force
 ```

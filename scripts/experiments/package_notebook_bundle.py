@@ -21,6 +21,31 @@ from kips_lightweighting.registry import ExperimentRegistry  # noqa: E402
 from build_engine_suite import SUITES  # noqa: E402
 
 
+SHARED_ONNX = {
+    "B01": REPOSITORY_ROOT / "shared-models" / "B01-front-baseline.onnx",
+    "M01": REPOSITORY_ROOT
+    / "shared-models"
+    / "M01-M02-front-2to4-recovery.onnx",
+    "S01": REPOSITORY_ROOT
+    / "shared-models"
+    / "S01-front-structured-recovery.onnx",
+    "R01": REPOSITORY_ROOT / "shared-models" / "R01-front-432.onnx",
+}
+
+
+def resolve_onnx_source(source_id: str) -> Path:
+    artifact = artifact_paths(source_id, "front").onnx
+    if artifact.is_file():
+        return artifact
+    shared = SHARED_ONNX.get(source_id)
+    if shared is not None and shared.is_file():
+        return shared
+    raise FileNotFoundError(
+        f"Missing ONNX for {source_id}: checked {artifact}"
+        + (f" and {shared}" if shared is not None else "")
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--suite", choices=tuple(SUITES), default="final8")
@@ -52,9 +77,7 @@ def main() -> int:
 
     files = []
     for source_id in sorted(source_ids):
-        source = artifact_paths(source_id, "front").onnx
-        if not source.is_file():
-            raise FileNotFoundError(source)
+        source = resolve_onnx_source(source_id)
         target = (
             output
             / "artifacts"

@@ -51,3 +51,17 @@ models:
     description: Fine-tuned NVIDIA 2:4 ONNX shared by dense and sparse tactic builds.
     size_bytes: 130677785
     sha256: 19f70a9916fbdd16401046144e8ce38e61deb6b588a2114b959e849d1b4c00b0
+
+  - file: S01-front-structured-recovery.onnx
+    experiment_ids: [S01, C01, C02]
+    camera: front
+    description: Recovery-trained structured decoder ONNX used by the selected combined builds.
+    size_bytes: 124477506
+    sha256: 9b8b51969433816e886b29e72bcf1266fde40ac21ad2ae5297f722a4d4409b19
+
+  - file: R01-front-432.onnx
+    experiment_ids: [R01]
+    camera: front
+    description: Reduced-resolution 432x432 ONNX used by the R01 FP16 engine build.
+    size_bytes: 129955126
+    sha256: f506ab8fdffce3559a07bf2152f3ee48bdd4ae4cb353dd6b76947256af249b29
