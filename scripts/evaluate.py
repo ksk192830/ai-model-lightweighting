@@ -13,8 +13,10 @@ thresholds and split handling can be reused by benchmark.py.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import csv
 import importlib
+import io
 import json
 import math
 import os
@@ -938,6 +940,140 @@ def evaluate_predictions(
     samples: Sequence[DatasetSample],
     predictions: Sequence[Prediction],
     iou_thresholds: Sequence[float] = IOU_THRESHOLDS,
+    metric_backend: str = "coco",
+    operating_conf: float | None = None,
+) -> dict[str, float]:
+    if metric_backend == "coco":
+        return evaluate_predictions_coco(samples, predictions, operating_conf=operating_conf)
+    if metric_backend != "local":
+        raise EvaluationError(f"Unsupported metric backend: {metric_backend}")
+    return evaluate_predictions_local(samples, predictions, iou_thresholds)
+
+
+def evaluate_predictions_coco(
+    samples: Sequence[DatasetSample],
+    predictions: Sequence[Prediction],
+    operating_conf: float | None = None,
+) -> dict[str, float]:
+    """Evaluate AP with the official COCO API and operating-point P/R locally."""
+    ground_truths = [target for sample in samples for target in sample.targets]
+    empty_metrics = {
+        "precision": math.nan,
+        "recall": math.nan,
+        "map50": math.nan,
+        "map50_95": math.nan,
+        "num_images": float(len(samples)),
+        "num_labels": float(len(ground_truths)),
+        "num_predictions": float(len(predictions)),
+    }
+    if not ground_truths:
+        return empty_metrics
+
+    try:
+        from pycocotools.coco import COCO
+        from pycocotools.cocoeval import COCOeval
+    except ImportError as exc:
+        raise EvaluationError(
+            "pycocotools is required for standard COCO metrics. "
+            "Install it or run with --metric-backend local."
+        ) from exc
+
+    image_ids = {sample.image_id: index + 1 for index, sample in enumerate(samples)}
+    class_ids = sorted(
+        {target.class_id for target in ground_truths}
+        | {prediction.class_id for prediction in predictions}
+    )
+    category_ids = {class_id: index + 1 for index, class_id in enumerate(class_ids)}
+    coco_dataset = {
+        "info": {"description": "Generated evaluation dataset"},
+        "licenses": [],
+        "images": [
+            {
+                "id": image_ids[sample.image_id],
+                "file_name": str(sample.image_path),
+                "width": sample.width,
+                "height": sample.height,
+            }
+            for sample in samples
+        ],
+        "categories": [
+            {"id": category_id, "name": str(class_id)}
+            for class_id, category_id in category_ids.items()
+        ],
+        "annotations": [
+            {
+                "id": index + 1,
+                "image_id": image_ids[target.image_id],
+                "category_id": category_ids[target.class_id],
+                "bbox": xyxy_to_xywh(target.box),
+                "area": box_area(target.box),
+                "iscrowd": 0,
+            }
+            for index, target in enumerate(ground_truths)
+        ],
+    }
+    coco_results = [
+        {
+            "image_id": image_ids[prediction.image_id],
+            "category_id": category_ids[prediction.class_id],
+            "bbox": xyxy_to_xywh(prediction.box),
+            "score": prediction.confidence,
+        }
+        for prediction in predictions
+        if prediction.image_id in image_ids and prediction.class_id in category_ids
+    ]
+
+    coco_ground_truth = COCO()
+    coco_ground_truth.dataset = coco_dataset
+    with contextlib.redirect_stdout(io.StringIO()):
+        coco_ground_truth.createIndex()
+    if not coco_results:
+        return {**empty_metrics, "map50": 0.0, "map50_95": 0.0}
+
+    with contextlib.redirect_stdout(io.StringIO()):
+        coco_detections = coco_ground_truth.loadRes(coco_results)
+        evaluator = COCOeval(coco_ground_truth, coco_detections, iouType="bbox")
+        evaluator.params.imgIds = list(image_ids.values())
+        evaluator.params.catIds = list(category_ids.values())
+        evaluator.evaluate()
+        evaluator.accumulate()
+        evaluator.summarize()
+
+    operating_predictions = (
+        [prediction for prediction in predictions if prediction.confidence >= operating_conf]
+        if operating_conf is not None
+        else list(predictions)
+    )
+    _, precision_50, recall_50 = _compute_ap_at_iou(
+        ground_truths,
+        operating_predictions,
+        0.50,
+    )
+    return {
+        "precision": precision_50,
+        "recall": recall_50,
+        "map50": float(evaluator.stats[1]),
+        "map50_95": float(evaluator.stats[0]),
+        "num_images": float(len(samples)),
+        "num_labels": float(len(ground_truths)),
+        "num_predictions": float(len(predictions)),
+    }
+
+
+def xyxy_to_xywh(box: Sequence[float]) -> list[float]:
+    x1, y1, x2, y2 = box
+    return [float(x1), float(y1), max(0.0, float(x2 - x1)), max(0.0, float(y2 - y1))]
+
+
+def box_area(box: Sequence[float]) -> float:
+    _, _, width, height = xyxy_to_xywh(box)
+    return width * height
+
+
+def evaluate_predictions_local(
+    samples: Sequence[DatasetSample],
+    predictions: Sequence[Prediction],
+    iou_thresholds: Sequence[float] = IOU_THRESHOLDS,
 ) -> dict[str, float]:
     ground_truths = [target for sample in samples for target in sample.targets]
     if not ground_truths:
@@ -1083,11 +1219,17 @@ def evaluate_model(
     split: str = "val",
     backend: str = "auto",
     max_images: int | None = None,
+    metric_backend: str = "coco",
 ) -> dict[str, float]:
     samples = load_dataset_samples(data, split=split, max_images=max_images)
     predictor = create_predictor(model_path, backend, imgsz, conf, iou, device, batch_size)
     try:
-        return evaluate_with_predictor(predictor, samples, batch_size=batch_size)
+        return evaluate_with_predictor(
+            predictor,
+            samples,
+            batch_size=batch_size,
+            metric_backend=metric_backend,
+        )
     finally:
         predictor.close()
 
@@ -1096,6 +1238,7 @@ def evaluate_with_predictor(
     predictor: BasePredictor,
     samples: Sequence[DatasetSample],
     batch_size: int,
+    metric_backend: str = "coco",
 ) -> dict[str, float]:
     predictions: list[Prediction] = []
     for batch in batched(samples, batch_size):
@@ -1103,7 +1246,7 @@ def evaluate_with_predictor(
         for per_image in predictor.predict_batch(image_paths):
             predictions.extend(per_image)
         synchronize_if_cuda()
-    return evaluate_predictions(samples, predictions)
+    return evaluate_predictions(samples, predictions, metric_backend=metric_backend)
 
 
 def batched(items: Sequence[Any], batch_size: int) -> Iterable[Sequence[Any]]:
@@ -1146,6 +1289,12 @@ def parse_args() -> argparse.Namespace:
         help="Model backend.",
     )
     parser.add_argument("--max-images", type=int, default=0, help="Optional limit for quick checks. 0 means all images.")
+    parser.add_argument(
+        "--metric-backend",
+        choices=["coco", "local"],
+        default="coco",
+        help="AP implementation. 'coco' uses the official pycocotools evaluator.",
+    )
     parser.add_argument("--output", default="", help="Optional CSV path to append one evaluation row.")
     return parser.parse_args()
 
@@ -1163,6 +1312,7 @@ def main() -> None:
         split=args.split,
         backend=args.backend,
         max_images=args.max_images or None,
+        metric_backend=args.metric_backend,
     )
     row = {
         "Model": Path(args.model).stem,
@@ -1173,6 +1323,7 @@ def main() -> None:
         "Batch Size": args.batch_size,
         "Confidence": args.conf,
         "IoU": args.iou,
+        "Metric Backend": args.metric_backend,
         "Device": args.device,
         "Precision": metrics["precision"],
         "Recall": metrics["recall"],

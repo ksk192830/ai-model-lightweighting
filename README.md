@@ -220,6 +220,41 @@ For rear-camera engines, use `models/parking_rear.pth` as the baseline and
 must be built and benchmarked on a compatible NVIDIA GPU/CUDA/TensorRT
 environment.
 
+### Paper-grade metrics
+
+The benchmark uses the official `pycocotools` COCO evaluator by default.
+Accuracy inference keeps predictions down to `--eval-conf 0.001` so the full
+precision-recall curve is available, while the reported operating-point
+Precision and Recall still use `--conf`. Timing and accuracy thresholds are
+recorded separately in the CSV.
+
+For final measurements, use at least 10 warm-up runs, 100 timed runs, and 3
+repeated timing blocks:
+
+```bash
+python3 scripts/benchmark.py \
+  --model artifacts/experiments/B02/front/model.engine \
+  --baseline-model models/parking_front.pth \
+  --data data/labeled_test/front \
+  --imgsz 504 \
+  --batch-size 1 \
+  --conf 0.25 \
+  --eval-conf 0.001 \
+  --metric-backend coco \
+  --warmup-runs 10 \
+  --timed-runs 100 \
+  --repetitions 3 \
+  --device cuda:0 \
+  --backend rfdetr_engine \
+  --output results/paper_metrics.csv
+```
+
+The extended output includes FPS standard deviation, P50/P95/P99 latency,
+official COCO mAP, and NVIDIA-driver process memory. Run all candidates with
+the notebook connected to AC power, in the same performance mode, and compare
+models with the same input size. Resolution experiments should be reported
+separately.
+
 ## TensorRT FP16
 
 Install the ONNX export dependencies:
