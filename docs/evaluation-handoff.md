@@ -154,24 +154,3 @@ env PYTHONPATH=. .venv/bin/pytest -q
 결과: `9 passed`.
 
 실제 RTX 4050에서 TensorRT/COCO 통합 smoke test도 통과했다.
-
-## 9. 기존 docs 정리 제안
-
-### 유지 권고
-
-- `experiment-workflow.md`: 실험 전체 흐름
-- `final-engine-selection.md`: 최종 후보 선정 근거
-- `model-artifact-index.md`: 산출물 위치 인덱스
-- `fp16.md`, `int8.md`: 정밀도별 실험 근거
-- `2to4-eligibility.md`, `2to4-fine-tuning.md`: 희소화 실험 근거
-- `tensorrt-notebook-portability.md`: 엔진 재현과 노트북 이전
-- `training-portability.md`: 학습 재현
-- `evaluation-handoff.md`: 현재 인수인계 문서
-
-### 삭제 또는 보관 폴더 이동 검토
-
-- `high-performance-recovery-prompt.md`: 일회성 복구 프롬프트 성격이 강하고
-  현재 인수인계 문서와 내용이 중복될 가능성이 높다.
-
-삭제 전 다른 문서나 자동화 스크립트에서 참조하는지 확인해야 한다. 현재
-문서들은 실험 방법의 근거 자료이므로 이름만 보고 일괄 삭제하면 안 된다.
