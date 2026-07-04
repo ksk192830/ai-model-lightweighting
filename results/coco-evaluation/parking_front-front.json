@@ -1,0 +1,44 @@
+{
+  "created_at_utc": "2026-07-04T06:37:50.962438+00:00",
+  "model": "models/parking_front.pt",
+  "dataset": "data/labeled_test/front",
+  "image_count": 296,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "class_id_mapping": {
+    "0": 1,
+    "1": 2,
+    "2": 3
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "hardware": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "torch": "2.12.1+cu130",
+  "cuda": "13.0",
+  "prediction_count": 1870,
+  "metrics": {
+    "segm": {
+      "ap": 0.3064550369438373,
+      "ap50": 0.6133166453378034,
+      "ap75": 0.2848123850064806,
+      "ap_small": 0.0,
+      "ap_medium": 0.2796819794540171,
+      "ap_large": 0.3223585991258717,
+      "ar1": 0.3673139038170043,
+      "ar10": 0.3771937439713379,
+      "ar100": 0.3773563455973542,
+      "ar_small": 0.0,
+      "ar_medium": 0.32731481481481484,
+      "ar_large": 0.39369038701622966
+    },
+    "semantic_miou": 0.6045071394200002,
+    "semantic_iou_by_category": {
+      "1": 0.3491622335929004,
+      "2": 0.6692248061924989,
+      "3": 0.7951343784746013
+    }
+  }
+}

@@ -96,9 +96,16 @@ def annotation_mask(annotation: dict, height: int, width: int) -> np.ndarray:
     segmentation = annotation.get("segmentation")
     if not segmentation:
         return np.zeros((height, width), dtype=bool)
-    rle = mask_utils.frPyObjects(segmentation, height, width)
-    if isinstance(rle, list):
-        rle = mask_utils.merge(rle)
+    if isinstance(segmentation, dict):
+        rle = dict(segmentation)
+        if isinstance(rle.get("counts"), list):
+            rle = mask_utils.frPyObjects(rle, height, width)
+        elif isinstance(rle.get("counts"), str):
+            rle["counts"] = rle["counts"].encode("ascii")
+    else:
+        rle = mask_utils.frPyObjects(segmentation, height, width)
+        if isinstance(rle, list):
+            rle = mask_utils.merge(rle)
     return mask_utils.decode(rle).astype(bool)
 
 

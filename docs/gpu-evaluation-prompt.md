@@ -8,7 +8,7 @@
 1. RF-DETR TensorRT 후보 8개의 `Mask AP`, `Mask AP50`, `Mask AP75`,
    `Mask mIoU`를 측정해 기존 `results/paper_metrics.csv` 행에 추가합니다.
 2. `models/parking_front.pt`는 기존 속도 결과를 보존하고, class-ID 매핑을
-   수정한 정확도만 다시 측정해 동일 CSV 행을 갱신합니다.
+   수정한 bbox·segmentation 정확도를 다시 측정해 동일 CSV 행을 갱신합니다.
 3. 논문용 CSV와 그래프를 재생성하고 결과의 타당성을 점검합니다.
 
 ## 중요한 배경
@@ -63,7 +63,7 @@ done
 - 기존 FPS, latency, bbox mAP 열은 변경되지 않음
 - AP 값이 `-1`, NaN 또는 빈 값이 아님
 
-## 2. parking_front.pt 정확도만 재평가
+## 2. parking_front.pt bbox·segmentation 정확도 재평가
 
 ```bash
 python scripts/evaluate.py \
@@ -79,13 +79,23 @@ python scripts/evaluate.py \
   --metric-backend coco \
   --output results/paper_metrics.csv \
   --update-existing
+
+python scripts/evaluation/evaluate_coco_ultralytics.py \
+  --model models/parking_front.pt \
+  --dataset-dir data/labeled_test/front \
+  --imgsz 512 \
+  --threshold 0.001 \
+  --miou-threshold 0.25 \
+  --iou 0.7 \
+  --device cuda:0 \
+  --csv results/paper_metrics.csv
 ```
 
 다음을 확인하세요.
 
 - 적용 매핑이 `{0: 1, 1: 2, 2: 3}`임
 - `parking_front.pt` 행에서 Precision, Recall, mAP50, mAP50-95,
-  Predictions만 갱신됨
+  Predictions와 Mask AP, Mask AP50, Mask AP75, Mask mIoU가 갱신됨
 - 기존 FPS, latency, 메모리, 모델 크기는 그대로임
 - 기존 무효 수치인 mAP50 `0.0084`, mAP50-95 `0.0017`이 교체됨
 

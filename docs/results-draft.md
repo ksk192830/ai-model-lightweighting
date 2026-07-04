@@ -48,6 +48,8 @@
 | `figures/latency_comparison.png` | 모델별 평균 지연시간 |
 | `figures/size_comparison.png` | 모델별 아티팩트 크기 |
 | `figures/map_comparison.png` | 모델별 mAP50 / mAP50-95 |
+| `figures/mask_comparison.png` | 모델별 Mask AP / AP50 / AP75 |
+| `figures/mask_miou_comparison.png` | 모델별 Mask mIoU |
 | `figures/pareto_map_fps.png` | mAP50-95 vs FPS Pareto (front: S01, C01, B02, R01) |
 | `figures/pareto_map_size.png` | mAP50-95 vs Size Pareto (front: M02, C01, S01) |
 | `figures/pareto_map_latency.png` | mAP50-95 vs Latency Pareto (front: R01, B02, C01, S01) |

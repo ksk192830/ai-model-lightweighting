@@ -5,6 +5,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+import numpy as np
+from pycocotools import mask as mask_utils
+
 
 sys.path.insert(
     0,
@@ -15,6 +18,21 @@ import evaluate_coco_tensorrt as evaluation  # noqa: E402
 
 
 class SegmentationMetricTests(unittest.TestCase):
+    def test_annotation_mask_decodes_compressed_rle_string(self) -> None:
+        expected = np.zeros((4, 5), dtype=np.uint8)
+        expected[1:3, 2:5] = 1
+        encoded = mask_utils.encode(np.asfortranarray(expected))
+        annotation = {
+            "segmentation": {
+                "size": encoded["size"],
+                "counts": encoded["counts"].decode("ascii"),
+            }
+        }
+
+        actual = evaluation.annotation_mask(annotation, 4, 5)
+
+        np.testing.assert_array_equal(actual, expected.astype(bool))
+
     def test_semantic_iou_is_category_mean(self) -> None:
         miou, category_ious = evaluation.semantic_iou(
             {1: 6, 2: 1},

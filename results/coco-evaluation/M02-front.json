@@ -1,0 +1,44 @@
+{
+  "created_at_utc": "2026-07-04T06:30:14.576754+00:00",
+  "experiment_id": "M02",
+  "camera": "front",
+  "engine": "artifacts/experiments/M02/front/model.engine",
+  "engine_size_bytes": 65435108,
+  "dataset": "data/labeled_test/front",
+  "image_count": 296,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "warmup": 0,
+  "hardware": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "torch": "2.12.1+cu130",
+  "cuda": "13.0",
+  "tensorrt": "10.16.1.11",
+  "prediction_count": 88604,
+  "metrics": {
+    "segm": {
+      "ap": 0.617074445058299,
+      "ap50": 0.8122324793958083,
+      "ap75": 0.6606235844179278,
+      "ap_small": 0.18405164162373652,
+      "ap_medium": 0.5441398840669648,
+      "ap_large": 0.6791630105417042,
+      "ar1": 0.6650237012539618,
+      "ar10": 0.6949301364200082,
+      "ar100": 0.7226435166046575,
+      "ar_small": 0.3571428571428571,
+      "ar_medium": 0.6377314814814814,
+      "ar_large": 0.7483379749671886
+    },
+    "semantic_miou": 0.7961828589263833,
+    "semantic_iou_by_category": {
+      "1": 0.595978191318115,
+      "2": 0.9205184820889312,
+      "3": 0.8720519033721035
+    }
+  }
+}
