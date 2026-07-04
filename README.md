@@ -5,14 +5,9 @@ Code and experiments for the KIPS paper project on AI model lightweighting.
 ## Project Links
 
 - Notion project: https://app.notion.com/p/389d4a78ceed80d28d95c37d83422a60
-- [FP16 lightweighting notes](docs/fp16.md)
-- [INT8 quantization notes](docs/int8.md)
-- [Model artifact index](docs/model-artifact-index.md)
-- [Lightweighting experiment workflow](docs/experiment-workflow.md)
-- [NVIDIA 2:4 eligibility](docs/2to4-eligibility.md)
-- [NVIDIA 2:4 recovery fine-tuning](docs/2to4-fine-tuning.md)
-- [Portable recovery training](docs/training-portability.md)
-- [NVIDIA notebook TensorRT build and test](docs/tensorrt-notebook-portability.md)
+- [Documentation index and classification](docs/README.md)
+- [Model artifact index](docs/handoffs/model-artifact-index.md)
+- [Lightweighting experiment workflow](docs/guides/experiment-workflow.md)
 - [Shared ONNX models](shared-models/README.md)
 
 ## Setup
@@ -196,14 +191,14 @@ TensorRT precision.
 
 ## RF-DETR Engine Raw Benchmark
 
-Use `scripts/benchmark.py` to evaluate an RF-DETR TensorRT `.engine` file with
+Use `scripts/evaluation/benchmark.py` to evaluate an RF-DETR TensorRT `.engine` file with
 the same FPS, latency, accuracy, size, and memory columns used in
 `results/results_raw.csv`.
 
 Front-camera engine example:
 
 ```bash
-python3 scripts/benchmark.py \
+python3 scripts/evaluation/benchmark.py \
   --model models/parking_front_fp16.engine \
   --baseline-model models/parking_front.pth \
   --data data/Kips_Dataset/labeled_test/front \
@@ -232,7 +227,7 @@ For final measurements, use at least 10 warm-up runs, 100 timed runs, and 3
 repeated timing blocks:
 
 ```bash
-python3 scripts/benchmark.py \
+python3 scripts/evaluation/benchmark.py \
   --model artifacts/experiments/B02/front/model.engine \
   --baseline-model models/parking_front.pth \
   --data data/labeled_test/front \
@@ -281,23 +276,42 @@ TensorRT engines are hardware and TensorRT-version dependent. Build and
 benchmark them on the deployment GPU. Every output is grouped under
 `artifacts/experiments/<experiment-id>/<camera>/`. The complete staged process
 is documented in
-[`docs/experiment-workflow.md`](docs/experiment-workflow.md).
+[`docs/guides/experiment-workflow.md`](docs/guides/experiment-workflow.md).
 
 ## Repository Layout
 
 ```text
 .
 ├── artifacts/      # Generated lightweight models (not committed)
-├── configs/        # Dataset and baseline model configuration
-├── data/           # Downloaded datasets (not committed)
+├── configs/        # Dataset, baseline, and experiment registry configuration
+├── data/           # Downloaded/materialized datasets (not committed)
 │   ├── calibration/
 │   └── labeled_test/
-├── docs/           # Experiment plans and method notes
-├── models/         # Baseline model checkpoints
-├── scripts/        # Reproducible experiment scripts
-├── src/            # Shared registry and artifact-management modules
-└── results/        # Metrics, tables, and figures
+├── docs/           # Concepts, guides, handoffs, and reports
+├── models/         # Source/baseline checkpoints
+├── artifacts/      # Generated per-experiment models and metadata
+├── shared-models/  # Versioned portable model delivery bundle
+├── splits/         # Versioned dataset split manifests
+├── scripts/
+│   ├── data_preparation/ # Dataset download and materialization
+│   ├── evaluation/       # Inference, benchmark, and metrics
+│   ├── experiments/      # Registry-driven experiment orchestration
+│   ├── lightweighting/   # Low-level ONNX/TensorRT conversion
+│   └── reporting/        # Paper CSV and figure generation
+├── src/            # Reusable Python library code
+├── tests/          # Automated regression tests
+├── results/        # Generated metrics and evaluation JSON
+└── figures/        # Generated paper-ready figures
 ```
+
+Directory policy:
+
+- reusable implementation belongs in `src/`
+- command-line workflow entry points belong in the matching `scripts/<group>/`
+- user-authored configuration and split manifests are versioned
+- downloaded data, experiment artifacts, and general results are generated outputs
+- selected small CSV/JSON results and paper figures may be explicitly versioned
+- documentation classification is defined in [`docs/README.md`](docs/README.md)
 
 ## Notes
 

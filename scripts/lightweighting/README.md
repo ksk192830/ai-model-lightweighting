@@ -34,7 +34,7 @@ Export and build it:
 
 The experiment workflow keeps 10/30/50% front checkpoints for static analysis
 and builds only the selected representative as TensorRT. See
-[`docs/experiment-workflow.md`](../../docs/experiment-workflow.md).
+[`docs/guides/experiment-workflow.md`](../../docs/guides/experiment-workflow.md).
 
 Artifacts follow the experiment-centric layout:
 

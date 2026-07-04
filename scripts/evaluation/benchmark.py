@@ -2,7 +2,8 @@
 """Benchmark model speed, latency, size, memory, and validation accuracy.
 
 Example:
-    python3 benchmark.py --model models/fp16.pt --data data.yaml --imgsz 640
+    python3 scripts/evaluation/benchmark.py \
+      --model models/fp16.pt --data data.yaml --imgsz 640
 
 Results are appended to results/results_raw.csv by default.
 """

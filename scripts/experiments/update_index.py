@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -18,12 +19,12 @@ from kips_lightweighting.registry import ExperimentRegistry  # noqa: E402
 
 
 def relative_link(path: Path, document: Path) -> str:
-    return str(path.relative_to(REPOSITORY_ROOT)).replace(" ", "%20")
+    return os.path.relpath(path, start=document.parent).replace(" ", "%20")
 
 
 def main() -> int:
     registry = ExperimentRegistry.load()
-    document = REPOSITORY_ROOT / "docs" / "model-artifact-index.md"
+    document = REPOSITORY_ROOT / "docs" / "handoffs" / "model-artifact-index.md"
     lines = [
         "# 모델 Artifact 인덱스",
         "",
@@ -46,31 +47,31 @@ def main() -> int:
             ):
                 if path.is_file():
                     links.append(
-                        f"[{label}](../{relative_link(path, document)})"
+                        f"[{label}]({relative_link(path, document)})"
                     )
             for path in sorted(paths.directory.glob("comparison-*.json")):
                 links.append(
-                    f"[comparison](../{relative_link(path, document)})"
+                    f"[comparison]({relative_link(path, document)})"
                 )
             sparsity = paths.directory / "sparsity.json"
             if sparsity.is_file():
                 links.append(
-                    f"[sparsity](../{relative_link(sparsity, document)})"
+                    f"[sparsity]({relative_link(sparsity, document)})"
                 )
             eligibility = paths.directory / "2to4-eligibility.json"
             if eligibility.is_file():
                 links.append(
-                    f"[2:4 survey](../{relative_link(eligibility, document)})"
+                    f"[2:4 survey]({relative_link(eligibility, document)})"
                 )
             onnx_2to4 = paths.directory / "onnx-2to4.json"
             if onnx_2to4.is_file():
                 links.append(
-                    f"[ONNX 2:4](../{relative_link(onnx_2to4, document)})"
+                    f"[ONNX 2:4]({relative_link(onnx_2to4, document)})"
                 )
             sparse_tactics = paths.directory / "sparse-tactics.json"
             if sparse_tactics.is_file():
                 links.append(
-                    f"[sparse tactics](../{relative_link(sparse_tactics, document)})"
+                    f"[sparse tactics]({relative_link(sparse_tactics, document)})"
                 )
             fine_tuning_preflight = (
                 paths.directory / "fine-tuning-preflight.json"
@@ -78,7 +79,7 @@ def main() -> int:
             if fine_tuning_preflight.is_file():
                 links.append(
                     "[fine-tuning preflight]"
-                    f"(../{relative_link(fine_tuning_preflight, document)})"
+                    f"({relative_link(fine_tuning_preflight, document)})"
                 )
             structured_pruning = (
                 paths.directory / "structured-pruning.json"
@@ -86,7 +87,7 @@ def main() -> int:
             if structured_pruning.is_file():
                 links.append(
                     "[structured pruning]"
-                    f"(../{relative_link(structured_pruning, document)})"
+                    f"({relative_link(structured_pruning, document)})"
                 )
             prototype_validation = (
                 paths.directory / "prototype-validation.json"
@@ -94,7 +95,7 @@ def main() -> int:
             if prototype_validation.is_file():
                 links.append(
                     "[prototype validation]"
-                    f"(../{relative_link(prototype_validation, document)})"
+                    f"({relative_link(prototype_validation, document)})"
                 )
             source_experiment_id = experiment.get(
                 "artifact_source", experiment_id
@@ -106,7 +107,7 @@ def main() -> int:
             if recovery_training.is_file():
                 links.append(
                     "[recovery training]"
-                    f"(../{relative_link(recovery_training, document)})"
+                    f"({relative_link(recovery_training, document)})"
                 )
             prototype_snapshot = (
                 paths.directory / "prototype-before-recovery"
@@ -114,7 +115,7 @@ def main() -> int:
             if prototype_snapshot.is_dir():
                 links.append(
                     "[prototype snapshot]"
-                    f"(../{relative_link(prototype_snapshot, document)})"
+                    f"({relative_link(prototype_snapshot, document)})"
                 )
             lines.append(
                 "| "
@@ -141,7 +142,8 @@ def main() -> int:
             "```",
             "",
             "평가 대상과 진행 순서는 "
-            "[경량화 모델 실험 진행 계획](experiment-workflow.md)을 따른다.",
+            "[경량화 모델 실험 진행 계획]"
+            "(../guides/experiment-workflow.md)을 따른다.",
         ]
     )
     document.write_text("\n".join(lines) + "\n", encoding="utf-8")

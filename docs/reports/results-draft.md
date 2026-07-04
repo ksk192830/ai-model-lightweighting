@@ -1,7 +1,7 @@
 # 4. Experimental Results (초안)
 
 > 원본 데이터: `results/paper_metrics.csv` → 정리본: `results/results_final.csv`
-> 재현: `.venv/bin/python scripts/paper_results.py` (표의 수치와 `figures/` 그래프를 재생성)
+> 재현: `.venv/bin/python scripts/reporting/paper_results.py` (표의 수치와 `figures/` 그래프를 재생성)
 >
 > 평가 조건: RTX 4050 Laptop GPU(6 GB), batch 1, 순차 실행, warm-up 10회 /
 > timed 100회 × 3 blocks, 운영 confidence 0.25, AP 평가 confidence 0.001,
@@ -148,7 +148,7 @@ mAP50-95 0.0017은 모델 성능이 아니라 평가 class-ID 불일치로 발�
 정확도 열만 갱신한다.
 
 ```bash
-python scripts/evaluate.py \
+python scripts/evaluation/evaluate.py \
   --model models/parking_front.pt \
   --backend ultralytics \
   --data data/labeled_test/front \

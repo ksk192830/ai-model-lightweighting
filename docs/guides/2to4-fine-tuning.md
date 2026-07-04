@@ -7,7 +7,7 @@ prototype은 각 실험의 `prototype-before-recovery/`에 보존했다.
 
 사전검증 원본:
 
-- [M01 fine-tuning preflight](../artifacts/experiments/M01/front/fine-tuning-preflight.json)
+- `artifacts/experiments/M01/front/fine-tuning-preflight.json`
 
 | 검사 항목 | 결과 |
 |---|---|
@@ -73,7 +73,7 @@ site-packages를 직접 수정하거나 monkey patch하지 않는다.
 - `src/kips_lightweighting/pruning/sparse_2to4.py`
 - `TwoOfFourMaskController`
 - `make_lightning_mask_callback`
-- 다른 GPU 실행 절차: [training-portability.md](training-portability.md)
+- 다른 GPU 실행 절차: [학습 장비 이식](training-portability.md)
 
 두 단계로 zero regrowth를 차단한다.
 

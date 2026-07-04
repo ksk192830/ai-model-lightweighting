@@ -14,7 +14,7 @@ MultiheadAttention projection weight를 조사했다.
 | shape 기준 적용 가능 parameter | 33,906,176 |
 
 전체 layer 목록과 shape, parameter 수, pruning 전 pattern 준수율은
-[`M01 2:4 조사 JSON`](../artifacts/experiments/M01/front/2to4-eligibility.json)에
+`artifacts/experiments/M01/front/2to4-eligibility.json`에
 기록했다.
 
 이 결과는 weight shape가 2:4 pattern을 표현할 수 있다는 뜻이며, 실제
@@ -133,7 +133,7 @@ M02 engine은 M01보다 459,568 bytes, 약 0.65% 작다. 이는 latency 결과�
 
 Transformer MatMul에서도 sparse kernel 후보가 탐색됐지만 최종 선택은
 0개였다. 전체 이벤트와 layer 이름은
-[`M02 sparse tactic 요약`](../artifacts/experiments/M02/front/sparse-tactics.json)에
+[`M02 sparse tactic 요약`](../../artifacts/experiments/M02/front/sparse-tactics.json)에
 기록했다.
 
 학습 전 결과는 `prototype-before-recovery/`에 보존했다.

@@ -3,7 +3,7 @@
 All commands use `configs/experiments/registry.yaml` as the source of truth.
 Successful candidate creation, analysis, build, and training commands
 automatically synchronize metadata and regenerate
-`docs/model-artifact-index.md`. The explicit synchronization commands below
+`docs/handoffs/model-artifact-index.md`. The explicit synchronization commands below
 are repair and verification commands, not steps that must be remembered after
 every model.
 

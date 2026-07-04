@@ -66,7 +66,7 @@ done
 ## 2. parking_front.pt bbox·segmentation 정확도 재평가
 
 ```bash
-python scripts/evaluate.py \
+python scripts/evaluation/evaluate.py \
   --model models/parking_front.pt \
   --backend ultralytics \
   --data data/labeled_test/front \
@@ -102,7 +102,7 @@ python scripts/evaluation/evaluate_coco_ultralytics.py \
 ## 3. 논문 산출물 재생성 및 검증
 
 ```bash
-python scripts/paper_results.py
+python scripts/reporting/paper_results.py
 python -m unittest tests/test_segmentation_metrics.py
 python -m pytest -q tests/test_evaluate_metrics.py
 ```
@@ -110,7 +110,7 @@ python -m pytest -q tests/test_evaluate_metrics.py
 검증 항목:
 
 - `results/results_final.csv`에는 RF-DETR TensorRT 후보 8개만 존재
-- `parking_front`는 메인 CSV, 정확도 그래프, Pareto 그래프에 없음
+- `parking_front`는 메인 CSV에는 없고, 그래프에는 주황색 참고 모델로 표시됨
 - `results/paper_metrics.csv`에는 참고용 원본 행이 유지됨
 - 표와 그래프에 사용된 bbox 수치는 기존 값과 동일함
 - segmentation JSON 8개의 이미지 수가 각각 296장임

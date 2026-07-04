@@ -1,7 +1,7 @@
 # 다른 학습 장비에서 실행하기
 
 AI에게 전체 작업을 위임할 때는
-[고성능 데스크탑 Recovery 학습용 AI 프롬프트](high-performance-recovery-prompt.md)를
+[고성능 데스크탑 Recovery 학습용 AI 프롬프트](../handoffs/high-performance-recovery-prompt.md)를
 그대로 전달한다.
 
 학습 데이터는 Google Drive의

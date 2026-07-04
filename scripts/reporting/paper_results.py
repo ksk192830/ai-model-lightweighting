@@ -6,7 +6,7 @@ Outputs:
                              Pareto scatter plots (mAP vs FPS/size/latency)
 
 Usage:
-  .venv/bin/python scripts/paper_results.py
+  .venv/bin/python scripts/reporting/paper_results.py
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Patch
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "results" / "paper_metrics.csv"
 FINAL = ROOT / "results" / "results_final.csv"
 FIGDIR = ROOT / "figures"

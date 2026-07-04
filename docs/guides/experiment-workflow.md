@@ -3,7 +3,7 @@
 이 문서는 모델을 무작정 많이 만들지 않고, 비교 목적이 분명한 front 후보를
 먼저 생성한 뒤 유망한 모델만 rear로 확장하기 위한 작업 순서다.
 
-파일 위치는 [모델 Artifact 인덱스](model-artifact-index.md)에서 관리한다.
+파일 위치는 [모델 Artifact 인덱스](../handoffs/model-artifact-index.md)에서 관리한다.
 
 ## 1. 기본 원칙
 
@@ -59,7 +59,7 @@ configs/experiments/schema.yaml
 `scripts/lightweighting/`은 내부 변환 구현으로만 사용한다.
 
 Candidate 생성·분석·빌드·학습 명령은 성공 시 `metadata.json`과
-`docs/model-artifact-index.md`를 자동으로 갱신한다. 모델 생성 후 인덱스
+`docs/handoffs/model-artifact-index.md`를 자동으로 갱신한다. 모델 생성 후 인덱스
 명령을 별도로 기억할 필요가 없다. 이 문서의 연구 판단과 체크리스트는
 검토를 거쳐 수정하고, 모델 경로와 artifact 상태는 자동 생성 인덱스를
 기준으로 한다.
@@ -101,7 +101,7 @@ dense TensorRT에서 구조·FLOPs 감소로 이어지지 않는다는 점을 �
 동일 ONNX를 사용해 다시 생성했다.
 
 조사 결과와 M01/M02 조건은
-[RF-DETR NVIDIA 2:4 적용 가능성 조사](2to4-eligibility.md)에 기록한다.
+[RF-DETR NVIDIA 2:4 적용 가능성 조사](../concepts/2to4-eligibility.md)에 기록한다.
 학습 API, mask 구현 및 현재 blocker는
 [M01/M02 2:4 Recovery Fine-tuning 계획](2to4-fine-tuning.md)에 기록한다.
 

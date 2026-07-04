@@ -23,9 +23,9 @@ recovery fine-tuning을 수행하라.
 
 먼저 다음 문서를 읽어라.
 
-1. docs/experiment-workflow.md
-2. docs/training-portability.md
-3. docs/model-artifact-index.md
+1. docs/guides/experiment-workflow.md
+2. docs/guides/training-portability.md
+3. docs/handoffs/model-artifact-index.md
 4. configs/experiments/registry.yaml
 5. configs/experiments/defaults.yaml
 6. configs/experiments/schema.yaml

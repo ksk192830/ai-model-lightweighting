@@ -4,9 +4,12 @@ This directory contains tools for inspecting and timing original and
 lightweighted models.
 
 - `infer_baseline.py`: compare annotated TensorRT FP32, FP16, and INT8 predictions
+- `benchmark.py`: measure speed, latency, memory, and bbox accuracy
+- `evaluate.py`: evaluate bbox accuracy with class-name alignment
 - `benchmark_baseline.py`: benchmark PyTorch checkpoints or TensorRT engines
 - `visualize_inference_stream.py`: compare sequential predictions live or as MP4
 - `evaluate_coco_tensorrt.py`: add COCO mask AP and mask mIoU to an existing CSV
+- `evaluate_coco_ultralytics.py`: evaluate Ultralytics segmentation masks
 
 Example:
 
