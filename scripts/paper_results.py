@@ -41,9 +41,9 @@ MODELS = {
     "parking_front": ("Ultralytics PT", "Legacy Ultralytics PyTorch model"),
 }
 
-# Accuracy figures exclude this model: its mAP is anomalously low on the
-# current test set and is under separate investigation (speed reference only).
-ACCURACY_OUTLIERS = {"parking_front"}
+# The paper's main comparison is restricted to RF-DETR TensorRT candidates.
+# The legacy Ultralytics checkpoint remains in the raw CSV as a reference.
+REFERENCE_MODELS = {"parking_front"}
 
 # Validated light-mode palette (dataviz reference instance).
 SURFACE = "#fcfcfb"
@@ -130,9 +130,7 @@ def write_final_csv(rows: list[dict]) -> None:
         writer.writerow(header)
         for r in rows:
             note = ""
-            if r["id"] in ACCURACY_OUTLIERS:
-                note = "accuracy anomaly under investigation; speed reference only"
-            elif r["imgsz"] != 504:
+            if r["imgsz"] != 504:
                 note = f"input size {r['imgsz']} (not directly comparable to 504)"
             writer.writerow(
                 [
@@ -288,7 +286,7 @@ def pareto_front(points, maximize_x):
 
 
 def pareto_chart(rows, xkey, xlabel, maximize_x, title, filename, offsets=None):
-    data = [r for r in rows if r["id"] not in ACCURACY_OUTLIERS]
+    data = rows
     points = [(r[xkey], r["map5095"], r) for r in data]
     front = pareto_front(points, maximize_x)
     front_ids = {r["id"] for _, _, r in front}
@@ -338,8 +336,7 @@ def pareto_chart(rows, xkey, xlabel, maximize_x, title, filename, offsets=None):
     fig.text(
         0.01,
         0.01,
-        "Blue = Pareto-optimal. Ultralytics PT (512) omitted: "
-        "anomalous accuracy under investigation. * baseline (B01)",
+        "Blue = Pareto-optimal. * baseline (B01)",
         fontsize=7.5,
         color=MUTED,
     )
@@ -351,7 +348,8 @@ def pareto_chart(rows, xkey, xlabel, maximize_x, title, filename, offsets=None):
 
 def main() -> None:
     FIGDIR.mkdir(exist_ok=True)
-    rows = load_rows()
+    all_rows = load_rows()
+    rows = [row for row in all_rows if row["id"] not in REFERENCE_MODELS]
     add_deltas(rows)
     write_final_csv(rows)
     print(f"wrote {FINAL.relative_to(ROOT)} ({len(rows)} models)")

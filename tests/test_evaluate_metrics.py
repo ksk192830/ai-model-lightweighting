@@ -5,7 +5,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-from evaluate import DatasetSample, GroundTruth, Prediction, evaluate_predictions  # noqa: E402
+from evaluate import (  # noqa: E402
+    DatasetSample,
+    GroundTruth,
+    Prediction,
+    UltralyticsPredictor,
+    evaluate_predictions,
+)
 
 
 def make_sample() -> DatasetSample:
@@ -73,3 +79,43 @@ def test_operating_conf_does_not_truncate_coco_ap_curve() -> None:
     assert metrics["precision"] == pytest.approx(1.0)
     assert metrics["recall"] == pytest.approx(1.0)
     assert metrics["num_predictions"] == 2.0
+
+
+def test_ultralytics_classes_align_to_coco_names_with_background_category() -> None:
+    predictor = UltralyticsPredictor.__new__(UltralyticsPredictor)
+    predictor.class_names = {
+        0: "out_line",
+        1: "parking_lot",
+        2: "parking_space",
+    }
+    predictor.class_id_map = {}
+    sample = DatasetSample(
+        image_id="/tmp/image.png",
+        image_path=Path("/tmp/image.png"),
+        width=100,
+        height=100,
+        targets=(
+            GroundTruth(
+                image_id="/tmp/image.png",
+                class_id=1,
+                box=(0, 0, 10, 10),
+                class_name="out_line",
+            ),
+            GroundTruth(
+                image_id="/tmp/image.png",
+                class_id=2,
+                box=(20, 20, 30, 30),
+                class_name="parking_lot",
+            ),
+            GroundTruth(
+                image_id="/tmp/image.png",
+                class_id=3,
+                box=(40, 40, 50, 50),
+                class_name="parking_space",
+            ),
+        ),
+    )
+
+    mapping = predictor.align_classes([sample])
+
+    assert mapping == {0: 1, 1: 2, 2: 3}

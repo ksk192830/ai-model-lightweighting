@@ -6,7 +6,7 @@ lightweighted models.
 - `infer_baseline.py`: compare annotated TensorRT FP32, FP16, and INT8 predictions
 - `benchmark_baseline.py`: benchmark PyTorch checkpoints or TensorRT engines
 - `visualize_inference_stream.py`: compare sequential predictions live or as MP4
-- `evaluate_coco_tensorrt.py`: measure COCO bbox/segmentation AP and latency
+- `evaluate_coco_tensorrt.py`: add COCO mask AP and mask mIoU to an existing CSV
 
 Example:
 
@@ -29,12 +29,33 @@ Benchmark an unstructured-pruned PyTorch checkpoint:
   --device cuda
 ```
 
-Evaluate a registered TensorRT engine on the complete labeled split:
+Add only the missing segmentation metrics to the matching row in
+`results/paper_metrics.csv`. This runs mask inference and official COCO `segm`
+evaluation, but does not repeat bbox evaluation or the latency benchmark:
 
 ```bash
 .venv/bin/python scripts/evaluation/evaluate_coco_tensorrt.py \
-  --experiment S02 --camera front
+  --experiment S01 --camera front
 ```
+
+The script adds these columns when needed: `Mask AP`, `Mask AP50`, `Mask AP75`,
+and `Mask mIoU`. Mask AP uses the low `--threshold 0.001` predictions required
+for the complete COCO precision-recall curve. Mask mIoU uses predictions at
+`--miou-threshold 0.25`, merges instance masks by category, and averages the
+dataset-wide pixel IoU of the evaluated categories. A detailed audit JSON is
+also written to `results/coco-evaluation/<experiment>-<camera>.json`.
+
+To fill all existing front-model rows:
+
+```bash
+for experiment in B01 B02 B03 C01 M01 M02 S01 R01; do
+  .venv/bin/python scripts/evaluation/evaluate_coco_tensorrt.py \
+    --experiment "$experiment" --camera front
+done
+```
+
+Use `--no-update-csv` for a dry run that leaves the CSV unchanged, or `--csv`
+to select a different existing results file.
 
 Show the selected eight front engines in a live 2×4 comparison:
 

@@ -22,6 +22,7 @@ import math
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any, Iterable, Sequence
 
 import numpy as np
@@ -39,6 +40,7 @@ class GroundTruth:
     image_id: str
     class_id: int
     box: tuple[float, float, float, float]
+    class_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -65,6 +67,10 @@ class EvaluationError(RuntimeError):
 class BasePredictor:
     backend_name = "base"
 
+    def align_classes(self, samples: Sequence[DatasetSample]) -> dict[int, int]:
+        """Align backend class IDs to dataset IDs; return the applied mapping."""
+        return {}
+
     def predict_batch(self, image_paths: Sequence[Path]) -> list[list[Prediction]]:
         raise NotImplementedError
 
@@ -90,6 +96,13 @@ class UltralyticsPredictor(BasePredictor):
             raise EvaluationError("ultralytics is not installed. Install it or choose another backend.") from exc
 
         self.model = YOLO(str(model_path))
+        raw_names = getattr(self.model, "names", {})
+        self.class_names = (
+            {int(key): str(value) for key, value in raw_names.items()}
+            if isinstance(raw_names, dict)
+            else {index: str(value) for index, value in enumerate(raw_names)}
+        )
+        self.class_id_map: dict[int, int] = {}
         self.imgsz = imgsz
         self.conf = conf
         self.iou = iou
@@ -119,13 +132,38 @@ class UltralyticsPredictor(BasePredictor):
                     per_image.append(
                         Prediction(
                             image_id=image_id_for_path(image_path),
-                            class_id=int(class_id),
+                            class_id=self.class_id_map.get(
+                                int(class_id), int(class_id)
+                            ),
                             confidence=float(score),
                             box=tuple(float(v) for v in box),
                         )
                     )
             predictions.append(per_image)
         return predictions
+
+    def align_classes(self, samples: Sequence[DatasetSample]) -> dict[int, int]:
+        dataset_names = {
+            target.class_name: target.class_id
+            for sample in samples
+            for target in sample.targets
+            if target.class_name is not None
+        }
+        mapping = {
+            model_id: dataset_names[name]
+            for model_id, name in self.class_names.items()
+            if name in dataset_names
+        }
+        missing = sorted(set(self.class_names.values()) - set(dataset_names))
+        if missing:
+            raise EvaluationError(
+                "Model classes are absent from the evaluation dataset: "
+                + ", ".join(missing)
+            )
+        if len(set(mapping.values())) != len(mapping):
+            raise EvaluationError("Class-name mapping is not one-to-one.")
+        self.class_id_map = mapping
+        return mapping
 
 
 class RFDETRPredictor(BasePredictor):
@@ -830,6 +868,10 @@ def _load_coco_targets(annotation_path: Path, image_paths: Sequence[Path]) -> di
 
     categories = sorted(payload.get("categories", []), key=lambda item: int(item["id"]))
     category_to_contiguous = {int(category["id"]): index for index, category in enumerate(categories)}
+    category_names = {
+        int(category["id"]): str(category["name"])
+        for category in categories
+    }
 
     targets: dict[str, list[GroundTruth]] = {}
     for annotation in payload.get("annotations", []):
@@ -845,7 +887,14 @@ def _load_coco_targets(annotation_path: Path, image_paths: Sequence[Path]) -> di
         box = (x, y, x + width, y + height)
         class_id = category_to_contiguous.get(int(annotation["category_id"]), int(annotation["category_id"]))
         image_id = image_id_for_path(path)
-        targets.setdefault(image_id, []).append(GroundTruth(image_id=image_id, class_id=class_id, box=box))
+        targets.setdefault(image_id, []).append(
+            GroundTruth(
+                image_id=image_id,
+                class_id=class_id,
+                box=box,
+                class_name=category_names.get(int(annotation["category_id"])),
+            )
+        )
     return targets
 
 
@@ -1220,15 +1269,21 @@ def evaluate_model(
     backend: str = "auto",
     max_images: int | None = None,
     metric_backend: str = "coco",
+    eval_conf: float | None = None,
+    operating_conf: float | None = None,
 ) -> dict[str, float]:
     samples = load_dataset_samples(data, split=split, max_images=max_images)
     predictor = create_predictor(model_path, backend, imgsz, conf, iou, device, batch_size)
+    predictor.align_classes(samples)
+    if eval_conf is not None and hasattr(predictor, "conf"):
+        predictor.conf = eval_conf
     try:
         return evaluate_with_predictor(
             predictor,
             samples,
             batch_size=batch_size,
             metric_backend=metric_backend,
+            operating_conf=operating_conf,
         )
     finally:
         predictor.close()
@@ -1239,6 +1294,7 @@ def evaluate_with_predictor(
     samples: Sequence[DatasetSample],
     batch_size: int,
     metric_backend: str = "coco",
+    operating_conf: float | None = None,
 ) -> dict[str, float]:
     predictions: list[Prediction] = []
     for batch in batched(samples, batch_size):
@@ -1246,7 +1302,12 @@ def evaluate_with_predictor(
         for per_image in predictor.predict_batch(image_paths):
             predictions.extend(per_image)
         synchronize_if_cuda()
-    return evaluate_predictions(samples, predictions, metric_backend=metric_backend)
+    return evaluate_predictions(
+        samples,
+        predictions,
+        metric_backend=metric_backend,
+        operating_conf=operating_conf,
+    )
 
 
 def batched(items: Sequence[Any], batch_size: int) -> Iterable[Sequence[Any]]:
@@ -1272,6 +1333,42 @@ def write_evaluation_csv(path: Path, row: dict[str, Any]) -> None:
         writer.writerow(row)
 
 
+def update_existing_benchmark_csv(path: Path, row: dict[str, Any]) -> None:
+    """Replace only accuracy fields in one existing benchmark row."""
+    with path.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        rows = list(reader)
+    matches = [item for item in rows if item.get("Model Path") == row["Model Path"]]
+    if len(matches) != 1:
+        raise EvaluationError(
+            f"Expected one row for {row['Model Path']} in {path}, found {len(matches)}."
+        )
+    matches[0].update(
+        {
+            "Precision": f"{row['Precision']:.6f}",
+            "Recall": f"{row['Recall']:.6f}",
+            "mAP50": f"{row['mAP50']:.6f}",
+            "mAP50-95": f"{row['mAP50-95']:.6f}",
+            "Metric Backend": row["Metric Backend"],
+            "Evaluation Confidence Threshold": (
+                f"{row['Evaluation Confidence Threshold']:.6f}"
+            ),
+            "Images": str(row["Images"]),
+            "Labels": str(row["Labels"]),
+            "Predictions": str(row["Predictions"]),
+        }
+    )
+    with NamedTemporaryFile(
+        "w", newline="", encoding="utf-8", dir=path.parent, delete=False
+    ) as temporary:
+        writer = csv.DictWriter(temporary, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+        temporary_path = Path(temporary.name)
+    temporary_path.replace(path)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate precision, recall, mAP50, and mAP50-95.")
     parser.add_argument("--model", required=True, help="Model checkpoint path.")
@@ -1295,7 +1392,18 @@ def parse_args() -> argparse.Namespace:
         default="coco",
         help="AP implementation. 'coco' uses the official pycocotools evaluator.",
     )
+    parser.add_argument(
+        "--eval-conf",
+        type=float,
+        default=0.001,
+        help="Low confidence floor for the complete AP precision-recall curve.",
+    )
     parser.add_argument("--output", default="", help="Optional CSV path to append one evaluation row.")
+    parser.add_argument(
+        "--update-existing",
+        action="store_true",
+        help="Update only accuracy fields in the matching existing --output row.",
+    )
     return parser.parse_args()
 
 
@@ -1313,6 +1421,8 @@ def main() -> None:
         backend=args.backend,
         max_images=args.max_images or None,
         metric_backend=args.metric_backend,
+        eval_conf=args.eval_conf,
+        operating_conf=args.conf,
     )
     row = {
         "Model": Path(args.model).stem,
@@ -1324,6 +1434,7 @@ def main() -> None:
         "Confidence": args.conf,
         "IoU": args.iou,
         "Metric Backend": args.metric_backend,
+        "Evaluation Confidence Threshold": args.eval_conf,
         "Device": args.device,
         "Precision": metrics["precision"],
         "Recall": metrics["recall"],
@@ -1334,7 +1445,10 @@ def main() -> None:
         "Predictions": int(metrics["num_predictions"]),
     }
     if args.output:
-        write_evaluation_csv(Path(args.output), row)
+        if args.update_existing:
+            update_existing_benchmark_csv(Path(args.output), row)
+        else:
+            write_evaluation_csv(Path(args.output), row)
     print(json.dumps(row, indent=2, ensure_ascii=False))
 
 

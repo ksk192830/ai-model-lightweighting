@@ -207,6 +207,9 @@ def benchmark_model(
             batch_size=config.batch_size,
         )
         row["Backend"] = predictor.backend_name
+        class_mapping = predictor.align_classes(samples)
+        if class_mapping:
+            print(f"class mapping ({model_path.name}): {class_mapping}")
 
         with MemoryMonitor() as memory:
             speed_metrics = measure_fps(predictor, samples, config)
