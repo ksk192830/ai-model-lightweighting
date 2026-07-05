@@ -351,7 +351,11 @@ def main() -> int:
         "cudnn_version": (
             torch.backends.cudnn.version() if torch.backends.cudnn.is_available() else ""
         ),
-        "image": str(image_path.relative_to(REPOSITORY_ROOT)),
+        "image": (
+            str(image_path.relative_to(REPOSITORY_ROOT))
+            if image_path.is_relative_to(REPOSITORY_ROOT)
+            else str(image_path)
+        ),
         "image_width": image.width,
         "image_height": image.height,
         "threshold": args.threshold,

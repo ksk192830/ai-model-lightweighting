@@ -10,6 +10,8 @@ lightweighted models.
 - `visualize_inference_stream.py`: compare sequential predictions live or as MP4
 - `evaluate_coco_tensorrt.py`: add COCO mask AP and mask mIoU to an existing CSV
 - `evaluate_coco_ultralytics.py`: evaluate Ultralytics segmentation masks
+- `evaluate_coco_rfdetr_pth.py`: evaluate an RF-DETR `.pth` checkpoint (bbox +
+  mask AP + mask mIoU) on any COCO split, before any TensorRT conversion exists
 
 Example:
 
@@ -59,6 +61,16 @@ done
 
 Use `--no-update-csv` for a dry run that leaves the CSV unchanged, or `--csv`
 to select a different existing results file.
+
+Evaluate a PyTorch checkpoint (for example a new baseline that has no engine
+yet) on a labeled COCO split; the audit JSON goes to `results/coco-evaluation/`:
+
+```bash
+.venv/bin/python scripts/evaluation/evaluate_coco_rfdetr_pth.py \
+  --checkpoint "models/general_mission(with_crosswalk).pth" \
+  --dataset-dir /home/lair/datum/rfdetr_seg_general_mission/test \
+  --name general_mission_with_crosswalk-test
+```
 
 Show the selected eight front engines in a live 2×4 comparison:
 

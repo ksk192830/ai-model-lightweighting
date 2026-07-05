@@ -60,6 +60,14 @@ def resolve(path: Path) -> Path:
     return path if path.is_absolute() else REPOSITORY_ROOT / path
 
 
+def repository_relative(path: Path) -> str:
+    """Repo-relative when possible; datasets may live outside the repo."""
+    try:
+        return str(path.relative_to(REPOSITORY_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def summarize_coco(evaluation: object) -> dict[str, float]:
     names = (
         "ap",
@@ -283,9 +291,9 @@ def main() -> int:
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "experiment_id": args.experiment,
         "camera": args.camera,
-        "engine": str(engine.relative_to(REPOSITORY_ROOT)),
+        "engine": repository_relative(engine),
         "engine_size_bytes": engine.stat().st_size,
-        "dataset": str(dataset.relative_to(REPOSITORY_ROOT)),
+        "dataset": repository_relative(dataset),
         "image_count": len(image_ids),
         "category_ids": category_ids,
         "threshold": args.threshold,
