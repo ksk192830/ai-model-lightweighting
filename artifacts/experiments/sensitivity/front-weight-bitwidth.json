@@ -1,0 +1,98 @@
+{
+  "created_at_utc": "2026-07-05T23:53:18.195384+00:00",
+  "camera": "front",
+  "checkpoint": "models/parking_front.pth",
+  "group_size": 128,
+  "calibration_images": 128,
+  "screen_images": 150,
+  "screen_baseline": {
+    "bbox_ap": 0.8091174979605964,
+    "segm_ap": 0.6708860379180651
+  },
+  "sensitive_patterns": [
+    "*class_embed*",
+    "*bbox_embed*",
+    "*ref_point_head*",
+    "*transformer.decoder.layers.4.*"
+  ],
+  "configs": {
+    "w8_rtn": {
+      "status": "ok",
+      "bits": 8,
+      "protected_quantizers": 0,
+      "screen_bbox_ap": 0.8076079847546406,
+      "screen_segm_ap": 0.6689347224253619,
+      "screen_drop_bbox": 0.0015095132059558258,
+      "screen_drop_segm": 0.0019513154927032206,
+      "theoretical_weights_mb": 38.028542
+    },
+    "w4_rtn": {
+      "status": "ok",
+      "bits": 4,
+      "protected_quantizers": 0,
+      "screen_bbox_ap": 0.46726996594160036,
+      "screen_segm_ap": 0.6541601181909524,
+      "screen_drop_bbox": 0.34184753201899604,
+      "screen_drop_segm": 0.01672591972711268,
+      "theoretical_weights_mb": 21.47827
+    },
+    "w4_awq": {
+      "status": "ok",
+      "bits": 4,
+      "protected_quantizers": 0,
+      "screen_bbox_ap": 0.7621506236023644,
+      "screen_segm_ap": 0.6640763403592795,
+      "screen_drop_bbox": 0.04696687435823199,
+      "screen_drop_segm": 0.006809697558785577,
+      "theoretical_weights_mb": 21.47827,
+      "test_bbox_ap": 0.7523335478801483,
+      "test_segm_ap": 0.6466191887672875
+    },
+    "w3_rtn": {
+      "status": "ok",
+      "bits": 3,
+      "protected_quantizers": 0,
+      "screen_bbox_ap": 7.121028357527108e-05,
+      "screen_segm_ap": 0.12840680003867902,
+      "screen_drop_bbox": 0.8090462876770211,
+      "screen_drop_segm": 0.5424792378793861,
+      "theoretical_weights_mb": 17.340702
+    },
+    "w2_rtn": {
+      "status": "ok",
+      "bits": 2,
+      "protected_quantizers": 0,
+      "screen_bbox_ap": 0.0,
+      "screen_segm_ap": 0.0,
+      "screen_drop_bbox": 0.8091174979605964,
+      "screen_drop_segm": 0.6708860379180651,
+      "theoretical_weights_mb": 13.203134
+    },
+    "w4_mixed": {
+      "status": "ok",
+      "bits": 4,
+      "protected_quantizers": 201,
+      "screen_bbox_ap": 0.8041797717929783,
+      "screen_segm_ap": 0.6613468566105766,
+      "screen_drop_bbox": 0.004937726167618117,
+      "screen_drop_segm": 0.009539181307488542,
+      "theoretical_weights_mb": 26.478718,
+      "test_bbox_ap": 0.7923768483626271,
+      "test_segm_ap": 0.644678585349376
+    },
+    "w2_mixed": {
+      "status": "ok",
+      "bits": 2,
+      "protected_quantizers": 201,
+      "screen_bbox_ap": 2.3768888751555244e-05,
+      "screen_segm_ap": 0.0,
+      "screen_drop_bbox": 0.8090937290718448,
+      "screen_drop_segm": 0.6708860379180651,
+      "theoretical_weights_mb": 19.03699,
+      "test_bbox_ap": 4.23545242322064e-05,
+      "test_segm_ap": 0.0
+    }
+  },
+  "note": "fake-quant weight-only accuracy study; no TensorRT kernel path for W2/W3 (see Q03), deployment would need QAT or custom kernels",
+  "hardware": "NVIDIA GeForce RTX 5070"
+}

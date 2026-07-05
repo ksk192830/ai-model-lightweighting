@@ -273,6 +273,26 @@ experiments:
       score-ranking changes near the output rather than distributional drift
       in the backbone.
 
+  W01:
+    name: weight-only-bitwidth-study
+    family: precision
+    method: modelopt-weight-only-fakequant
+    cameras: [front]
+    precision: mixed
+    quantization:
+      configs: [w8_rtn, w4_rtn, w4_awq, w3_rtn, w2_rtn, w4_mixed, w2_mixed]
+      group_size: 128
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+      report: artifacts/experiments/sensitivity/front-weight-bitwidth.json
+    stage: quantization-study
+    status: static-analysis-passed
+    hypothesis: >-
+      GGUF-style weight-only quantization keeps RF-DETR usable at 4 bits
+      (AWQ) and the task-metric-guided K-quant mix (sensitive head/decoder
+      blocks high precision) extends usability below 4 bits, while plain
+      2-bit RTN collapses as reported for DETR PTQ (Q-DETR, QRT-DETR).
+
   S01:
     name: structured-decoder-layer-1
     family: structured
