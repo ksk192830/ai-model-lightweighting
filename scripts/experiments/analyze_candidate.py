@@ -75,7 +75,10 @@ def main() -> int:
             encoding="utf-8"
         ) as stream:
             model_config = yaml.safe_load(stream)["models"][args.camera]
-        train_defaults = registry.defaults["fine_tuning"]["recovery_2to4"]
+        profile_name = experiment.get("fine_tuning", {}).get(
+            "profile", "recovery_2to4"
+        )
+        train_defaults = registry.defaults["fine_tuning"][profile_name]
         checkpoint_data = torch.load(
             checkpoint_path,
             map_location="cpu",
@@ -210,9 +213,12 @@ def main() -> int:
             )
         if not checkpoint_load_success:
             blockers.append("M01 checkpoint failed RF-DETR load")
-        if not (
-            expected_classes == checkpoint_classes == labeled_categories
-        ):
+        # labeled_test is an evaluation-only split; when it is absent on a
+        # training-only machine its class list cannot block training.
+        class_lists = [expected_classes, checkpoint_classes]
+        if labeled_test_path.is_file():
+            class_lists.append(labeled_categories)
+        if any(classes != expected_classes for classes in class_lists):
             blockers.append("class order mismatch")
         invalid_configured_splits = [
             split

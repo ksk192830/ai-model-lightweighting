@@ -109,6 +109,170 @@ experiments:
     status: engine-built
     hypothesis: Ampere sparse tactics accelerate compliant 2:4 weights.
 
+  M03:
+    name: sparse-2to4-extended-recovery
+    family: semi-structured
+    method: nvidia-2to4
+    cameras: [front]
+    pruning:
+      pattern: "2:4"
+    precision: fp16
+    sparse_tactic: true
+    fine_tuning:
+      required: true
+      completed: true
+      status: completed
+      profile: recovery_2to4_extended
+      epochs: 20
+      training_report: artifacts/experiments/M03/front/recovery/recovery-training.json
+    stage: pruning
+    status: checkpoint-created
+    hypothesis: >-
+      Doubling the recovery budget (20 epochs, no early stopping) recovers the
+      large-object accuracy that the 10-epoch 2:4 recovery (M01/M02) traded
+      away, closing part of the -0.03 mAP50-95 gap to the FP16 baseline.
+
+  Q01:
+    name: int8-smoothquant-ptq
+    family: precision
+    method: modelopt-int8-smoothquant
+    cameras: [front]
+    precision: int8
+    quantization:
+      config: INT8_SMOOTHQUANT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+    stage: quantization
+    status: engine-built
+    hypothesis: >-
+      Activation-aware INT8 (SmoothQuant, the LLM imatrix analogue) with
+      explicit Q/DQ nodes retains accuracy where uniform TensorRT INT8 PTQ
+      fell back to FP16 kernels, and increases real INT8 kernel coverage.
+
+  Q02:
+    name: mixed-precision-sensitive-fp16
+    family: precision
+    method: modelopt-mixed-precision
+    cameras: [front]
+    precision: mixed
+    quantization:
+      config: INT8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+      keep_fp16_patterns:
+        - "*class_embed*"
+        - "*bbox_embed*"
+        - "*segmentation_head*"
+        - "*sampling_offsets*"
+        - "*enc_out*"
+        - "*ref_point*"
+    stage: quantization
+    status: engine-built
+    hypothesis: >-
+      Keeping accuracy-sensitive layers (heads, deformable sampling offsets)
+      in FP16 while quantizing the remaining transformer to INT8 preserves
+      accuracy better than uniform INT8 at similar engine cost.
+
+  Q03:
+    name: int4-weight-only-ffn
+    family: precision
+    method: modelopt-int4-weight-only
+    cameras: [front]
+    precision: int4
+    quantization:
+      config: INT4_BLOCKWISE_WEIGHT_ONLY_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+      quantize_patterns:
+        - "*transformer.decoder.layers.*.linear1*"
+        - "*transformer.decoder.layers.*.linear2*"
+        - "*mlp.fc1*"
+        - "*mlp.fc2*"
+    stage: quantization
+    status: build-failed
+    hypothesis: >-
+      Extreme weight-only INT4 on FFN linears (the LLM K-quant style mix)
+      shrinks the engine well below the FP16 size with bounded accuracy loss;
+      speed is not expected to improve at batch 1.
+
+  Q04:
+    name: fp8-uniform-ptq
+    family: precision
+    method: modelopt-fp8
+    cameras: [front]
+    precision: fp8
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+    stage: quantization
+    status: engine-built
+    hypothesis: >-
+      FP8 (E4M3) post-training quantization preserves accuracy far better
+      than forced INT8 thanks to its wider dynamic range, giving a viable
+      aggressive-precision path on sm89+ GPUs where INT8 PTQ failed.
+
+  Q05:
+    name: fp8-mixed-measured-sensitivity
+    family: precision
+    method: modelopt-fp8-mixed
+    cameras: [front]
+    precision: mixed
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+      sensitivity_report: artifacts/experiments/sensitivity/front-fp8-sensitivity.json
+    stage: quantization
+    status: engine-built
+    hypothesis: >-
+      Keeping only the measured-sensitive blocks in FP16 and quantizing the
+      rest to FP8 (the LLM importance-based mixed-precision recipe, driven by
+      a per-block leave-one-in sensitivity sweep instead of heuristics)
+      matches FP16 accuracy at lower precision cost.
+
+  Q06:
+    name: fp8-mixed-kld-sensitivity
+    family: precision
+    method: modelopt-fp8-mixed-kld
+    cameras: [front]
+    precision: mixed
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+      sensitivity_report: artifacts/experiments/sensitivity/front-fp8-kld.json
+      sensitivity_metric: kl-divergence
+    stage: quantization
+    status: engine-built
+    hypothesis: >-
+      Ranking per-layer sensitivity by output KL divergence (Unsloth Dynamic
+      2.0 style) instead of noisy small-sample mAP drops selects the truly
+      damaging blocks, so an FP8 model that keeps only the top-KLD blocks in
+      FP16 beats the mAP-threshold mixed variant (Q05) at equal or smaller
+      FP16 budget.
+
+  Q07:
+    name: fp8-mixed-targeted-top2
+    family: precision
+    method: modelopt-fp8-mixed
+    cameras: [front]
+    precision: mixed
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front/valid
+      sensitivity_report: artifacts/experiments/sensitivity/front-fp8-targeted.json
+      sensitivity_metric: map-sweep-above-noise
+    stage: quantization
+    status: engine-built
+    hypothesis: >-
+      Protecting only the two blocks with above-noise mAP damage
+      (final_heads, decoder_layer_4) recovers Q05's lossless accuracy at
+      nearly Q04's uniform-FP8 engine size, because detection AP responds to
+      score-ranking changes near the output rather than distributional drift
+      in the backbone.
+
   S01:
     name: structured-decoder-layer-1
     family: structured

@@ -11,7 +11,7 @@ required_experiment_fields:
   - hypothesis
 
 allowed_cameras: [front, rear]
-allowed_precisions: [fp32, fp16, int8]
+allowed_precisions: [fp32, fp16, fp8, int8, int4, mixed]
 allowed_statuses:
   - planned
   - blocked
