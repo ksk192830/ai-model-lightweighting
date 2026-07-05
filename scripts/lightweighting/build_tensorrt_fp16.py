@@ -19,7 +19,12 @@ DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "artifacts" / "tensorrt"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a TensorRT FP16 engine.")
-    parser.add_argument("--camera", choices=("front", "rear"), required=True)
+    parser.add_argument(
+        "--camera",
+        required=True,
+        help="Model key (e.g. front, rear, general_mission_with_crosswalk); "
+        "selects the artifact subdirectory.",
+    )
     parser.add_argument("--onnx-dir", type=Path, default=DEFAULT_ONNX_DIR)
     parser.add_argument("--onnx", type=Path, help="Override the input ONNX path.")
     parser.add_argument(
@@ -32,6 +37,18 @@ def parse_args() -> argparse.Namespace:
         "--sparse-weights",
         action="store_true",
         help="Allow TensorRT tactics for NVIDIA 2:4 structured sparsity.",
+    )
+    parser.add_argument(
+        "--int8-qdq",
+        action="store_true",
+        help="Enable INT8 for ONNX models that already carry Q/DQ nodes "
+        "(modelopt PTQ/QAT); FP16 remains enabled for unquantized layers.",
+    )
+    parser.add_argument(
+        "--strongly-typed",
+        action="store_true",
+        help="Build a strongly typed network (required for FP8 Q/DQ ONNX); "
+        "precision flags are ignored and follow the ONNX types.",
     )
     parser.add_argument(
         "--verbose",
@@ -58,6 +75,8 @@ def build_with_python(
     workspace_mib: int,
     enable_fp16: bool = True,
     enable_sparse: bool = False,
+    enable_int8: bool = False,
+    strongly_typed: bool = False,
     verbose: bool = False,
 ) -> str:
     try:
@@ -69,9 +88,12 @@ def build_with_python(
 
     logger = trt.Logger(trt.Logger.VERBOSE if verbose else trt.Logger.INFO)
     builder = trt.Builder(logger)
-    network = builder.create_network(
-        1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
-    )
+    network_flags = 1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
+    if strongly_typed:
+        network_flags |= 1 << int(
+            trt.NetworkDefinitionCreationFlag.STRONGLY_TYPED
+        )
+    network = builder.create_network(network_flags)
     parser = trt.OnnxParser(network, logger)
     if not parser.parse(onnx_path.read_bytes()):
         errors = "\n".join(
@@ -85,8 +107,10 @@ def build_with_python(
         trt.MemoryPoolType.WORKSPACE,
         workspace_mib * 1024 * 1024,
     )
-    if enable_fp16:
+    if enable_fp16 and not strongly_typed:
         config.set_flag(trt.BuilderFlag.FP16)
+    if enable_int8 and not strongly_typed:
+        config.set_flag(trt.BuilderFlag.INT8)
     if enable_sparse:
         config.set_flag(trt.BuilderFlag.SPARSE_WEIGHTS)
     serialized = builder.build_serialized_network(network, config)
@@ -136,6 +160,11 @@ def main() -> int:
     ]
     if args.sparse_weights:
         command.append("--sparsity=enable")
+    if args.int8_qdq:
+        command.append("--int8")
+    if args.strongly_typed:
+        command.remove("--fp16")
+        command.append("--stronglyTyped")
     if args.verbose:
         command.append("--verbose")
     build_backend = "trtexec" if trtexec else "tensorrt-python"
@@ -158,15 +187,28 @@ def main() -> int:
             engine_path,
             args.workspace_mib,
             enable_sparse=args.sparse_weights,
+            enable_int8=args.int8_qdq,
+            strongly_typed=args.strongly_typed,
             verbose=args.verbose,
         )
         trtexec_version = ""
+    def repo_relative(path: Path) -> str:
+        return (
+            str(path.relative_to(REPOSITORY_ROOT))
+            if path.is_relative_to(REPOSITORY_ROOT)
+            else str(path)
+        )
+
     metadata = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "camera": args.camera,
-        "precision": "fp16",
-        "source_onnx": str(onnx_path.relative_to(REPOSITORY_ROOT)),
-        "engine_path": str(engine_path.relative_to(REPOSITORY_ROOT)),
+        "precision": (
+            "fp8-qdq" if args.strongly_typed
+            else "int8-qdq" if args.int8_qdq
+            else "fp16"
+        ),
+        "source_onnx": repo_relative(onnx_path),
+        "engine_path": repo_relative(engine_path),
         "engine_size_bytes": engine_path.stat().st_size,
         "platform": platform.platform(),
         "build_backend": build_backend,

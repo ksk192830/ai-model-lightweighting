@@ -7,6 +7,9 @@ This directory contains the model conversion pipeline.
 - `build_tensorrt_fp32.py`: build TensorRT FP32 reference engines
 - `build_tensorrt_fp16.py`: build TensorRT FP16 engines
 - `build_tensorrt_int8.py`: calibrate and build TensorRT INT8 engines
+- `quantize_modelopt.py`: nvidia-modelopt quantization (Q01 SmoothQuant INT8,
+  Q02 sensitive-layer-FP16 mixed precision, Q03 INT4 weight-only FFN) with
+  Q/DQ ONNX export; build the result with `build_tensorrt_fp16.py --int8-qdq`
 
 These are low-level implementation scripts. Normal experiment work uses the
 registry entry points:
