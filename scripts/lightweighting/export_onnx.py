@@ -31,7 +31,12 @@ DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "artifacts" / "onnx"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export RF-DETR to ONNX.")
-    parser.add_argument("--camera", choices=("front", "rear"), required=True)
+    parser.add_argument(
+        "--camera",
+        required=True,
+        help="Model key under 'models' in the config (e.g. front, rear, "
+        "general_mission_with_crosswalk).",
+    )
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument(
         "--checkpoint",

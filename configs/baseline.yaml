@@ -20,3 +20,28 @@ models:
       - end_line
       - parking_lot
       - parking_space
+
+  general_mission_with_crosswalk:
+    checkpoint: models/general_mission(with_crosswalk).pth
+    architecture: RFDETRSegLarge
+    rfdetr_version: 1.8.1
+    dataset_dir: /home/lair/datum/rfdetr_seg_general_mission
+    classes:
+      - driv-car-Road-fPZR-lane2-lane2-road-object
+      - car
+      - crosswalk
+      - lane1
+      - lane2
+      - traffic_light
+
+  general_mission_without_crosswalk:
+    checkpoint: models/general_mission(without_crosswalk).pth
+    architecture: RFDETRSegLarge
+    rfdetr_version: 1.8.1
+    dataset_dir: /home/lair/datum/rfdetr_seg_general_mission_2
+    classes:
+      - driv-car-Road-fPZR-lane2-lane2-road-object
+      - car
+      - lane1
+      - lane2
+      - traffic_light
