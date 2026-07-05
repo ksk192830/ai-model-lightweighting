@@ -1,0 +1,22 @@
+{
+  "created_at_utc": "2026-07-05T23:06:05.864392+00:00",
+  "experiment": "Q04",
+  "camera": "front",
+  "mode": "fp8",
+  "modelopt_config": "FP8_DEFAULT_CFG",
+  "checkpoint": "/home/lair/kips-ai-model-lightweighting/models/parking_front.pth",
+  "calibration_dir": "/home/lair/kips-ai-model-lightweighting/data/training/front/valid",
+  "calibration_images": 128,
+  "seed": 42,
+  "resolution": 504,
+  "quantizers_total": 723,
+  "quantizers_active": 432,
+  "quantizers_disabled": 0,
+  "keep_fp16_patterns": [],
+  "quantize_patterns": [],
+  "onnx_path": "artifacts/experiments/Q04/front/model.onnx",
+  "onnx_size_bytes": 131681274,
+  "onnx_qdq_nodes": 586,
+  "opset": 17,
+  "device": "cuda"
+}

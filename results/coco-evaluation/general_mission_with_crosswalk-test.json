@@ -1,0 +1,65 @@
+{
+  "created_at_utc": "2026-07-05T11:39:36.536835+00:00",
+  "checkpoint": "/home/lair/kips-ai-model-lightweighting/models/general_mission(with_crosswalk).pth",
+  "checkpoint_size_bytes": 142522641,
+  "dataset": "/home/lair/datum/rfdetr_seg_general_mission/test",
+  "image_count": 223,
+  "category_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "categories": {
+    "0": "driv-car-Road-fPZR-lane2-lane2-road-object",
+    "1": "car",
+    "2": "crosswalk",
+    "3": "lane1",
+    "4": "lane2",
+    "5": "traffic_light"
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "hardware": "NVIDIA GeForce RTX 5070",
+  "torch": "2.12.1+cu130",
+  "prediction_count": 44570,
+  "metrics": {
+    "bbox": {
+      "ap": 0.9175541617385486,
+      "ap50": 0.9829032176745788,
+      "ap75": 0.9643615182700066,
+      "ap_small": 0.27749227986683933,
+      "ap_medium": 0.6826706717563226,
+      "ap_large": 0.9392964676365495,
+      "ar1": 0.8776934948272829,
+      "ar10": 0.9451351627087081,
+      "ar100": 0.9508773917008979,
+      "ar_small": 0.4166666666666667,
+      "ar_medium": 0.8808270676691728,
+      "ar_large": 0.963049131792349
+    },
+    "segm": {
+      "ap": 0.9170147472551724,
+      "ap50": 0.9822205802450255,
+      "ap75": 0.9758413998557559,
+      "ap_small": 0.06733606782385028,
+      "ap_medium": 0.6692544779914305,
+      "ap_large": 0.9506532982970224,
+      "ar1": 0.8848762793078712,
+      "ar10": 0.9379119486355861,
+      "ar100": 0.9411253148002641,
+      "ar_small": 0.31666666666666665,
+      "ar_medium": 0.7678467000835422,
+      "ar_large": 0.9659116562212189
+    },
+    "semantic_miou": 0.9499441494104637,
+    "semantic_iou_by_category": {
+      "1": 0.9326681085767109,
+      "2": 0.9480638505560616,
+      "3": 0.9593500744935914,
+      "4": 0.962657755275544,
+      "5": 0.946980958150411
+    }
+  }
+}

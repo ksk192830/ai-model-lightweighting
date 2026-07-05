@@ -1,0 +1,59 @@
+{
+  "created_at_utc": "2026-07-05T17:59:28.409308+00:00",
+  "checkpoint": "/home/lair/kips-ai-model-lightweighting/artifacts/experiments/S01/front/recovery-extended/checkpoint_best_total.pth",
+  "checkpoint_size_bytes": 136320473,
+  "dataset": "/home/lair/datum/rfdetr_seg/test",
+  "image_count": 446,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "categories": {
+    "0": "front",
+    "1": "out_line",
+    "2": "parking_lot",
+    "3": "parking_space"
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "hardware": "NVIDIA GeForce RTX 5070",
+  "torch": "2.12.1+cu130",
+  "prediction_count": 88972,
+  "metrics": {
+    "bbox": {
+      "ap": 0.8064060904969884,
+      "ap50": 0.9637048951693739,
+      "ap75": 0.8491630162924145,
+      "ap_small": 0.2476867075492924,
+      "ap_medium": 0.569880756947358,
+      "ap_large": 0.8876690521601952,
+      "ar1": 0.8226695546767879,
+      "ar10": 0.8674897937104085,
+      "ar100": 0.9079854142241124,
+      "ar_small": 0.38333333333333336,
+      "ar_medium": 0.8192007797270955,
+      "ar_large": 0.9413224439225865
+    },
+    "segm": {
+      "ap": 0.6543952541500737,
+      "ap50": 0.8670956570543271,
+      "ap75": 0.6802525784774266,
+      "ap_small": 0.11506373599161857,
+      "ap_medium": 0.41536366398190677,
+      "ap_large": 0.7310260639688497,
+      "ar1": 0.6874277721474829,
+      "ar10": 0.7310378289582631,
+      "ar100": 0.7613281534619689,
+      "ar_small": 0.3861111111111111,
+      "ar_medium": 0.6370857699805067,
+      "ar_large": 0.8010182921540345
+    },
+    "semantic_miou": 0.8269882439273569,
+    "semantic_iou_by_category": {
+      "1": 0.632323259410224,
+      "2": 0.9442468837631334,
+      "3": 0.9043945886087134
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "created_at_utc": "2026-07-05T23:17:40.460259+00:00",
+  "experiment_id": "Q06",
+  "camera": "front",
+  "engine": "artifacts/experiments/Q06/front/model.engine",
+  "engine_size_bytes": 47195268,
+  "dataset": "/home/lair/datum/rfdetr_seg/test",
+  "image_count": 446,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "warmup": 0,
+  "hardware": "NVIDIA GeForce RTX 5070",
+  "torch": "2.12.1+cu130",
+  "cuda": "13.0",
+  "tensorrt": "10.16.1.11",
+  "prediction_count": 129957,
+  "metrics": {
+    "segm": {
+      "ap": 0.6437919949278031,
+      "ap50": 0.8668203801634403,
+      "ap75": 0.663713163423582,
+      "ap_small": 0.11511367097111647,
+      "ap_medium": 0.3933359444902272,
+      "ap_large": 0.7145732854811945,
+      "ar1": 0.6752145583971987,
+      "ar10": 0.7212661760582194,
+      "ar100": 0.7502146135961688,
+      "ar_small": 0.3569444444444444,
+      "ar_medium": 0.6252680311890837,
+      "ar_large": 0.7902243203622022
+    },
+    "semantic_miou": 0.8204328509422926,
+    "semantic_iou_by_category": {
+      "1": 0.6276096052003222,
+      "2": 0.9366795734980783,
+      "3": 0.8970093741284774
+    }
+  }
+}

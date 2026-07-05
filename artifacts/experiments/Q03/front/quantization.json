@@ -1,0 +1,27 @@
+{
+  "created_at_utc": "2026-07-05T18:09:29.652713+00:00",
+  "experiment": "Q03",
+  "camera": "front",
+  "mode": "int4-ffn",
+  "modelopt_config": "INT4_BLOCKWISE_WEIGHT_ONLY_CFG",
+  "checkpoint": "/home/lair/kips-ai-model-lightweighting/models/parking_front.pth",
+  "calibration_dir": "/home/lair/kips-ai-model-lightweighting/data/training/front/valid",
+  "calibration_images": 128,
+  "seed": 42,
+  "resolution": 504,
+  "quantizers_total": 723,
+  "quantizers_active": 34,
+  "quantizers_disabled": 621,
+  "keep_fp16_patterns": [],
+  "quantize_patterns": [
+    "*transformer.decoder.layers.*.linear1*",
+    "*transformer.decoder.layers.*.linear2*",
+    "*mlp.fc1*",
+    "*mlp.fc2*"
+  ],
+  "onnx_path": "artifacts/experiments/Q03/front/model.onnx",
+  "onnx_size_bytes": 131339537,
+  "onnx_qdq_nodes": 34,
+  "opset": 17,
+  "device": "cuda"
+}

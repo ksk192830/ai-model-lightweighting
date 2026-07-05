@@ -1,0 +1,263 @@
+{
+  "created_at_utc": "2026-07-05T23:11:36.907320+00:00",
+  "method": "kl-divergence leave-one-in (unsloth dynamic 2.0 style)",
+  "camera": "front",
+  "quant_config": "FP8_DEFAULT_CFG",
+  "checkpoint": "models/parking_front.pth",
+  "calibration_images": 64,
+  "kld_images": 48,
+  "eval_dir": "/home/lair/kips-ai-model-lightweighting/data/training/front/valid",
+  "mask_stride": 4,
+  "top_fraction": 0.25,
+  "sanity_kld_total": 0.0,
+  "blocks": {
+    "backbone_layers_00-00": {
+      "quantizers": 22,
+      "kld_cls": 0.004689549119727114,
+      "kld_mask": 0.037517549996512876,
+      "kld_total": 0.04220709911623999,
+      "box_l1": 0.13932366343215108
+    },
+    "backbone_layers_01-01": {
+      "quantizers": 22,
+      "kld_cls": 0.004113688592269682,
+      "kld_mask": 0.032543371882638894,
+      "kld_total": 0.036657060474908576,
+      "box_l1": 0.12906375480815768
+    },
+    "backbone_layers_02-02": {
+      "quantizers": 22,
+      "kld_cls": 0.0034965699734736213,
+      "kld_mask": 0.03515570176851194,
+      "kld_total": 0.03865227174198556,
+      "box_l1": 0.1315841330991437
+    },
+    "backbone_layers_03-03": {
+      "quantizers": 22,
+      "kld_cls": 0.004569530255139398,
+      "kld_mask": 0.036159864026596246,
+      "kld_total": 0.040729394281735644,
+      "box_l1": 0.13429680614111325
+    },
+    "backbone_layers_04-04": {
+      "quantizers": 22,
+      "kld_cls": 0.0035850890273347127,
+      "kld_mask": 0.03330967171075372,
+      "kld_total": 0.03689476073808843,
+      "box_l1": 0.12746989882240692
+    },
+    "backbone_layers_05-05": {
+      "quantizers": 22,
+      "kld_cls": 0.004343519135394065,
+      "kld_mask": 0.03467742835385934,
+      "kld_total": 0.03902094748925341,
+      "box_l1": 0.13233857151741782
+    },
+    "backbone_layers_06-06": {
+      "quantizers": 22,
+      "kld_cls": 0.004321030539661781,
+      "kld_mask": 0.03345171247229928,
+      "kld_total": 0.03777274301196106,
+      "box_l1": 0.1286296668307235
+    },
+    "backbone_layers_07-07": {
+      "quantizers": 22,
+      "kld_cls": 0.003933016758537633,
+      "kld_mask": 0.03464185676570727,
+      "kld_total": 0.0385748735242449,
+      "box_l1": 0.1288751638494432
+    },
+    "backbone_layers_08-08": {
+      "quantizers": 22,
+      "kld_cls": 0.003916209034438604,
+      "kld_mask": 0.03271397426899133,
+      "kld_total": 0.03663018330342993,
+      "box_l1": 0.13094340722697476
+    },
+    "backbone_layers_09-09": {
+      "quantizers": 22,
+      "kld_cls": 0.0037283840739898246,
+      "kld_mask": 0.03414021708632239,
+      "kld_total": 0.03786860116031221,
+      "box_l1": 0.13287423931372663
+    },
+    "backbone_layers_10-10": {
+      "quantizers": 22,
+      "kld_cls": 0.003546444839457763,
+      "kld_mask": 0.03284519062234873,
+      "kld_total": 0.036391635461806494,
+      "box_l1": 0.13112277444452047
+    },
+    "backbone_layers_11-11": {
+      "quantizers": 22,
+      "kld_cls": 0.004834036109893229,
+      "kld_mask": 0.036211666477280836,
+      "kld_total": 0.04104570258717406,
+      "box_l1": 0.1387563491395364
+    },
+    "backbone_projector": {
+      "quantizers": 24,
+      "kld_cls": 0.005114639476687444,
+      "kld_mask": 0.03792200802094688,
+      "kld_total": 0.04303664749763433,
+      "box_l1": 0.1461656679554532
+    },
+    "decoder_layer_0": {
+      "quantizers": 27,
+      "kld_cls": 0.00102924894117488,
+      "kld_mask": 0.0011314564040733426,
+      "kld_total": 0.0021607053452482225,
+      "box_l1": 0.008081375252610693
+    },
+    "decoder_layer_1": {
+      "quantizers": 27,
+      "kld_cls": 0.00043787026626773695,
+      "kld_mask": 0.0008275589055190361,
+      "kld_total": 0.001265429171786773,
+      "box_l1": 0.006896855134982616
+    },
+    "decoder_layer_2": {
+      "quantizers": 27,
+      "kld_cls": 4.1429611330319936e-05,
+      "kld_mask": 0.0005958715112817833,
+      "kld_total": 0.0006373011226121033,
+      "box_l1": 0.007063966807133208
+    },
+    "decoder_layer_3": {
+      "quantizers": 27,
+      "kld_cls": 2.6040595692222723e-05,
+      "kld_mask": 0.00036221814937794267,
+      "kld_total": 0.0003882587450701654,
+      "box_l1": 0.005965082668505299
+    },
+    "decoder_layer_4": {
+      "quantizers": 27,
+      "kld_cls": 2.2553853796125622e-05,
+      "kld_mask": 0.00018003686842268016,
+      "kld_total": 0.00020259072221880578,
+      "box_l1": 0.0054370896056449665
+    },
+    "enc_output_and_heads": {
+      "quantizers": 221,
+      "kld_cls": 0.004635082924626961,
+      "kld_mask": 0.03689526122597423,
+      "kld_total": 0.041530344150601195,
+      "box_l1": 0.1439009391857932
+    },
+    "final_heads": {
+      "quantizers": 174,
+      "kld_cls": 0.004857675371567893,
+      "kld_mask": 0.034795045730656206,
+      "kld_total": 0.0396527211022241,
+      "box_l1": 0.13903774173619846
+    },
+    "segmentation_head": {
+      "quantizers": 54,
+      "kld_cls": 0.0,
+      "kld_mask": 0.00016639546493439164,
+      "kld_total": 0.00016639546493439164,
+      "box_l1": 0.0
+    }
+  },
+  "block_patterns": {
+    "backbone_layers_00-00": [
+      "*backbone.0.encoder*.layer.0.*"
+    ],
+    "backbone_layers_01-01": [
+      "*backbone.0.encoder*.layer.1.*"
+    ],
+    "backbone_layers_02-02": [
+      "*backbone.0.encoder*.layer.2.*"
+    ],
+    "backbone_layers_03-03": [
+      "*backbone.0.encoder*.layer.3.*"
+    ],
+    "backbone_layers_04-04": [
+      "*backbone.0.encoder*.layer.4.*"
+    ],
+    "backbone_layers_05-05": [
+      "*backbone.0.encoder*.layer.5.*"
+    ],
+    "backbone_layers_06-06": [
+      "*backbone.0.encoder*.layer.6.*"
+    ],
+    "backbone_layers_07-07": [
+      "*backbone.0.encoder*.layer.7.*"
+    ],
+    "backbone_layers_08-08": [
+      "*backbone.0.encoder*.layer.8.*"
+    ],
+    "backbone_layers_09-09": [
+      "*backbone.0.encoder*.layer.9.*"
+    ],
+    "backbone_layers_10-10": [
+      "*backbone.0.encoder*.layer.10.*"
+    ],
+    "backbone_layers_11-11": [
+      "*backbone.0.encoder*.layer.11.*"
+    ],
+    "backbone_projector": [
+      "*backbone.0.projector*"
+    ],
+    "decoder_layer_0": [
+      "*transformer.decoder.layers.0.*"
+    ],
+    "decoder_layer_1": [
+      "*transformer.decoder.layers.1.*"
+    ],
+    "decoder_layer_2": [
+      "*transformer.decoder.layers.2.*"
+    ],
+    "decoder_layer_3": [
+      "*transformer.decoder.layers.3.*"
+    ],
+    "decoder_layer_4": [
+      "*transformer.decoder.layers.4.*"
+    ],
+    "enc_output_and_heads": [
+      "*transformer.enc_output*",
+      "*transformer.enc_out_class_embed*",
+      "*transformer.enc_out_bbox_embed*"
+    ],
+    "final_heads": [
+      "*class_embed*",
+      "*bbox_embed*",
+      "*ref_point_head*"
+    ],
+    "segmentation_head": [
+      "*segmentation_head*"
+    ]
+  },
+  "ranked_blocks": [
+    "backbone_projector",
+    "backbone_layers_00-00",
+    "enc_output_and_heads",
+    "backbone_layers_11-11",
+    "backbone_layers_03-03",
+    "final_heads",
+    "backbone_layers_05-05",
+    "backbone_layers_02-02",
+    "backbone_layers_07-07",
+    "backbone_layers_09-09",
+    "backbone_layers_06-06",
+    "backbone_layers_04-04",
+    "backbone_layers_01-01",
+    "backbone_layers_08-08",
+    "backbone_layers_10-10",
+    "decoder_layer_0",
+    "decoder_layer_1",
+    "decoder_layer_2",
+    "decoder_layer_3",
+    "decoder_layer_4",
+    "segmentation_head"
+  ],
+  "sensitive_blocks": [
+    "backbone_projector",
+    "backbone_layers_00-00",
+    "enc_output_and_heads",
+    "backbone_layers_11-11",
+    "backbone_layers_03-03",
+    "final_heads"
+  ],
+  "hardware": "NVIDIA GeForce RTX 5070"
+}
