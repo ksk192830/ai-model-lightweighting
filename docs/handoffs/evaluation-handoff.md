@@ -125,5 +125,7 @@ GPU에서 정확도를 완전히 다시 평가해야 한다면
 
 - 후방 카메라 모델을 논문 범위에 포함할 경우 동일 조건으로 추가 평가
 - 실제 배포 하드웨어에서 latency와 메모리 재검증
-- 필요하면 mask AP와 FPS/크기의 Pareto 그래프 추가
+- ~~필요하면 mask AP와 FPS/크기의 Pareto 그래프 추가~~ — 2026-07-05 완료
+  (`figures/pareto_mask_fps.png`, `figures/pareto_mask_size.png`; bbox 기준
+  front와 구성 동일함을 확인, `0705.md` §4 참고)
 - 논문 본문에는 입력 크기와 백엔드가 다른 YOLO를 참고 모델로 명시

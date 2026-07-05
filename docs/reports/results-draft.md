@@ -53,6 +53,8 @@
 | `figures/pareto_map_fps.png` | mAP50-95 vs FPS Pareto (front: S01, C01, B02, R01) |
 | `figures/pareto_map_size.png` | mAP50-95 vs Size Pareto (front: M02, C01, S01) |
 | `figures/pareto_map_latency.png` | mAP50-95 vs Latency Pareto (front: R01, B02, C01, S01) |
+| `figures/pareto_mask_fps.png` | Mask AP vs FPS Pareto (front: S01, C01, B02, R01) |
+| `figures/pareto_mask_size.png` | Mask AP vs Size Pareto (front: M02, C01, S01) |
 
 ---
 
@@ -114,6 +116,12 @@ mAP50-95–지연시간 평면에서는 R01(27.89 ms), B02(30.64 ms), C01(31.00 
 S01(50.70 ms)이 front를 구성한다(Fig. pareto_map_latency). C01은 B02 대비
 0.36 ms의 지연 증가로 +0.0045의 mAP50-95를 얻는 위치에 있다.
 
+동일한 분석을 segmentation 지표로 반복해도 결론은 유지된다. Mask AP–FPS
+평면의 Pareto front(S01, C01, B02, R01)와 Mask AP–크기 평면의 front(M02,
+C01, S01)는 bbox mAP50-95 기준과 구성이 완전히 일치한다
+(Fig. pareto_mask_fps, pareto_mask_size). 즉 후보 선정은 detection과
+segmentation 어느 지표로 평가해도 동일하다.
+
 종합하면 C01(Structured+FP16)이 세 Pareto front에 모두 포함되는 유일한
 504×504 후보로, 정확도 최우선이면 S01, 지연시간 최우선이면 R01, 그 외의
 일반적인 배포 조건에서는 C01이 합리적인 선택이다.
@@ -163,3 +171,29 @@ python scripts/evaluation/evaluate.py \
 
 마지막으로 본 평가는 전방 카메라 모델과 단일 GPU(RTX 4050 Laptop)에
 한정되므로, 후방 모델과 실제 배포 대상 하드웨어에서의 재평가가 향후 과제다.
+
+## 4.5 클래스별·객체 크기별 분석
+
+`results/coco-evaluation/*-front.json`의 크기별 AP와 클래스별 semantic
+IoU를 보면 경량화 기법별 정확도 변화의 성격이 드러난다.
+
+첫째, 모든 후보의 공통 병목은 out_line 클래스다. 전 모델에서 out_line
+IoU는 0.57~0.61로 parking_lot(0.92~0.93), parking_space(0.86~0.88)보다
+현저히 낮다. 학습 데이터 분포상 소형 객체(면적 32² px 미만)의 대부분이
+out_line이므로 낮은 AP_small(0.09~0.20)과 같은 현상이며, baseline(B01)
+부터 존재하는 태스크 난이도이지 경량화로 생긴 손실이 아니다. 실제로
+정밀도 변환만 수행한 B02/B03은 크기별 AP와 클래스별 IoU가 B01과 사실상
+동일하다(차이 ≤0.001). FP16/INT8 변환이 특정 클래스나 크기를 선택적으로
+훼손하지 않음을 보여준다.
+
+둘째, recovery fine-tuning을 거친 후보들은 정확도의 분포가 이동한다.
+구조적 pruning 계열(S01/C01)의 mask AP 향상(+0.013~0.015)은 대형 객체
+(AP_large 0.689→0.710)와 out_line IoU(0.594→0.612)에서 나온 반면
+AP_small은 0.109→0.090으로 하락했다. 2:4 계열(M01/M02)은 반대로
+AP_small이 0.109→0.184~0.201, AR_small이 0.207→0.357로 크게 오르고
+AP_large가 0.689→0.678로 내려갔다. 즉 2:4 후보의 전체 mAP 하락(−0.03)은
+모든 영역의 균일한 열화가 아니라 recovery 과정에서 소형 객체 쪽으로
+성능이 재배치된 결과이며, 대형 객체 비중이 큰 본 평가셋 구성에서 전체
+평균이 하락한 것이다. 다만 테스트셋의 소형 객체 표본 수가 적어 크기별
+AP 차이는 노이즈에 민감하므로, 표본이 충분한 클래스별 IoU를 주 근거로
+해석한다.

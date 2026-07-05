@@ -372,7 +372,7 @@ def mask_chart(rows, filename):
 
 
 def pareto_front(points, maximize_x):
-    """points: (x, y, row); y (mAP) is always maximized."""
+    """points: (x, y, row); y (accuracy) is always maximized."""
     front = []
     for x, y, r in points:
         dominated = any(
@@ -396,10 +396,12 @@ def pareto_chart(
     filename,
     offsets=None,
     reference_ids=None,
+    ykey="map5095",
+    ylabel="mAP@50-95",
 ):
     data = rows
     reference_ids = set(reference_ids or ())
-    points = [(r[xkey], r["map5095"], r) for r in data]
+    points = [(r[xkey], r[ykey], r) for r in data]
     front = pareto_front(points, maximize_x)
     front_ids = {r["id"] for _, _, r in front}
 
@@ -437,7 +439,7 @@ def pareto_chart(
             color=ORANGE if is_reference else INK if on_front else MUTED,
         )
     ax.set_xlabel(xlabel, fontsize=10)
-    ax.set_ylabel("mAP@50-95", fontsize=10)
+    ax.set_ylabel(ylabel, fontsize=10)
     ax.set_title(title, fontsize=12, loc="left", pad=12)
     ymin = min(p[1] for p in points)
     ymax = max(p[1] for p in points)
@@ -539,9 +541,52 @@ def main() -> None:
         },
         reference_ids=REFERENCE_MODELS,
     )
+    mask_fronts = {}
+    mask_fronts["fps"] = pareto_chart(
+        all_rows, "fps", "FPS (higher is better)", True,
+        "Segmentation accuracy vs. throughput trade-off",
+        "pareto_mask_fps.png",
+        offsets={
+            "C01": (-10, 12),
+            "S01": (0, 12),
+            "B01": (30, -16),
+            "B03": (-56, -4),
+            "B02": (34, 10),
+            "M01": (-46, -10),
+            "M02": (10, -18),
+            "R01": (-14, -16),
+            "parking_front": (0, -17),
+        },
+        reference_ids=REFERENCE_MODELS,
+        ykey="mask_ap",
+        ylabel="Mask AP",
+    )
+    mask_fronts["size"] = pareto_chart(
+        all_rows, "size", "Model size (MB, lower is better)", False,
+        "Segmentation accuracy vs. model size trade-off",
+        "pareto_mask_size.png",
+        offsets={
+            "C01": (-34, 12),
+            "S01": (0, 12),
+            "B01": (0, -17),
+            "B03": (58, -12),
+            "B02": (50, 2),
+            "M01": (-56, -14),
+            "M02": (-56, 8),
+            "R01": (58, -26),
+            "parking_front": (52, -4),
+        },
+        reference_ids=REFERENCE_MODELS,
+        ykey="mask_ap",
+        ylabel="Mask AP",
+    )
+
     for key, front in fronts.items():
         ids = ", ".join(r["id"] for _, _, r in front)
         print(f"pareto front (mAP50-95 vs {key}): {ids}")
+    for key, front in mask_fronts.items():
+        ids = ", ".join(r["id"] for _, _, r in front)
+        print(f"pareto front (mask AP vs {key}): {ids}")
     print(f"wrote figures to {FIGDIR.relative_to(ROOT)}/")
 
 
