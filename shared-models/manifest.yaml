@@ -65,3 +65,15 @@ models:
     description: Reduced-resolution 432x432 ONNX used by the R01 FP16 engine build.
     size_bytes: 129955126
     sha256: f506ab8fdffce3559a07bf2152f3ee48bdd4ae4cb353dd6b76947256af249b29
+
+  - file: Q07-front-fp8-mixed-targeted.onnx
+    experiment_ids: [Q07]
+    camera: front
+    onnx_opset: 19
+    description: >-
+      FP8 Q/DQ ONNX (TRT_FP8QuantizeLinear custom ops) with final_heads and
+      decoder layer 4 kept FP16. Engine build requires TensorRT 10.x on an
+      sm89+ GPU (Ada/Hopper/Blackwell); FP8 kernels do not exist on Ampere.
+      Build with scripts/lightweighting/build_tensorrt_fp16.py --onnx <this>.
+    size_bytes: 131614789
+    sha256: 93afa34f0af4c96f6d8602edf36496460aa85b381b54dc760a4bebca3ef1fd1f
