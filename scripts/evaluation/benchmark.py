@@ -402,20 +402,28 @@ def base_row(model_path: Path, model_size_mb: float, baseline_size_mb: float, co
 def write_results_csv(output_path: Path, rows: Sequence[dict[str, Any]]) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     write_header = not output_path.exists() or output_path.stat().st_size == 0
+    output_fields = CSV_FIELDS
     if not write_header:
         with output_path.open("r", newline="", encoding="utf-8") as handle:
             existing_header = next(csv.reader(handle), [])
-        if existing_header != CSV_FIELDS:
+        if existing_header[: len(CSV_FIELDS)] != CSV_FIELDS:
             raise EvaluationError(
                 f"CSV schema differs from the current benchmark fields: {output_path}. "
                 "Choose a new --output path or archive/remove the old CSV."
             )
+        # Accuracy enrichers append fields such as Mask AP after benchmarking.
+        # Preserve those columns and leave them empty for the newly appended row;
+        # the corresponding evaluator fills them in afterward.
+        output_fields = existing_header
     with output_path.open("a", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=output_fields, extrasaction="ignore")
         if write_header:
             writer.writeheader()
         for row in rows:
-            cleaned = {field: format_csv_value(row.get(field, "")) for field in CSV_FIELDS}
+            cleaned = {
+                field: format_csv_value(row.get(field, ""))
+                for field in output_fields
+            }
             writer.writerow(cleaned)
 
 

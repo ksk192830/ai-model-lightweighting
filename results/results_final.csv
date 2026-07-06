@@ -7,3 +7,4 @@ M01,2:4 Control,2:4 sparsity dense control,504,rfdetr_engine,0.9318,0.9693,0.970
 M02,2:4 Sparse,NVIDIA 2:4 structured sparsity,504,rfdetr_engine,0.9297,0.9693,0.9734,0.8005,0.6171,0.8122,0.6606,0.7962,31.91,31.47,32.87,62.40,252,51.73,68.76,40.02,-0.0305,
 S01,Decoder-Pruned,Structured decoder layer pruning (FP32),504,rfdetr_engine,0.9432,0.9811,0.9877,0.8390,0.6460,0.8266,0.6719,0.8042,19.78,50.70,52.11,123.28,486,4.64,4.59,3.37,+0.0081,
 R01,Low-Res FP16,Reduced input resolution + FP16,432,rfdetr_engine,0.9263,0.9811,0.9792,0.8239,0.6237,0.7973,0.6576,0.7869,36.10,27.89,29.52,68.05,238,47.36,90.91,46.85,-0.0071,input size 432 (not directly comparable to 504)
+Q07,Targeted FP8,Task-sensitive mixed FP8/FP16 quantization,504,rfdetr_engine,0.9308,0.9858,0.9841,0.8304,0.6284,0.8012,0.6608,0.7958,32.10,31.44,33.40,39.80,250,69.22,69.76,40.08,-0.0006,

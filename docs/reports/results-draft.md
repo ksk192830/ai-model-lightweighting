@@ -20,6 +20,7 @@
 | 2:4 Sparse (M02) | 504 | 0.9297 | 0.9693 | 0.9734 | 0.8005 | 31.91 | 31.47 | 32.87 | 62.40 |
 | Decoder-Pruned (S01) | 504 | 0.9432 | 0.9811 | 0.9877 | 0.8390 | 19.78 | 50.70 | 52.11 | 123.28 |
 | Low-Res FP16 (R01) | 432 | 0.9263 | 0.9811 | 0.9792 | 0.8239 | 36.10 | 27.89 | 29.52 | 68.05 |
+| Targeted FP8 (Q07) | 504 | 0.9308 | 0.9858 | 0.9841 | 0.8304 | 32.10 | 31.44 | 33.40 | 39.80 |
 
 메인 비교표는 동일 RF-DETR Segmentation Large에서 파생된 TensorRT 후보로
 한정한다. 기존 Ultralytics `parking_front.pt`는 아키텍처와 입력 크기가
@@ -36,6 +37,7 @@
 | 2:4 Sparse (M02) | 51.7% | +68.8% | 40.0% | −0.0305 |
 | Decoder-Pruned (S01) | 4.6% | +4.6% | 3.4% | +0.0081 |
 | Low-Res FP16 (R01)‡ | 47.4% | +90.9% | 46.9% | −0.0071 |
+| Targeted FP8 (Q07) | 69.2% | +69.8% | 40.1% | −0.0006 |
 
 ‡ 입력 432×432 조건. 해상도 감소 효과가 포함되어 있어 504 후보와 동일
 조건 비교가 아니다.
@@ -51,10 +53,10 @@
 | `figures/mask_comparison.png` | 모델별 Mask AP / AP50 / AP75 |
 | `figures/mask_miou_comparison.png` | 모델별 Mask mIoU |
 | `figures/pareto_map_fps.png` | mAP50-95 vs FPS Pareto (front: S01, C01, B02, R01) |
-| `figures/pareto_map_size.png` | mAP50-95 vs Size Pareto (front: M02, C01, S01) |
+| `figures/pareto_map_size.png` | mAP50-95 vs Size Pareto (front: Q07, C01, S01) |
 | `figures/pareto_map_latency.png` | mAP50-95 vs Latency Pareto (front: R01, B02, C01, S01) |
 | `figures/pareto_mask_fps.png` | Mask AP vs FPS Pareto (front: S01, C01, B02, R01) |
-| `figures/pareto_mask_size.png` | Mask AP vs Size Pareto (front: M02, C01, S01) |
+| `figures/pareto_mask_size.png` | Mask AP vs Size Pareto (front: Q07, C01, S01) |
 
 ---
 
@@ -100,6 +102,11 @@ mAP50-95가 0.8005로 baseline 대비 0.0305 하락하여 정확도 손실이 �
 0.0071로 제한적이었다. 해상도 축소는 재학습 없이 속도를 확보하는 유효한
 수단이지만, 504 후보와 입력 조건이 다르므로 동일 조건 비교에서는 제외한다.
 
+Targeted FP8(Q07)은 bbox mAP50-95 0.8304로 baseline 대비 손실을 0.0006로
+제한하면서 엔진 크기를 39.80 MB로 69.2% 줄였고, 32.10 FPS를 기록했다.
+다만 Mask AP는 0.6284로 baseline보다 0.0025 낮으며 FP8 실행에는 sm89+
+GPU가 필요하다.
+
 ## 4.3 Trade-off Analysis
 
 mAP50-95–FPS 평면에서 Pareto front는 S01(0.8390, 19.78 FPS),
@@ -108,23 +115,24 @@ C01(0.8378, 32.33 FPS), B02(0.8333, 32.65 FPS), R01(0.8239, 36.10 FPS)로
 앞서므로 지배(dominated)되며, 2:4 계열(M01, M02)은 유사한 속도의 C01보다
 정확도가 0.037 이상 낮아 front에 들지 못했다.
 
-mAP50-95–크기 평면의 Pareto front는 M02(62.40 MB), C01(64.70 MB),
-S01(123.28 MB)이다(Fig. pareto_map_size). C01은 M02보다 2.3 MB 크지만
-mAP50-95가 0.0373 높아, 크기 축에서도 실질적인 선택지는 C01로 수렴한다.
+mAP50-95–크기 평면의 RF-DETR Pareto front는 Q07(39.80 MB),
+C01(64.70 MB), S01(123.28 MB)이다(Fig. pareto_map_size). Q07은
+baseline과 사실상 같은 bbox 정확도를 가장 작은 RF-DETR 엔진으로
+달성했고, C01과 S01은 더 큰 크기로 더 높은 정확도를 제공한다.
 
 mAP50-95–지연시간 평면에서는 R01(27.89 ms), B02(30.64 ms), C01(31.00 ms),
 S01(50.70 ms)이 front를 구성한다(Fig. pareto_map_latency). C01은 B02 대비
 0.36 ms의 지연 증가로 +0.0045의 mAP50-95를 얻는 위치에 있다.
 
 동일한 분석을 segmentation 지표로 반복해도 결론은 유지된다. Mask AP–FPS
-평면의 Pareto front(S01, C01, B02, R01)와 Mask AP–크기 평면의 front(M02,
+평면의 Pareto front(S01, C01, B02, R01)와 Mask AP–크기 평면의 front(Q07,
 C01, S01)는 bbox mAP50-95 기준과 구성이 완전히 일치한다
 (Fig. pareto_mask_fps, pareto_mask_size). 즉 후보 선정은 detection과
 segmentation 어느 지표로 평가해도 동일하다.
 
-종합하면 C01(Structured+FP16)이 세 Pareto front에 모두 포함되는 유일한
-504×504 후보로, 정확도 최우선이면 S01, 지연시간 최우선이면 R01, 그 외의
-일반적인 배포 조건에서는 C01이 합리적인 선택이다.
+종합하면 정확도 최우선은 S01, 지연시간 최우선은 R01, 일반적인 배포
+조건은 C01이 합리적이다. sm89+ GPU에서 엔진 크기를 최우선으로 하면
+Q07이 새로운 선택지다.
 
 ## 4.4 Discussion
 

@@ -1,11 +1,11 @@
 {
-  "created_at_utc": "2026-07-05T23:21:22.673270+00:00",
+  "created_at_utc": "2026-07-06T06:46:59.067052+00:00",
   "experiment_id": "Q07",
   "camera": "front",
   "engine": "artifacts/experiments/Q07/front/model.engine",
-  "engine_size_bytes": 42604628,
-  "dataset": "/home/lair/datum/rfdetr_seg/test",
-  "image_count": 446,
+  "engine_size_bytes": 41730924,
+  "dataset": "data/labeled_test/front",
+  "image_count": 296,
   "category_ids": [
     1,
     2,
@@ -14,31 +14,31 @@
   "threshold": 0.001,
   "miou_threshold": 0.25,
   "warmup": 0,
-  "hardware": "NVIDIA GeForce RTX 5070",
+  "hardware": "NVIDIA GeForce RTX 4050 Laptop GPU",
   "torch": "2.12.1+cu130",
   "cuda": "13.0",
   "tensorrt": "10.16.1.11",
-  "prediction_count": 129785,
+  "prediction_count": 86605,
   "metrics": {
     "segm": {
-      "ap": 0.6468442345623054,
-      "ap50": 0.8661217038711393,
-      "ap75": 0.6599759025223166,
-      "ap_small": 0.24749966402702525,
-      "ap_medium": 0.39618475014776366,
-      "ap_large": 0.7174977821659313,
-      "ar1": 0.679129600558172,
-      "ar10": 0.7247713106664282,
-      "ar100": 0.753887111482048,
-      "ar_small": 0.3548611111111111,
-      "ar_medium": 0.6443469785575048,
-      "ar_large": 0.790813846653024
+      "ap": 0.6283963878385788,
+      "ap50": 0.8012073838744573,
+      "ap75": 0.6608170869447527,
+      "ap_small": 0.10957166235651496,
+      "ap_medium": 0.5081581065781028,
+      "ap_large": 0.6889810649430385,
+      "ar1": 0.6723318175554638,
+      "ar10": 0.7011955353451839,
+      "ar100": 0.7278904505994214,
+      "ar_small": 0.20714285714285716,
+      "ar_medium": 0.6050925925925926,
+      "ar_large": 0.7529152021511574
     },
-    "semantic_miou": 0.8252639954430454,
+    "semantic_miou": 0.7958137788951808,
     "semantic_iou_by_category": {
-      "1": 0.6287075856472749,
-      "2": 0.9367669390165505,
-      "3": 0.9103174616653109
+      "1": 0.598747163855184,
+      "2": 0.9244895841497723,
+      "3": 0.8642045886805861
     }
   }
 }

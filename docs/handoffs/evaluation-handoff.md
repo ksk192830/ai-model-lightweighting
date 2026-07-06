@@ -13,7 +13,7 @@
 - 데이터셋: `data/labeled_test/front`
 - 평가 이미지: 296장
 - 정답 객체: 423개
-- 평가 대상: RF-DETR TensorRT 8개 + Ultralytics PT 1개
+- 평가 대상: RF-DETR TensorRT 9개 + Ultralytics PT 1개
 - bbox, segmentation, 속도, 지연시간, 크기, GPU 메모리 평가 완료
 - 후방 카메라는 이번 범위에 포함되지 않음
 
@@ -22,7 +22,7 @@
 | 경로 | 역할 |
 |---|---|
 | `results/paper_metrics.csv` | 속도와 정확도를 모두 보존한 원본 결과 |
-| `results/results_final.csv` | 논문용 RF-DETR 후보 8개 정리본 |
+| `results/results_final.csv` | 논문용 RF-DETR 후보 9개 정리본 |
 | `results/coco-evaluation/*-front.json` | 모델별 segmentation 상세 결과 |
 | `scripts/evaluation/benchmark.py` | 속도·지연시간·메모리 통합 benchmark |
 | `scripts/evaluation/evaluate.py` | bbox 정확도 및 클래스 이름 매핑 평가 |
@@ -44,7 +44,7 @@
 | 속도 warm-up | 10회 |
 | timed runs | 100회 × 3 blocks |
 | 정확도 이미지 | 전체 296장 |
-| B01~S01 입력 | 504×504 |
+| B01~S01 및 Q07 입력 | 504×504 |
 | R01 입력 | 432×432 |
 | `parking_front.pt` 입력 | 512×512 |
 
@@ -79,6 +79,7 @@ COCO 정답에는 배경 범주 `0: front`가 있고 실제 객체 범주는
 | M02 | 0.8005 | 0.6171 | 0.7962 | 31.91 | 62.40 |
 | S01 | 0.8390 | 0.6460 | 0.8042 | 19.78 | 123.28 |
 | R01 | 0.8239 | 0.6237 | 0.7869 | 36.10 | 68.05 |
+| Q07 | 0.8304 | 0.6284 | 0.7958 | 32.10 | 39.80 |
 | parking_front | 0.7130 | 0.3065 | 0.6045 | 36.87 | 5.70 |
 
 결론은 다음과 같다.
@@ -87,6 +88,7 @@ COCO 정답에는 배경 범주 `0: front`가 있고 실제 객체 범주는
 - 단순하고 안정적인 경량화: B02
 - 정확도 최우선: S01
 - RF-DETR 속도 최우선: R01
+- sm89+ GPU에서 RF-DETR 크기 최우선: Q07
 - 크기 최우선 참고 모델: `parking_front.pt`
 - B03은 B02 대비 INT8 추가 이득이 작음
 - M01/M02는 크기·속도 대비 정확도 손실이 큼
