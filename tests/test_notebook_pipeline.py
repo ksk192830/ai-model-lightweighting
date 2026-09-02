@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -21,6 +22,7 @@ from build_engine_suite import (  # noqa: E402
     suite_blockers,
     suite_experiments,
 )
+from build_candidate import portable_command  # noqa: E402
 
 
 def load_package_module():
@@ -33,6 +35,36 @@ def load_package_module():
 
 
 class NotebookPipelineTest(unittest.TestCase):
+    def test_recorded_build_commands_use_repository_relative_paths(self) -> None:
+        command = portable_command(
+            [
+                str(REPOSITORY_ROOT / ".venv/bin/python"),
+                str(REPOSITORY_ROOT / "scripts/lightweighting/build_tensorrt_fp16.py"),
+                "--onnx",
+                str(REPOSITORY_ROOT / "artifacts/experiments/B01/front/model.onnx"),
+            ]
+        )
+        self.assertEqual(command[0], ".venv/bin/python")
+        self.assertEqual(command[1], "scripts/lightweighting/build_tensorrt_fp16.py")
+        self.assertEqual(
+            command[3], "artifacts/experiments/B01/front/model.onnx"
+        )
+
+    def test_stage1_suite_contains_every_static_gate_pass(self) -> None:
+        registry = ExperimentRegistry.load()
+        report = json.loads(
+            (REPOSITORY_ROOT / "results/stage1-static-evaluation.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        expected = tuple(
+            row["experiment_id"]
+            for row in report["rows"]
+            if row["stage2_notebook_eligible"]
+        )
+        self.assertEqual(suite_experiments(registry, "stage1"), expected)
+        self.assertEqual(len(expected), 22)
+
     def test_int8_command_uses_registered_train_split(self) -> None:
         calibration = REPOSITORY_ROOT / "data/training/front_session_split_v1/train"
         command = build_command(
@@ -91,10 +123,12 @@ class NotebookPipelineTest(unittest.TestCase):
             for experiment_id in suite_experiments(registry, "final8")
         }
         for source_id in final_source_ids:
-            fine_tuning = registry.get(source_id).get("fine_tuning", {})
+            source = registry.get(source_id)
+            fine_tuning = source.get("fine_tuning", {})
             if not fine_tuning.get("required"):
                 continue
-            if fine_tuning.get("completed"):
+            decision = source.get("result", {}).get("decision")
+            if fine_tuning.get("completed") and decision != "rejected":
                 self.assertIn(source_id, sources)
             else:
                 self.assertNotIn(source_id, sources)

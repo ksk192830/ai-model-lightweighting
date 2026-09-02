@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from datetime import datetime, timezone
@@ -16,6 +17,7 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from kips_lightweighting.metadata import sha256  # noqa: E402
 from kips_lightweighting.registry import ExperimentRegistry  # noqa: E402
+from kips_lightweighting.artifacts import artifact_paths  # noqa: E402
 
 from build_engine_suite import (  # noqa: E402
     SUITES,
@@ -47,6 +49,15 @@ def shared_onnx_sources() -> dict[str, Path]:
     return sources
 
 
+def link_or_copy(source: Path, target: Path) -> None:
+    """Avoid duplicating multi-gigabyte ONNX payloads on the same filesystem."""
+    target.unlink(missing_ok=True)
+    try:
+        os.link(source, target)
+    except OSError:
+        shutil.copy2(source, target)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--suite", choices=tuple(SUITES), default="final8")
@@ -69,12 +80,20 @@ def main() -> int:
         registry,
         experiments,
         require_artifact_onnx=False,
+        require_completed_recovery=args.suite != "stage1",
     )
-    sources = shared_onnx_sources()
     source_ids = {
         artifact_source_id(experiment_id, registry.get(experiment_id))
         for experiment_id in experiments
     }
+    if args.suite == "stage1":
+        sources = {
+            source_id: artifact_paths(source_id, "front").onnx
+            for source_id in source_ids
+            if artifact_paths(source_id, "front").onnx.is_file()
+        }
+    else:
+        sources = shared_onnx_sources()
     for source_id in sorted(source_ids):
         if source_id not in sources:
             blockers.append(
@@ -100,6 +119,20 @@ def main() -> int:
         raise FileExistsError(f"Bundle already exists: {output}")
     output.mkdir(parents=True, exist_ok=True)
 
+    if args.suite == "stage1":
+        for directory_name in ("configs", "scripts", "src"):
+            shutil.copytree(
+                REPOSITORY_ROOT / directory_name,
+                output / directory_name,
+                dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+            )
+        shutil.copy2(REPOSITORY_ROOT / "requirements.txt", output / "requirements.txt")
+        stage1_report = REPOSITORY_ROOT / "results/stage1-static-evaluation.json"
+        report_target = output / "results/stage1-static-evaluation.json"
+        report_target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(stage1_report, report_target)
+
     files = []
     for source_id in sorted(source_ids):
         source = sources[source_id]
@@ -112,7 +145,7 @@ def main() -> int:
             / "model.onnx"
         )
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, target)
+        link_or_copy(source, target)
         files.append(
             {
                 "experiment_id": source_id,
@@ -147,6 +180,7 @@ def main() -> int:
         ],
         "requires_calibration_data": any(
             registry.get(experiment_id)["precision"] == "int8"
+            and registry.get(experiment_id)["stage"] == "tensorrt"
             for experiment_id in experiments
         ),
         "calibration_dir": registry.defaults["reproducibility"].get(

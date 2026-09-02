@@ -101,6 +101,13 @@ def parse_args() -> argparse.Namespace:
         help="Override the default TensorRT engine path.",
     )
     parser.add_argument(
+        "--precision-label",
+        help=(
+            "Label recorded for an explicitly supplied TensorRT engine "
+            "(for example fp8, int4, or mixed)."
+        ),
+    )
+    parser.add_argument(
         "--threshold", type=float, default=DEFAULT_BENCHMARK_THRESHOLD
     )
     parser.add_argument("--warmup", type=int, default=10)
@@ -420,7 +427,7 @@ def main() -> int:
             raise FileNotFoundError(f"TensorRT engine not found: {model_path}")
         runner = TensorRTRunner(model_path)
         predict = lambda image: runner.predict(image, threshold=args.threshold)
-        precision = (
+        precision = args.precision_label or (
             "int8-fp16-fallback"
             if precision_name == "int8"
             else precision_name

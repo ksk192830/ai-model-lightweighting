@@ -43,10 +43,14 @@ SUITES = {
         "C02",
         "R01",
     ),
+    # Resolved dynamically from results/stage1-static-evaluation.json.
+    "stage1": (),
 }
 
 
 def artifact_source_id(experiment_id: str, experiment: dict) -> str:
+    if artifact_paths(experiment_id, "front").onnx.is_file():
+        return experiment_id
     return str(experiment.get("artifact_source", experiment_id))
 
 
@@ -56,6 +60,18 @@ def suite_experiments(
 ) -> tuple[str, ...]:
     """Resolve the structured control from C01's registered selection."""
     experiments = SUITES[suite]
+    if suite == "stage1":
+        report_path = REPOSITORY_ROOT / "results/stage1-static-evaluation.json"
+        if not report_path.is_file():
+            raise FileNotFoundError(report_path)
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        if report.get("unperformed_count") != 0:
+            raise RuntimeError("Stage-1 evaluation still has unperformed candidates")
+        return tuple(
+            str(row["experiment_id"])
+            for row in report.get("rows", [])
+            if row.get("stage2_notebook_eligible") is True
+        )
     if suite != "final8":
         return experiments
     selected = str(
@@ -72,6 +88,7 @@ def suite_blockers(
     experiments: tuple[str, ...],
     *,
     require_artifact_onnx: bool = True,
+    require_completed_recovery: bool = True,
 ) -> list[str]:
     """Reject missing ONNX and recovery prototypes before engine creation."""
     blockers = []
@@ -80,7 +97,8 @@ def suite_blockers(
         experiment = registry.get(experiment_id)
         source_id = artifact_source_id(experiment_id, experiment)
         selected_id = experiment.get("selected_experiment")
-        if selected_id is not None and str(selected_id) != source_id:
+        has_own_onnx = artifact_paths(experiment_id, "front").onnx.is_file()
+        if selected_id is not None and not has_own_onnx and str(selected_id) != source_id:
             blockers.append(
                 f"{experiment_id}: selected_experiment={selected_id} does not "
                 f"match artifact_source={source_id}"
@@ -90,7 +108,11 @@ def suite_blockers(
         checked_sources.add(source_id)
         source = registry.get(source_id)
         fine_tuning = source.get("fine_tuning", {})
-        if fine_tuning.get("required") and not fine_tuning.get("completed"):
+        if (
+            require_completed_recovery
+            and fine_tuning.get("required")
+            and not fine_tuning.get("completed")
+        ):
             blockers.append(
                 f"{source_id}: recovery fine-tuning is not completed"
             )
@@ -100,7 +122,11 @@ def suite_blockers(
         ):
             blockers.append(f"{source_id}: source ONNX is missing")
 
-    if any(registry.get(item)["precision"] == "int8" for item in experiments):
+    if any(
+        registry.get(item)["precision"] == "int8"
+        and registry.get(item)["stage"] == "tensorrt"
+        for item in experiments
+    ):
         calibration = REPOSITORY_ROOT / registry.defaults["reproducibility"][
             "front_calibration_dir"
         ]
@@ -141,7 +167,11 @@ def main() -> int:
     args = parse_args()
     registry = ExperimentRegistry.load()
     experiments = suite_experiments(registry, args.suite)
-    blockers = suite_blockers(registry, experiments)
+    blockers = suite_blockers(
+        registry,
+        experiments,
+        require_completed_recovery=args.suite != "stage1",
+    )
     if blockers:
         print("suite is not ready:")
         for blocker in blockers:
