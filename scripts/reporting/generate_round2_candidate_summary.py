@@ -28,7 +28,22 @@ import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-EXPERIMENT_IDS = ("B01", "U02", "R01", "S01", "S02", "S03", "M01")
+EXPERIMENT_IDS = (
+    "B01",
+    "U01",
+    "U02",
+    "U03",
+    "R02",
+    "R01",
+    "R03",
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "C03",
+    "C04",
+    "M01",
+)
 BASELINE_ID = "B01"
 DEFAULT_BASELINE_EVALUATION = Path(
     "results/coco-evaluation/front-rfdetr-seg-large-v1-test.json"
@@ -49,6 +64,8 @@ CSV_COLUMNS = [
     "method",
     "method_detail",
     "status",
+    "candidate_decision",
+    "decision_reason",
     "resolution_px",
 ]
 for output_name, _ in STRUCTURAL_FIELDS:
@@ -197,7 +214,10 @@ def method_detail(experiment: dict[str, Any]) -> str:
     if isinstance(pruning, dict):
         details.extend(f"{key}={value}" for key, value in sorted(pruning.items()))
     shape = experiment.get("input_shape")
-    if experiment.get("method") == "input-resolution" and isinstance(shape, list):
+    if experiment.get("method") in {
+        "input-resolution",
+        "structured-resolution",
+    } and isinstance(shape, list):
         details.append(f"input={shape[-2]}x{shape[-1]}")
     return "; ".join(details) if details else "N/A"
 
@@ -495,6 +515,16 @@ def generate(root: Path) -> tuple[list[dict[str, Any]], list[EvaluationAudit]]:
             "method": experiment.get("method", "N/A"),
             "method_detail": method_detail(experiment),
             "status": effective_status(experiment, report),
+            "candidate_decision": (
+                "control"
+                if experiment_id == BASELINE_ID
+                else result.get("decision", "pending")
+            ),
+            "decision_reason": (
+                "baseline control"
+                if experiment_id == BASELINE_ID
+                else result.get("reason", "final decision not recorded")
+            ),
             "resolution_px": input_resolution(experiment, static),
             "static_analysis": relative(root, static_path),
             "comparison": (
@@ -576,10 +606,12 @@ def render_markdown(
     rows: list[dict[str, Any]], audits: list[EvaluationAudit], root: Path
 ) -> str:
     lines = [
-        "# RF-DETR Round-2 Candidate Summary",
+        "# RF-DETR Desktop Preliminary Diagnostics (Legacy)",
         "",
         "이 문서는 `scripts/reporting/generate_round2_candidate_summary.py`가 실제 registry, "
         "static-analysis/comparison JSON 및 평가 JSON에서 생성한다. 수치는 추정하지 않는다.",
+        "이 문서의 기존 decision은 데스크탑 사전 진단이며 1차 정적평가 통과 여부가 아니다. "
+        "1차의 단일 기준은 `results/stage1-static-evaluation.md`이다.",
         "",
         "- ONNX initializer elements는 상수 tensor의 element 수이며 학습 가능 "
         "parameter 수와 동의어가 아니다.",
@@ -588,11 +620,33 @@ def render_markdown(
         "- 모든 `Δ`는 B01 대비 `candidate - B01`, 상대 변화율은 `100 × Δ / B01`이다.",
         "- 복구 학습이 끝나지 않은 후보의 정확도는 복구 전 진단값 대신 `N/A (pending)`으로 표시한다.",
         "",
+        "## 기존 데스크탑 사전 판정(현재 1차 gate에 사용하지 않음)",
+        "",
+        "| ID | Method detail | Decision | Reason |",
+        "|---|---|---|---|",
+    ]
+    for row in rows:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    md_value(row["experiment_id"]),
+                    md_value(row["method_detail"]),
+                    md_value(row["candidate_decision"]),
+                    md_value(row["decision_reason"]),
+                ]
+            )
+            + " |"
+        )
+    lines.extend(
+        [
+        "",
         "## 구조 및 연산량",
         "",
         "| ID | Method | Status | Res. | Initializer elements | Δ elements | Δ elements (%) | Nodes | Δ nodes | Δ nodes (%) | MACs* | Δ MACs | Δ MACs (%) | FLOPs* | Δ FLOPs | Δ FLOPs (%) | ONNX bytes | Δ bytes | Δ size (%) |",
         "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
-    ]
+        ]
+    )
     for row in rows:
         lines.append(
             "| "

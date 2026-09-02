@@ -11,6 +11,11 @@ Google Colab에서는
 사용하며, engine 출력 query 수와 후처리 `num_select`가 일치하는지도 smoke test에서
 확인한다.
 
+> `front_tensorrt_ready4.ipynb`는 최소 예시 4개용 기존 UI다. 현재 논문 평가의
+> 권위 있는 대상은 1차 통과 22개이며, `--suite stage1`과
+> `run_notebook_stage2.py`를 사용한다. 기존 ready4/final8을 전체 후보 평가로
+> 해석하지 않는다.
+
 ## 전달 대상
 
 ```text
@@ -94,6 +99,20 @@ log에서 확인한다.
 5. 모든 후보를 동일한 test 437장과 평가 설정으로 측정한다.
 
 ## 재현 가능한 생성·평가 순서
+
+전체 후보 실행은 다음 세 명령이 기준이다.
+
+```bash
+.venv/bin/python scripts/reporting/generate_stage1_static_evaluation.py
+.venv/bin/python scripts/experiments/package_notebook_bundle.py --suite stage1 \
+  --output-dir delivery/notebook-front-stage1 --force
+.venv/bin/python scripts/data_preparation/package_notebook_data.py \
+  --output-dir delivery/notebook-front-stage1
+python scripts/experiments/run_notebook_stage2.py --force-build
+```
+
+위 실행은 22개 engine plan, 17개 unique ONNX, 후보별 terminal 상태와 실패
+로그를 보존하며 전체 terminal 후에만 Pareto 결과를 생성한다.
 
 첫 단계는 복구 학습과 무관한 네 engine이다.
 

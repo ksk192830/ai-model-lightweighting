@@ -182,7 +182,10 @@ def test_csv_contains_exact_baseline_deltas_and_na(tmp_path: Path) -> None:
 
     assert by_id["B01"]["onnx_params_delta_abs"] == "0"
     assert by_id["B01"]["bbox_ap_delta_rel_pct"] == "0"
-    assert by_id["U02"]["onnx_params_delta_abs"] == "-1"
+    assert by_id["U02"]["onnx_params_delta_abs"] == str(
+        -summary.EXPERIMENT_IDS.index("U02")
+    )
+    assert by_id["B01"]["candidate_decision"] == "control"
     assert by_id["S02"]["bbox_ap"] == "N/A"
     assert by_id["S02"]["accuracy_source"] == "N/A"
 

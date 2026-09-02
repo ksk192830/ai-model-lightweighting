@@ -1,5 +1,10 @@
 # 신규 Front baseline 경량화 2차 계획
 
+> 현재 실행 순서는 **전체 후보 생성 → 1차 정적평가 → 통과 후보 노트북
+> 2차 정확도·성능 실측 → 전 후보 terminal 후 Pareto**다. 이하의 이전
+> 우선순위·정확도 조기 탈락 표현은 이력으로만 보존하며, 현재 판정은
+> [`results/stage1-static-evaluation.md`](../../results/stage1-static-evaluation.md)를 따른다.
+
 ## 목적과 고정 기준
 
 이번 경량화는 세션 누수 없이 다시 학습한 RF-DETR Segmentation Large를 유일한

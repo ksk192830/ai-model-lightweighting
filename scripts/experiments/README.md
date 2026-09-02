@@ -64,6 +64,9 @@ every model.
   --experiments B01 B02 B03 U02 --camera front
 
 # Package newly generated portable ONNX inputs for the NVIDIA notebook.
+.venv/bin/python scripts/reporting/generate_stage1_static_evaluation.py
+.venv/bin/python scripts/experiments/package_notebook_bundle.py \
+  --suite stage1 --dry-run
 .venv/bin/python scripts/experiments/package_notebook_bundle.py \
   --suite ready4 --dry-run
 .venv/bin/python scripts/experiments/package_notebook_bundle.py \
@@ -72,4 +75,8 @@ every model.
 # Build the selected engine suite after its ONNX files exist.
 .venv/bin/python scripts/experiments/build_engine_suite.py \
   --suite final8 --force
+
+# On the notebook, build/evaluate every Stage-1-passing candidate and emit
+# Pareto results only after every candidate has a terminal Stage-2 result.
+python scripts/experiments/run_notebook_stage2.py --force-build
 ```

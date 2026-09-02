@@ -32,7 +32,9 @@
 
 현재 문서:
 
+- [3단계 후보 평가 프로토콜](guides/three-stage-candidate-evaluation.md)
 - [신규 Front 경량화 2차 계획](guides/front-lightweighting-round-2.md)
+- [추가 후보 및 1차 평가](guides/additional-candidate-screening.md)
 - [새 RF-DETR Front 모델 학습](guides/front-baseline-training.md)
 - [세션 누수 방지 데이터 분할](guides/leakage-safe-dataset-split.md)
 - [TensorRT 노트북 생성·검증](guides/tensorrt-notebook-portability.md)
@@ -63,6 +65,7 @@
 
 현재 문서:
 
+- [1차 전체 27개 정적평가 표](../results/stage1-static-evaluation.md)
 - [데이터 분할 타당성 검증](reports/dataset-split-validity.md)
 - [신규 RF-DETR 무증강 세션 분리 Test 결과](reports/front-rfdetr-seg-large-v1-test.md)
 - [경량화 후보 정량 비교](reports/front-lightweighting-candidate-comparison.md)
