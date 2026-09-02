@@ -1,34 +1,22 @@
 # Data preparation utilities
 
-이 디렉터리의 스크립트는 확정된 calibration 및 labeled test 데이터를
-다시 생성하거나 생성 과정을 재현할 때만 사용한다.
-
-일반적인 경량화 작업에서는 Google Drive에서 정리된 다음 폴더를
-`data/` 아래에 내려받으면 되며, 이 스크립트들을 실행할 필요가 없다.
-
-```bash
-.venv/bin/python scripts/data_preparation/download_data.py
-```
+현재 사용하는 데이터는 Roboflow Version 9 무증강 export와 이를 촬영 세션
+단위로 다시 나눈 최종 split이다.
 
 ```text
-data/
-├── calibration/
-│   ├── front/
-│   └── rear/
-└── labeled_test/
-    ├── front/
-    └── rear/
+data/training/front_unaugmented/
+data/training/front_session_split_v1/
+├── train/  # 3,625장
+├── valid/  #   404장
+└── test/   #   437장
 ```
 
-## Utilities
+유지하는 실행기:
 
-- `create_calibration_splits.py`: 원본 이미지에서 calibration/test 목록 생성
-- `create_labeled_test_splits.py`: 라벨 보유 여부에 따라 test 목록 보정
-- `extract_coco_subset.py`: Roboflow COCO export에서 평가 subset 추출
-- `materialize_split.py`: split 목록의 이미지를 휴대 가능한 폴더로 복사
+- `create_unaugmented_roboflow_version.py`: 무증강 Roboflow 버전 생성
+- `create_leakage_safe_split.py`: 촬영 세션 단위 train/valid/test 생성
+- `audit_dataset_split.py`: 증강·중복·세션·COCO 참조 누수 검사
 
-모든 명령은 저장소 루트에서 실행한다.
-
-```bash
-python3 scripts/data_preparation/create_calibration_splits.py
-```
+과거 Google Drive calibration/labeled-test 파이프라인과 rear split 목록은
+현재 실험에 사용하지 않아 제거했다. 양자화 calibration 표본은 최종 `train`
+안에서만 선택한다.

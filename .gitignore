@@ -15,14 +15,31 @@ env/
 # Jupyter
 .ipynb_checkpoints/
 
-# Data and experiment outputs
-data/
-artifacts/
-results/
+# Data and experiment outputs. Keep only directory guides visible by default;
+# completed, paper-facing metadata is explicitly force-added when reviewed.
+data/*
+!data/README.md
+!data/training/
+data/training/*
+!data/training/README.md
+
+artifacts/*
+!artifacts/README.md
+!artifacts/training/
+!artifacts/experiments/
+artifacts/training/*
+!artifacts/training/README.md
+artifacts/experiments/*
+!artifacts/experiments/README.md
+
+results/*
+!results/README.md
+!results/coco-evaluation/
+results/coco-evaluation/*
+!results/coco-evaluation/README.md
 checkpoints/
 delivery/
 models/*
-!models/*.pth
 runs/
 wandb/
 

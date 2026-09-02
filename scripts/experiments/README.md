@@ -23,7 +23,7 @@ every model.
 # Validate 2:4 recovery-training prerequisites without starting training.
 .venv/bin/python scripts/experiments/analyze_candidate.py \
   M01 --camera front --fine-tuning-preflight \
-  --dataset-dir data/training/front
+  --dataset-dir data/training/front_session_split_v1
 
 # Run 2:4 recovery fine-tuning after the preflight reports training_allowed=true.
 .venv/bin/python scripts/experiments/train_candidate.py \
@@ -63,11 +63,13 @@ every model.
 .venv/bin/python scripts/experiments/package_delivery.py \
   --experiments B01 B02 B03 U02 --camera front
 
-# Package portable ONNX inputs for another NVIDIA machine.
+# Package newly generated portable ONNX inputs for the NVIDIA notebook.
+.venv/bin/python scripts/experiments/package_notebook_bundle.py \
+  --suite ready4 --dry-run
 .venv/bin/python scripts/experiments/package_notebook_bundle.py \
   --suite final8 --force
 
-# Rebuild the final engine suite and run one-image smoke inference.
+# Build the selected engine suite after its ONNX files exist.
 .venv/bin/python scripts/experiments/build_engine_suite.py \
   --suite final8 --force
 ```

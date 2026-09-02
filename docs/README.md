@@ -32,10 +32,11 @@
 
 현재 문서:
 
-- [전체 실험 워크플로](guides/experiment-workflow.md)
-- [2:4 recovery fine-tuning](guides/2to4-fine-tuning.md)
-- [학습 장비 이식](guides/training-portability.md)
+- [신규 Front 경량화 2차 계획](guides/front-lightweighting-round-2.md)
+- [새 RF-DETR Front 모델 학습](guides/front-baseline-training.md)
+- [세션 누수 방지 데이터 분할](guides/leakage-safe-dataset-split.md)
 - [TensorRT 노트북 생성·검증](guides/tensorrt-notebook-portability.md)
+- [데스크탑 TensorRT 자동 파이프라인](guides/desktop-tensorrt-pipeline.md)
 
 ### `handoffs/` — 지금 무엇을 이어받아야 하는가
 
@@ -48,9 +49,7 @@
 
 현재 문서:
 
-- [평가 작업 인수인계](handoffs/evaluation-handoff.md)
-- [GPU 평가 실행 프롬프트](handoffs/gpu-evaluation-prompt.md)
-- [고성능 데스크탑 recovery 프롬프트](handoffs/high-performance-recovery-prompt.md)
+- [현재 진행 현황](PROJECT_STATUS.md)
 - [모델 artifact 인덱스](handoffs/model-artifact-index.md)
 
 ### `reports/` — 무엇을 관측하고 결정했는가
@@ -64,8 +63,11 @@
 
 현재 문서:
 
-- [최종 TensorRT 엔진 선정](reports/final-engine-selection.md)
-- [Experimental Results 초안](reports/results-draft.md)
+- [데이터 분할 타당성 검증](reports/dataset-split-validity.md)
+- [신규 RF-DETR 무증강 세션 분리 Test 결과](reports/front-rfdetr-seg-large-v1-test.md)
+- [경량화 후보 정량 비교](reports/front-lightweighting-candidate-comparison.md)
+- [논문용 정적 분석](reports/paper-static-analysis.md)
+- [평가 기준 및 자동화 감사](reports/evaluation-automation-audit.md)
 
 ## 경계가 애매할 때
 

@@ -5,28 +5,29 @@
 
 | ID | 이름 | Camera | 방식 | Precision | 상태 | 파일 |
 |---|---|---|---|---|---|---|
-| B01 | baseline-fp32 | front | none | fp32 | engine-built | - |
-| B01 | baseline-fp32 | rear | none | fp32 | engine-built | - |
-| B02 | baseline-fp16 | front | tensorrt-fp16 | fp16 | engine-built | - |
-| B02 | baseline-fp16 | rear | tensorrt-fp16 | fp16 | engine-built | - |
-| B03 | baseline-int8 | front | tensorrt-int8-ptq | int8 | engine-built | - |
-| B03 | baseline-int8 | rear | tensorrt-int8-ptq | int8 | engine-built | - |
-| U01 | unstructured-magnitude-10 | front | global-magnitude | fp32 | onnx-exported | - |
-| U02 | unstructured-magnitude-30 | front | global-magnitude | fp32 | engine-built | - |
-| U03 | unstructured-magnitude-50 | front | global-magnitude | fp32 | onnx-exported | - |
-| M01 | sparse-2to4-dense-control | front | nvidia-2to4 | fp16 | engine-built | - |
-| M02 | sparse-2to4 | front | nvidia-2to4 | fp16 | engine-built | - |
-| M03 | sparse-2to4-extended-recovery | front | nvidia-2to4 | fp16 | checkpoint-created | [PTH](../../artifacts/experiments/M03/front/model.pth), [metadata](../../artifacts/experiments/M03/front/metadata.json), [sparsity](../../artifacts/experiments/M03/front/sparsity.json), [2:4 survey](../../artifacts/experiments/M03/front/2to4-eligibility.json), [fine-tuning preflight](../../artifacts/experiments/M03/front/fine-tuning-preflight.json), [recovery training](../../artifacts/experiments/M03/front/recovery/recovery-training.json) |
+| B01 | baseline-fp32 | front | none | fp32 | onnx-exported | [shared ONNX](../../shared-models/B01-front-baseline.onnx), [ONNX](../../artifacts/experiments/B01/front/model.onnx), [metadata](../../artifacts/experiments/B01/front/metadata.json), [analysis](../../artifacts/experiments/B01/front/static-analysis.json), [ONNX equivalence](../../artifacts/experiments/B01/front/onnx-equivalence.json) |
+| B02 | baseline-fp16 | front | tensorrt-fp16 | fp16 | planned | [shared ONNX](../../shared-models/B01-front-baseline.onnx) |
+| B03 | baseline-int8 | front | tensorrt-int8-ptq | int8 | planned | [shared ONNX](../../shared-models/B01-front-baseline.onnx), [metadata](../../artifacts/experiments/B03/front/metadata.json) |
+| U01 | unstructured-magnitude-10 | front | global-magnitude | fp32 | planned | - |
+| U02 | unstructured-magnitude-30 | front | global-magnitude | fp32 | static-analysis-rejected | [PTH](../../artifacts/experiments/U02/front/model.pth), [ONNX](../../artifacts/experiments/U02/front/model.onnx), [metadata](../../artifacts/experiments/U02/front/metadata.json), [analysis](../../artifacts/experiments/U02/front/static-analysis.json), [comparison](../../artifacts/experiments/U02/front/comparison-B01.json), [ONNX equivalence](../../artifacts/experiments/U02/front/onnx-equivalence.json), [COCO evaluation](../../results/coco-evaluation/U02-front-pth.json) |
+| U03 | unstructured-magnitude-50 | front | global-magnitude | fp32 | planned | - |
+| M01 | sparse-2to4-dense-control | front | nvidia-2to4 | fp16 | onnx-exported | [PTH](../../artifacts/experiments/M01/front/model.pth), [ONNX](../../artifacts/experiments/M01/front/model.onnx), [metadata](../../artifacts/experiments/M01/front/metadata.json), [analysis](../../artifacts/experiments/M01/front/static-analysis.json), [comparison](../../artifacts/experiments/M01/front/comparison-B01.json), [sparsity](../../artifacts/experiments/M01/front/sparsity.json), [2:4 survey](../../artifacts/experiments/M01/front/2to4-eligibility.json), [ONNX 2:4](../../artifacts/experiments/M01/front/onnx-2to4.json), [fine-tuning preflight](../../artifacts/experiments/M01/front/fine-tuning-preflight.json), [ONNX equivalence](../../artifacts/experiments/M01/front/onnx-equivalence.json), [recovery training](../../artifacts/experiments/M01/front/recovery/recovery-training.json) |
+| M02 | sparse-2to4 | front | nvidia-2to4 | fp16 | planned | [metadata](../../artifacts/experiments/M02/front/metadata.json), [recovery training](../../artifacts/experiments/M01/front/recovery/recovery-training.json) |
+| S01 | structured-decoder-layer-1 | front | decoder-layer | fp32 | onnx-exported | [shared ONNX](../../shared-models/S01-front-structured-recovery.onnx), [PTH](../../artifacts/experiments/S01/front/model.pth), [ONNX](../../artifacts/experiments/S01/front/model.onnx), [metadata](../../artifacts/experiments/S01/front/metadata.json), [analysis](../../artifacts/experiments/S01/front/static-analysis.json), [comparison](../../artifacts/experiments/S01/front/comparison-B01.json), [structured pruning](../../artifacts/experiments/S01/front/structured-pruning.json), [ONNX equivalence](../../artifacts/experiments/S01/front/onnx-equivalence.json), [COCO evaluation](../../results/coco-evaluation/S01-front-after-recovery.json), [recovery training](../../artifacts/experiments/S01/front/recovery/recovery-training.json), [prototype snapshot](../../artifacts/experiments/S01/front/prototype-before-recovery) |
+| S02 | structured-decoder-layer-2 | front | decoder-layer | fp32 | onnx-exported | [shared ONNX](../../shared-models/S02-front-structured-recovery.onnx), [PTH](../../artifacts/experiments/S02/front/model.pth), [ONNX](../../artifacts/experiments/S02/front/model.onnx), [metadata](../../artifacts/experiments/S02/front/metadata.json), [analysis](../../artifacts/experiments/S02/front/static-analysis.json), [comparison](../../artifacts/experiments/S02/front/comparison-B01.json), [structured pruning](../../artifacts/experiments/S02/front/structured-pruning.json), [ONNX equivalence](../../artifacts/experiments/S02/front/onnx-equivalence.json), [COCO evaluation](../../results/coco-evaluation/S02-front-after-recovery.json), [recovery training](../../artifacts/experiments/S02/front/recovery/recovery-training.json), [prototype snapshot](../../artifacts/experiments/S02/front/prototype-before-recovery) |
+| S03 | structured-ffn-20 | front | ffn-dimension | fp32 | static-analysis-rejected | [PTH](../../artifacts/experiments/S03/front/model.pth), [ONNX](../../artifacts/experiments/S03/front/model.onnx), [metadata](../../artifacts/experiments/S03/front/metadata.json), [analysis](../../artifacts/experiments/S03/front/static-analysis.json), [comparison](../../artifacts/experiments/S03/front/comparison-B01.json), [structured pruning](../../artifacts/experiments/S03/front/structured-pruning.json), [ONNX equivalence](../../artifacts/experiments/S03/front/onnx-equivalence.json) |
+| S04 | structured-ffn-40 | front | ffn-dimension | fp32 | planned | - |
+| C01 | selected-structured-fp16 | front | structured-selected | fp16 | planned | [shared ONNX](../../shared-models/S01-front-structured-recovery.onnx), [metadata](../../artifacts/experiments/C01/front/metadata.json), [recovery training](../../artifacts/experiments/S01/front/recovery/recovery-training.json) |
+| C02 | selected-structured-int8 | front | structured-selected | int8 | planned | [shared ONNX](../../shared-models/S01-front-structured-recovery.onnx), [recovery training](../../artifacts/experiments/S01/front/recovery/recovery-training.json) |
+| R01 | reduced-resolution-fp16 | front | input-resolution | fp16 | onnx-exported | [shared ONNX](../../shared-models/R01-front-432.onnx), [ONNX](../../artifacts/experiments/R01/front/model.onnx), [metadata](../../artifacts/experiments/R01/front/metadata.json), [analysis](../../artifacts/experiments/R01/front/static-analysis.json), [comparison](../../artifacts/experiments/R01/front/comparison-B01.json), [ONNX equivalence](../../artifacts/experiments/R01/front/onnx-equivalence.json), [COCO evaluation](../../results/coco-evaluation/R01-front-432-pth.json) |
 | Q01 | int8-smoothquant-ptq | front | modelopt-int8-smoothquant | int8 | planned | - |
 | Q02 | mixed-precision-sensitive-fp16 | front | modelopt-mixed-precision | mixed | planned | - |
 | Q03 | int4-weight-only-ffn | front | modelopt-int4-weight-only | int4 | planned | - |
-| S01 | structured-decoder-layer-1 | front | decoder-layer | fp32 | checkpoint-created | [PTH](../../artifacts/experiments/S01/front/model.pth), [metadata](../../artifacts/experiments/S01/front/metadata.json), [structured pruning](../../artifacts/experiments/S01/front/structured-pruning.json), [recovery training](../../artifacts/experiments/S01/front/recovery/recovery-training.json) |
-| S02 | structured-decoder-layer-2 | front | decoder-layer | fp32 | checkpoint-created | [PTH](../../artifacts/experiments/S02/front/model.pth), [metadata](../../artifacts/experiments/S02/front/metadata.json), [structured pruning](../../artifacts/experiments/S02/front/structured-pruning.json), [recovery training](../../artifacts/experiments/S02/front/recovery/recovery-training.json) |
-| S03 | structured-ffn-20 | front | ffn-dimension | fp32 | checkpoint-created | [PTH](../../artifacts/experiments/S03/front/model.pth), [metadata](../../artifacts/experiments/S03/front/metadata.json), [structured pruning](../../artifacts/experiments/S03/front/structured-pruning.json), [recovery training](../../artifacts/experiments/S03/front/recovery/recovery-training.json) |
-| S04 | structured-ffn-40 | front | ffn-dimension | fp32 | checkpoint-created | [PTH](../../artifacts/experiments/S04/front/model.pth), [metadata](../../artifacts/experiments/S04/front/metadata.json), [structured pruning](../../artifacts/experiments/S04/front/structured-pruning.json), [recovery training](../../artifacts/experiments/S04/front/recovery/recovery-training.json) |
-| C01 | selected-structured-fp16 | front | structured-selected | fp16 | engine-built | [recovery training](../../artifacts/experiments/S01/front/recovery/recovery-training.json) |
-| C02 | selected-structured-int8 | front | structured-selected | int8 | engine-built | [recovery training](../../artifacts/experiments/S01/front/recovery/recovery-training.json) |
-| R01 | reduced-resolution-fp16 | front | input-resolution | fp16 | engine-built | - |
+| Q04 | fp8-uniform-ptq | front | modelopt-fp8 | fp8 | planned | - |
+| Q05 | fp8-mixed-measured-sensitivity | front | modelopt-fp8-mixed | mixed | planned | - |
+| Q06 | fp8-mixed-kld-sensitivity | front | modelopt-fp8-mixed-kld | mixed | planned | - |
+| Q07 | fp8-mixed-targeted-top2 | front | modelopt-fp8-mixed | mixed | planned | - |
+| W01 | weight-only-bitwidth-study | front | modelopt-weight-only-fakequant | mixed | planned | - |
 
 ## 저장 규칙
 
@@ -34,4 +35,4 @@
 artifacts/experiments/<experiment-id>/<camera>/
 ```
 
-평가 대상과 진행 순서는 [경량화 모델 실험 진행 계획](../guides/experiment-workflow.md)을 따른다.
+평가 대상과 진행 순서는 [신규 Front 경량화 2차 계획](../guides/front-lightweighting-round-2.md)을 따른다.

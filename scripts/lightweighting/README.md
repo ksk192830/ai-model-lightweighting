@@ -35,9 +35,9 @@ Export and build it:
   U02 --camera front --target engine
 ```
 
-The experiment workflow keeps 10/30/50% front checkpoints for static analysis
-and builds only the selected representative as TensorRT. See
-[`docs/guides/experiment-workflow.md`](../../docs/guides/experiment-workflow.md).
+The registry keeps 10/30/50% front candidates for static analysis and builds
+only the selected representative as TensorRT. See
+[`docs/guides/front-lightweighting-round-2.md`](../../docs/guides/front-lightweighting-round-2.md).
 
 Artifacts follow the experiment-centric layout:
 
