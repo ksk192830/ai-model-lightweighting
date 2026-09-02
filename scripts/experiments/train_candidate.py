@@ -317,11 +317,12 @@ def main() -> int:
     model._align_num_classes_from_dataset(str(dataset_dir))
     model.model_config.model_name = type(model).__name__
     module = RFDETRModelModule(model.model_config, config)
-    if experiment["method"] == "ffn-dimension":
-        # RF-DETR 1.8.1 does not expose dim_feedforward in ModelConfig.
-        # Replace the default-width training model with the already loaded
-        # project-defined structured model before optimizer construction.
-        module.model = model.model.model
+    # RFDETRModelModule constructs a fresh network. Replace it with the exact
+    # candidate loaded above so structured removals and fixed zero masks are
+    # present before optimizer construction. This is also required for FFN
+    # pruning because RF-DETR 1.8.1 does not expose dim_feedforward in
+    # ModelConfig.
+    module.model = model.model.model
     datamodule = RFDETRDataModule(model.model_config, config)
     trainer_kwargs = {
         "accelerator": hardware["accelerator"],
@@ -405,18 +406,16 @@ def main() -> int:
             if not verification["valid"]:
                 raise RuntimeError("Structured FFN width verification failed.")
         best_checkpoint = output_dir / "checkpoint_best_total.pth"
-        if (
-            experiment["method"] == "ffn-dimension"
-            and best_checkpoint.is_file()
-        ):
+        if best_checkpoint.is_file():
             trained_checkpoint = torch.load(
                 best_checkpoint,
                 map_location="cpu",
                 weights_only=False,
             )
-            trained_checkpoint["structured_architecture"] = checkpoint[
-                "structured_architecture"
-            ]
+            if experiment["method"] == "ffn-dimension":
+                trained_checkpoint["structured_architecture"] = checkpoint[
+                    "structured_architecture"
+                ]
             trained_checkpoint["pruning"] = checkpoint["pruning"]
             torch.save(trained_checkpoint, best_checkpoint)
         run_report.update(

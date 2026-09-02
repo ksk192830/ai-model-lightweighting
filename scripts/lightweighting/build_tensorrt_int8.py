@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import platform
+import random
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -39,6 +40,21 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--workspace-mib", type=int, default=4096)
     parser.add_argument(
+        "--calibration-count",
+        type=int,
+        default=128,
+        help=(
+            "Number of train images used for deterministic calibration "
+            "(default: 128)."
+        ),
+    )
+    parser.add_argument(
+        "--calibration-seed",
+        type=int,
+        default=42,
+        help="Seed used to choose calibration images (default: 42).",
+    )
+    parser.add_argument(
         "--no-fp16-fallback",
         action="store_true",
         help="Disable FP16 for layers that TensorRT cannot execute as INT8.",
@@ -66,6 +82,23 @@ def list_calibration_images(directory: Path) -> list[Path]:
         for path in directory.rglob("*")
         if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
     )
+
+
+def select_calibration_images(
+    images: list[Path],
+    count: int,
+    seed: int,
+) -> list[Path]:
+    """Match the paper protocol: lexical sort, seeded shuffle, first N."""
+    if count < 1:
+        raise ValueError("--calibration-count must be positive.")
+    if count > len(images):
+        raise ValueError(
+            f"Requested {count} calibration images from only {len(images)} images."
+        )
+    selected = sorted(images)
+    random.Random(seed).shuffle(selected)
+    return selected[:count]
 
 
 def make_calibrator_class(trt):
@@ -153,7 +186,11 @@ def main() -> int:
         / args.camera
         / f"parking_{args.camera}.onnx"
     )
-    calibration_dir = resolve_path(args.calibration_dir) / args.camera
+    # ``--calibration-dir`` is the exact split directory.  Appending the
+    # camera here made the registered
+    # ``data/training/front_session_split_v1/train`` path resolve to a
+    # nonexistent ``.../train/front`` directory.
+    calibration_dir = resolve_path(args.calibration_dir)
     output_dir = resolve_path(args.output_dir) / args.camera
     output_name = args.output_name or f"parking_{args.camera}_int8"
     if Path(output_name).name != output_name:
@@ -169,16 +206,24 @@ def main() -> int:
         raise FileNotFoundError(
             f"Calibration directory not found: {calibration_dir}"
         )
-    images = list_calibration_images(calibration_dir)
-    if not images:
+    source_images = list_calibration_images(calibration_dir)
+    if not source_images:
         raise ValueError(f"No calibration images found: {calibration_dir}")
+    images = select_calibration_images(
+        source_images,
+        args.calibration_count,
+        args.calibration_seed,
+    )
     if engine_path.exists() and not args.force:
         print(f"TensorRT engine already exists: {engine_path}")
         print("Use --force to build it again.")
         return 0
 
     print(f"ONNX: {onnx_path}")
-    print(f"Calibration images: {len(images)} ({calibration_dir})")
+    print(
+        f"Calibration images: {len(images)}/{len(source_images)} "
+        f"({calibration_dir}, seed={args.calibration_seed})"
+    )
     print(f"INT8 engine: {engine_path}")
     print(f"Workspace: {args.workspace_mib} MiB")
     print(f"FP16 fallback: {not args.no_fp16_fallback}")
@@ -227,6 +272,7 @@ def main() -> int:
         raise ValueError(f"RGB input required, found {input_shape}.")
 
     config = builder.create_builder_config()
+    config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
     config.set_memory_pool_limit(
         trt.MemoryPoolType.WORKSPACE,
         args.workspace_mib * 1024 * 1024,
@@ -254,7 +300,13 @@ def main() -> int:
         "calibration_dir": str(
             calibration_dir.relative_to(REPOSITORY_ROOT)
         ),
+        "calibration_source_image_count": len(source_images),
         "calibration_image_count": len(images),
+        "calibration_seed": args.calibration_seed,
+        "calibration_selection": (
+            "Sort image paths lexicographically, shuffle with Python "
+            "random.Random(seed), select first N"
+        ),
         "calibration_images": [
             path.relative_to(REPOSITORY_ROOT).as_posix()
             for path in images
@@ -274,9 +326,12 @@ def main() -> int:
         "engine_sha256": sha256(engine_path),
         "platform": platform.platform(),
         "gpu": torch.cuda.get_device_name(0),
+        "compute_capability": list(torch.cuda.get_device_capability(0)),
         "torch_version": torch.__version__,
+        "cuda_version": torch.version.cuda,
         "tensorrt_version": trt.__version__,
         "workspace_mib": args.workspace_mib,
+        "profiling_verbosity": "DETAILED",
     }
     metadata_path.write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False) + "\n",

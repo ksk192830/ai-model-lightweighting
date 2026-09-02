@@ -87,7 +87,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--calib-dir",
         type=Path,
-        default=Path("data/training/front/valid"),
+        default=Path("data/training/front_session_split_v1/train"),
         help="Directory with calibration images.",
     )
     parser.add_argument("--calib-count", type=int, default=128)

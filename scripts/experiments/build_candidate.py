@@ -92,6 +92,22 @@ def main() -> int:
             args.dry_run,
             enable_sparse=bool(experiment.get("sparse_tactic", False)),
             verbose=bool(experiment.get("sparse_tactic", False)),
+            calibration_dir=(
+                REPOSITORY_ROOT
+                / defaults["reproducibility"][f"{args.camera}_calibration_dir"]
+                if experiment["precision"] == "int8"
+                else None
+            ),
+            calibration_count=(
+                defaults["reproducibility"]["calibration_image_count"]
+                if experiment["precision"] == "int8"
+                else None
+            ),
+            calibration_seed=(
+                defaults["reproducibility"]["calibration_seed"]
+                if experiment["precision"] == "int8"
+                else None
+            ),
         )
 
     paths.directory.mkdir(parents=True, exist_ok=True)

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import platform
 import shutil
@@ -69,6 +70,14 @@ def command_version(command: list[str]) -> str:
     return (result.stdout or result.stderr).strip()
 
 
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def build_with_python(
     onnx_path: Path,
     engine_path: Path,
@@ -103,6 +112,7 @@ def build_with_python(
         raise RuntimeError(f"TensorRT could not parse {onnx_path}:\n{errors}")
 
     config = builder.create_builder_config()
+    config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
     config.set_memory_pool_limit(
         trt.MemoryPoolType.WORKSPACE,
         workspace_mib * 1024 * 1024,
@@ -192,6 +202,8 @@ def main() -> int:
             verbose=args.verbose,
         )
         trtexec_version = ""
+    import torch
+
     def repo_relative(path: Path) -> str:
         return (
             str(path.relative_to(REPOSITORY_ROOT))
@@ -208,15 +220,26 @@ def main() -> int:
             else "fp16"
         ),
         "source_onnx": repo_relative(onnx_path),
+        "source_onnx_sha256": sha256(onnx_path),
         "engine_path": repo_relative(engine_path),
         "engine_size_bytes": engine_path.stat().st_size,
+        "engine_sha256": sha256(engine_path),
         "platform": platform.platform(),
+        "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+        "compute_capability": (
+            list(torch.cuda.get_device_capability(0))
+            if torch.cuda.is_available()
+            else None
+        ),
+        "torch_version": torch.__version__,
+        "cuda_version": torch.version.cuda,
         "build_backend": build_backend,
         "tensorrt_version": tensorrt_version,
         "trtexec_version": trtexec_version,
         "workspace_mib": args.workspace_mib,
         "sparse_weights_enabled": args.sparse_weights,
         "verbose_logging": args.verbose,
+        "profiling_verbosity": "DETAILED",
         "build_command": command,
     }
     metadata_path.write_text(

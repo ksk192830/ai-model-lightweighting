@@ -99,21 +99,12 @@ def main() -> int:
         return 0
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    if args.resolution is None:
-        model = load_rfdetr_checkpoint(
-            checkpoint,
-            device="cpu",
-            num_classes=len(class_names),
-        )
-    else:
-        from rfdetr.variants import RFDETRSegLarge
-
-        model = RFDETRSegLarge(
-            pretrain_weights=str(checkpoint),
-            resolution=args.resolution,
-            device="cpu",
-            num_classes=len(class_names),
-        )
+    model = load_rfdetr_checkpoint(
+        checkpoint,
+        device="cpu",
+        num_classes=len(class_names),
+        resolution=args.resolution,
+    )
     exported_path = Path(
         model.export(
             output_dir=str(output_dir),

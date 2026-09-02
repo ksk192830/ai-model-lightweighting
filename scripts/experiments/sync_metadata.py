@@ -31,6 +31,24 @@ def relative(path: Path) -> str:
     return str(path.relative_to(REPOSITORY_ROOT))
 
 
+def evaluation_path(
+    experiment_id: str,
+    camera: str,
+    experiment: dict,
+) -> Path:
+    result = experiment.get("result", {})
+    configured = result.get("evaluation") if isinstance(result, dict) else None
+    if configured:
+        path = Path(configured)
+        return path if path.is_absolute() else REPOSITORY_ROOT / path
+    return (
+        REPOSITORY_ROOT
+        / "results"
+        / "coco-evaluation"
+        / f"{experiment_id}-{camera}-pth.json"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("experiment_ids", nargs="*")
@@ -61,6 +79,14 @@ def main() -> int:
             prototype_validation = (
                 paths.directory / "prototype-validation.json"
             )
+            onnx_equivalence = (
+                paths.directory / "onnx-equivalence.json"
+            )
+            coco_evaluation = evaluation_path(
+                experiment_id,
+                camera,
+                experiment,
+            )
             if (
                 experiment.get("sparse_tactic", False)
                 and paths.build_log.is_file()
@@ -79,6 +105,7 @@ def main() -> int:
                 and not fine_tuning_preflight.is_file()
                 and not structured_pruning.is_file()
                 and not prototype_validation.is_file()
+                and not onnx_equivalence.is_file()
             ):
                 continue
             source = REPOSITORY_ROOT / models[camera]["checkpoint"]
@@ -125,6 +152,12 @@ def main() -> int:
                 artifacts["prototype_validation"] = relative(
                     prototype_validation
                 )
+            if onnx_equivalence.is_file():
+                artifacts["onnx_equivalence"] = relative(
+                    onnx_equivalence
+                )
+            if coco_evaluation.is_file():
+                artifacts["coco_evaluation"] = relative(coco_evaluation)
             if recovery_training.is_file():
                 artifacts["recovery_training"] = relative(recovery_training)
             if prototype_snapshot.is_dir():
@@ -164,7 +197,16 @@ def main() -> int:
                 "onnx_opset": registry.defaults["export"]["onnx_opset"],
                 "artifacts": artifacts,
                 "build_details": build_details,
-                "status": artifact_status(paths, experiment["status"]),
+                **(
+                    {"result": experiment["result"]}
+                    if isinstance(experiment.get("result"), dict)
+                    else {}
+                ),
+                "status": (
+                    experiment["status"]
+                    if experiment["status"] == "static-analysis-rejected"
+                    else artifact_status(paths, experiment["status"])
+                ),
             }
             write_json(paths.metadata, metadata)
             print(f"metadata: {paths.metadata}")

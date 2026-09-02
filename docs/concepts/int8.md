@@ -60,12 +60,8 @@ INT8은 모델의 중간 activation이 실제 데이터에서 어느 범위로 �
 
 Calibration 이미지는 실제 운영 데이터를 대표해야 한다.
 
-이번 프로젝트에서는 전면과 후면 카메라의 시점과 클래스가 다르므로
-각 모델에 맞는 이미지를 별도로 사용한다.
-
 ```text
-전면 모델 calibration → data/calibration/front
-후면 모델 calibration → data/calibration/rear
+Front 모델 calibration → data/training/front_session_split_v1/train
 ```
 
 권장 원칙:
@@ -209,14 +205,8 @@ image000015.png
 test: image000002.png, image000007.png, image000012.png, ...
 ```
 
-다음 명령으로 전면·후면 calibration/test 목록을 동시에 생성한다.
-
-```bash
-python3 scripts/data_preparation/create_calibration_splits.py
-```
-
-목록과 재현용 메타데이터는 `splits/`에 저장하며 원본 이미지는 복사하지
-않는다.
+Calibration 표본 목록은 최종 train split에서 고정 seed로 선택해 저장하며,
+valid와 test 이미지는 포함하지 않는다.
 
 핵심은 다음과 같다.
 
@@ -228,8 +218,8 @@ python3 scripts/data_preparation/create_calibration_splits.py
 ## TensorRT INT8 엔진 생성
 
 NVIDIA GPU, CUDA 지원 PyTorch 및 TensorRT Python 패키지가 설치된
-컴퓨터에서 실행한다. calibration 이미지는 `data/calibration/front`와
-`data/calibration/rear`를 사용한다.
+컴퓨터에서 실행한다. calibration 이미지는
+`data/training/front_session_split_v1/train`에서 선택한다.
 
 등록된 INT8 실험을 변환하려면 다음 명령을 실행한다.
 

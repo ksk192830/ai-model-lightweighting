@@ -4,8 +4,8 @@
 Measures the bit-width vs accuracy curve using fake-quantized weights with
 FP16 activations (the LLM weight-only recipe: RTN group-wise, plus AWQ for
 4-bit). Mixed variants protect the blocks that the task-metric sensitivity
-sweep flagged (final_heads, decoder_layer_4) — the signal we validated in
-0705.md section 18 — mirroring llama.cpp K-quant mixes.
+sweep flags (for example final heads and late decoder layers), mirroring
+llama.cpp K-quant mixes.
 
 This is an accuracy study: TensorRT has no W2/W3 kernel path for this graph
 (see Q03), so results quantify feasibility for a future custom-kernel or
@@ -35,8 +35,7 @@ from sensitivity_sweep import evaluate_subset  # noqa: E402
 from kips_lightweighting.rfdetr_compat import load_rfdetr_checkpoint  # noqa: E402
 
 
-# Task-metric-sensitive blocks (0705.md section 17/18.3): kept high precision
-# in the mixed variants.
+# Task-metric-sensitive blocks kept at high precision in mixed variants.
 SENSITIVE_PATTERNS = (
     "*class_embed*",
     "*bbox_embed*",
@@ -53,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--eval-dir",
         type=Path,
-        default=Path("data/training/front/valid"),
+        default=Path("data/training/front_session_split_v1/train"),
     )
     parser.add_argument(
         "--test-dir",

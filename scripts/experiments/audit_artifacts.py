@@ -29,6 +29,7 @@ DEPLOYED_STATUSES = {
     "delivered",
 }
 ONNX_STATUSES = DEPLOYED_STATUSES | {"onnx-exported"}
+DECISION_STATUSES = {"static-analysis-rejected"}
 
 
 def relative(path: Path) -> str:
@@ -45,6 +46,13 @@ def add_issue(
     message: str,
 ) -> None:
     issues.append({"severity": severity, "code": code, "message": message})
+
+
+def resolved_artifact_status(paths: Any, registry_status: str) -> str:
+    """Resolve artifact maturity without overriding terminal decisions."""
+    if registry_status in DECISION_STATUSES:
+        return registry_status
+    return artifact_status(paths, registry_status)
 
 
 def main() -> int:
@@ -76,6 +84,7 @@ def main() -> int:
                 }
 
             status = experiment["status"]
+            resolved_status = resolved_artifact_status(paths, status)
             source_id = experiment.get("artifact_source")
             if source_id is None and experiment["family"] == "precision":
                 source_id = "B01"
@@ -101,6 +110,24 @@ def main() -> int:
             if status not in {"planned", "blocked"} and not paths.metadata.is_file():
                 add_issue(issues, "error", "missing-metadata", str(paths.metadata))
 
+            if status == "static-analysis-rejected":
+                result = experiment.get("result")
+                if not isinstance(result, dict) or result.get("decision") != "rejected":
+                    add_issue(
+                        issues,
+                        "error",
+                        "rejection-decision",
+                        "result.decision must be 'rejected'",
+                    )
+                reason = result.get("reason") if isinstance(result, dict) else None
+                if not isinstance(reason, str) or not reason.strip():
+                    add_issue(
+                        issues,
+                        "error",
+                        "rejection-reason",
+                        "result.reason must be a non-empty string",
+                    )
+
             if paths.metadata.is_file():
                 metadata = read_json(paths.metadata)
                 missing_fields = sorted(required_metadata.difference(metadata))
@@ -125,7 +152,7 @@ def main() -> int:
                         "metadata-camera",
                         str(metadata.get("camera")),
                     )
-                expected_status = artifact_status(paths, status)
+                expected_status = resolved_status
                 if metadata.get("status") != expected_status:
                     add_issue(
                         issues,
@@ -183,7 +210,7 @@ def main() -> int:
                     "experiment_id": experiment_id,
                     "camera": camera,
                     "registry_status": status,
-                    "resolved_artifact_status": artifact_status(paths, status),
+                    "resolved_artifact_status": resolved_status,
                     "inventory": inventory,
                     "issues": issues,
                     "valid": not any(

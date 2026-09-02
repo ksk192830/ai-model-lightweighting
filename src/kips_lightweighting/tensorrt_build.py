@@ -64,6 +64,9 @@ def build_command(
     dry_run: bool = False,
     enable_sparse: bool = False,
     verbose: bool = False,
+    calibration_dir: Path | None = None,
+    calibration_count: int | None = None,
+    calibration_seed: int | None = None,
 ) -> list[str]:
     if precision not in {"fp32", "fp16", "int8"}:
         raise ValueError(f"Unsupported TensorRT precision: {precision}")
@@ -96,4 +99,10 @@ def build_command(
         command.append("--sparse-weights")
     if verbose:
         command.append("--verbose")
+    if precision == "int8" and calibration_dir is not None:
+        command.extend(["--calibration-dir", str(calibration_dir)])
+    if precision == "int8" and calibration_count is not None:
+        command.extend(["--calibration-count", str(calibration_count)])
+    if precision == "int8" and calibration_seed is not None:
+        command.extend(["--calibration-seed", str(calibration_seed)])
     return command

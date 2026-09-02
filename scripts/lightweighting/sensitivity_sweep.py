@@ -48,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--eval-dir",
         type=Path,
-        default=Path("data/training/front/valid"),
+        default=Path("data/training/front_session_split_v1/train"),
     )
     parser.add_argument("--threshold", type=float, default=0.001)
     parser.add_argument("--device", default="cuda")

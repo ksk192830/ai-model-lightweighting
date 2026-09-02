@@ -22,10 +22,12 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "scripts" / "evaluation"))
 from benchmark_baseline import TensorRTRunner  # noqa: E402
 from kips_lightweighting.artifacts import artifact_paths  # noqa: E402
 from kips_lightweighting.metadata import sha256  # noqa: E402
+from kips_lightweighting.registry import ExperimentRegistry  # noqa: E402
 
 
 SUITES = {
-    "final8": ("B01", "B02", "B03", "M01", "M02", "S01", "C01", "R01"),
+    "ready4": ("B01", "B02", "B03", "R01"),
+    "final8": ("B01", "B02", "B03", "R01", "S01", "C01", "M01", "M02"),
     "all13": (
         "B01",
         "B02",
@@ -44,13 +46,80 @@ SUITES = {
 }
 
 
+def artifact_source_id(experiment_id: str, experiment: dict) -> str:
+    return str(experiment.get("artifact_source", experiment_id))
+
+
+def suite_experiments(
+    registry: ExperimentRegistry,
+    suite: str,
+) -> tuple[str, ...]:
+    """Resolve the structured control from C01's registered selection."""
+    experiments = SUITES[suite]
+    if suite != "final8":
+        return experiments
+    selected = str(
+        registry.get("C01").get(
+            "selected_experiment",
+            registry.get("C01").get("artifact_source", "S01"),
+        )
+    )
+    return tuple(selected if item == "S01" else item for item in experiments)
+
+
+def suite_blockers(
+    registry: ExperimentRegistry,
+    experiments: tuple[str, ...],
+    *,
+    require_artifact_onnx: bool = True,
+) -> list[str]:
+    """Reject missing ONNX and recovery prototypes before engine creation."""
+    blockers = []
+    checked_sources = set()
+    for experiment_id in experiments:
+        experiment = registry.get(experiment_id)
+        source_id = artifact_source_id(experiment_id, experiment)
+        selected_id = experiment.get("selected_experiment")
+        if selected_id is not None and str(selected_id) != source_id:
+            blockers.append(
+                f"{experiment_id}: selected_experiment={selected_id} does not "
+                f"match artifact_source={source_id}"
+            )
+        if source_id in checked_sources:
+            continue
+        checked_sources.add(source_id)
+        source = registry.get(source_id)
+        fine_tuning = source.get("fine_tuning", {})
+        if fine_tuning.get("required") and not fine_tuning.get("completed"):
+            blockers.append(
+                f"{source_id}: recovery fine-tuning is not completed"
+            )
+        if (
+            require_artifact_onnx
+            and not artifact_paths(source_id, "front").onnx.is_file()
+        ):
+            blockers.append(f"{source_id}: source ONNX is missing")
+
+    if any(registry.get(item)["precision"] == "int8" for item in experiments):
+        calibration = REPOSITORY_ROOT / registry.defaults["reproducibility"][
+            "front_calibration_dir"
+        ]
+        if not calibration.is_dir():
+            blockers.append(f"B03: calibration directory is missing: {calibration}")
+    return blockers
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--suite", choices=tuple(SUITES), default="final8")
     parser.add_argument(
         "--image",
         type=Path,
-        default=Path("data/labeled_test/front/images/image000002.png"),
+        default=Path(
+            "data/training/front_session_split_v1/test/"
+            "frame_000005_20251222_185050_737914_png."
+            "rf.fe04634c99d43c9e986eaf41db38fd7a.jpg"
+        ),
     )
     parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--skip-build", action="store_true")
@@ -70,7 +139,14 @@ def resolve(path: Path) -> Path:
 
 def main() -> int:
     args = parse_args()
-    experiments = SUITES[args.suite]
+    registry = ExperimentRegistry.load()
+    experiments = suite_experiments(registry, args.suite)
+    blockers = suite_blockers(registry, experiments)
+    if blockers:
+        print("suite is not ready:")
+        for blocker in blockers:
+            print(f"- {blocker}")
+        return 2
     if args.dry_run:
         for experiment_id in experiments:
             print(
@@ -90,7 +166,7 @@ def main() -> int:
     except ImportError as error:
         raise RuntimeError(
             "TensorRT Python bindings are missing. "
-            "Install requirements-tensorrt.txt."
+            "Install requirements.txt on the NVIDIA notebook."
         ) from error
 
     if not args.skip_build:

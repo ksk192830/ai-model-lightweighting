@@ -5,7 +5,10 @@ from __future__ import annotations
 
 import os
 import sys
+from collections import defaultdict
 from pathlib import Path
+
+import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -22,9 +25,48 @@ def relative_link(path: Path, document: Path) -> str:
     return os.path.relpath(path, start=document.parent).replace(" ", "%20")
 
 
+def load_shared_artifacts(document: Path) -> dict[tuple[str, str], list[str]]:
+    """Index portable artifacts recorded in shared-models/manifest.yaml."""
+    manifest_path = REPOSITORY_ROOT / "shared-models" / "manifest.yaml"
+    indexed: dict[tuple[str, str], list[str]] = defaultdict(list)
+    if not manifest_path.is_file():
+        return indexed
+
+    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8")) or {}
+    for model in manifest.get("models", []):
+        path = manifest_path.parent / model["file"]
+        if not path.is_file():
+            continue
+        label = f"shared {path.suffix.lstrip('.').upper()}"
+        link = f"[{label}]({relative_link(path, document)})"
+        camera = model["camera"]
+        for experiment_id in model.get("experiment_ids", []):
+            indexed[(experiment_id, camera)].append(link)
+    return indexed
+
+
+def evaluation_path(
+    experiment_id: str,
+    camera: str,
+    experiment: dict,
+) -> Path:
+    result = experiment.get("result", {})
+    configured = result.get("evaluation") if isinstance(result, dict) else None
+    if configured:
+        path = Path(configured)
+        return path if path.is_absolute() else REPOSITORY_ROOT / path
+    return (
+        REPOSITORY_ROOT
+        / "results"
+        / "coco-evaluation"
+        / f"{experiment_id}-{camera}-pth.json"
+    )
+
+
 def main() -> int:
     registry = ExperimentRegistry.load()
     document = REPOSITORY_ROOT / "docs" / "handoffs" / "model-artifact-index.md"
+    shared_artifacts = load_shared_artifacts(document)
     lines = [
         "# 모델 Artifact 인덱스",
         "",
@@ -37,7 +79,7 @@ def main() -> int:
     for experiment_id, experiment in registry.experiments.items():
         for camera in experiment["cameras"]:
             paths = artifact_paths(experiment_id, camera)
-            links = []
+            links = list(shared_artifacts.get((experiment_id, camera), []))
             for label, path in (
                 ("PTH", paths.checkpoint),
                 ("ONNX", paths.onnx),
@@ -97,6 +139,22 @@ def main() -> int:
                     "[prototype validation]"
                     f"({relative_link(prototype_validation, document)})"
                 )
+            onnx_equivalence = paths.directory / "onnx-equivalence.json"
+            if onnx_equivalence.is_file():
+                links.append(
+                    "[ONNX equivalence]"
+                    f"({relative_link(onnx_equivalence, document)})"
+                )
+            coco_evaluation = evaluation_path(
+                experiment_id,
+                camera,
+                experiment,
+            )
+            if coco_evaluation.is_file():
+                links.append(
+                    "[COCO evaluation]"
+                    f"({relative_link(coco_evaluation, document)})"
+                )
             source_experiment_id = experiment.get(
                 "artifact_source", experiment_id
             )
@@ -126,7 +184,12 @@ def main() -> int:
                         camera,
                         experiment["method"],
                         experiment["precision"],
-                        artifact_status(paths, experiment["status"]),
+                        (
+                            experiment["status"]
+                            if experiment["status"]
+                            == "static-analysis-rejected"
+                            else artifact_status(paths)
+                        ),
                         ", ".join(links) or "-",
                     ]
                 )
@@ -142,8 +205,8 @@ def main() -> int:
             "```",
             "",
             "평가 대상과 진행 순서는 "
-            "[경량화 모델 실험 진행 계획]"
-            "(../guides/experiment-workflow.md)을 따른다.",
+            "[신규 Front 경량화 2차 계획]"
+            "(../guides/front-lightweighting-round-2.md)을 따른다.",
         ]
     )
     document.write_text("\n".join(lines) + "\n", encoding="utf-8")

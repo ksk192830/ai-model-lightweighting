@@ -12,32 +12,89 @@ export:
 
 tensorrt:
   workspace_mib: 4096
-  target_gpu: NVIDIA GeForce RTX 3080
-  target_compute_capability: "8.6"
+  target_gpu: desktop-local
+  target_compute_capability: detect-at-build-time
 
 reproducibility:
   random_seed: 42
-  front_checkpoint: models/parking_front.pth
-  rear_checkpoint: models/parking_rear.pth
-  front_calibration_dir: data/calibration/front
-  rear_calibration_dir: data/calibration/rear
+  front_checkpoint: artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth
+  front_calibration_dir: data/training/front_session_split_v1/train
+  calibration_image_count: 128
+  calibration_seed: 42
 
+evaluation_protocol:
+  dataset_role: fixed_repeated_benchmark
+  dataset_dir: data/training/front_session_split_v1/test
+  expected_images: 437
+  coco_ap_confidence_threshold: 0.001
+  semantic_miou_confidence_threshold: 0.25
+  coco_iou_thresholds: "0.50:0.05:0.95"
+  coco_max_detections_per_image: 100
+  onnx_dataset_parity_max_absolute_delta: 0.005
+  graph_equivalence:
+    samples: 10
+    sample_seed: 42
+    confidence_threshold: 0.05
+    boxes_max_absolute_error: 0.0001
+    scores_max_absolute_error: 0.0005
+    masks_max_absolute_error: 0.05
+    masks_mean_absolute_error: 0.0005
+    active_membership_agreement: 1.0
+    active_class_agreement: 1.0
+    active_mask_binary_agreement: 0.999
+  latency:
+    batch_size: 1
+    warmup_runs: 20
+    measured_runs: 200
+    sampled_images: 32
+    sample_seed: 42
+    postprocess_confidence_threshold: 0.25
+    primary_statistic: median_ms
+    secondary_statistics: [mean_ms, p95_ms, iqr_ms, coefficient_of_variation]
+    scope: end_to_end_in_memory_image
+    disk_image_decode_included: false
+
+# These are project-specific engineering acceptance gates, not universal
+# statistical significance thresholds. They were fixed before TensorRT accuracy
+# evaluation and are consumed directly by the desktop queue and audit scripts.
 selection:
-  structured_min_parameter_reduction: 0.05
-  structured_min_flops_reduction: 0.10
-  duplicate_max_parameter_difference: 0.03
-  duplicate_max_flops_difference: 0.05
+  accuracy_vs_baseline:
+    bbox_ap_max_absolute_drop: 0.01
+    mask_ap_max_absolute_drop: 0.01
+    semantic_miou_max_absolute_drop: 0.02
+  structured_comparison:
+    candidate: S02
+    reference: S01
+    bbox_ap_max_absolute_drop: 0.005
+    mask_ap_max_absolute_drop: 0.005
+    semantic_miou_max_absolute_drop: 0.01
+    median_latency_min_relative_reduction: 0.05
+  int8_vs_fp16:
+    candidate: B03
+    accuracy_reference: B01
+    latency_reference: B02
+    bbox_ap_max_absolute_drop: 0.01
+    mask_ap_max_absolute_drop: 0.01
+    median_latency_min_relative_reduction: 0.10
+  sparse_vs_dense_control:
+    candidate: M02
+    accuracy_reference: M01
+    latency_reference: M01
+    require_sparse_tactic_evidence: true
+    bbox_ap_max_absolute_drop: 0.005
+    mask_ap_max_absolute_drop: 0.005
+    median_latency_min_relative_reduction: 0.10
 
 fine_tuning:
   recovery_2to4:
-    status: blocked
+    status: ready
     dataset_file: roboflow
-    dataset_dir: data/training/front
+    dataset_dir: data/training/front_session_split_v1
     dataset_source:
       provider: roboflow
       workspace: hmobility-fvu9x
       project: parking_front
-      version: 8
+      version: 9
       export_format: coco-segmentation
     output_dir: artifacts/experiments/M01/front/recovery
     epochs: 10
@@ -61,12 +118,12 @@ fine_tuning:
   recovery_2to4_extended:
     status: ready
     dataset_file: roboflow
-    dataset_dir: data/training/front
+    dataset_dir: data/training/front_session_split_v1
     dataset_source:
       provider: roboflow
       workspace: hmobility-fvu9x
       project: parking_front
-      version: 8
+      version: 9
       export_format: coco-segmentation
     output_dir: artifacts/experiments/M03/front/recovery
     epochs: 20
@@ -90,12 +147,12 @@ fine_tuning:
   recovery_structured:
     status: ready
     dataset_file: roboflow
-    dataset_dir: data/training/front
+    dataset_dir: data/training/front_session_split_v1
     dataset_source:
       provider: roboflow
       workspace: hmobility-fvu9x
       project: parking_front
-      version: 8
+      version: 9
       export_format: coco-segmentation
     output_dir: artifacts/experiments/{experiment_id}/{camera}/recovery
     epochs: 10

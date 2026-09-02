@@ -1,373 +1,281 @@
-version: 1
+version: 2
+source_baseline: front-rfdetr-seg-large-v1
 
 experiments:
   B01:
     name: baseline-fp32
     family: baseline
     method: none
-    cameras: [front, rear]
+    cameras: [front]
     precision: fp32
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Original TensorRT FP32 reference.
+    stage: onnx
+    status: onnx-exported
+    hypothesis: 신규 checkpoint의 FP32 ONNX 및 TensorRT 기준 모델.
 
   B02:
     name: baseline-fp16
     family: precision
     method: tensorrt-fp16
-    cameras: [front, rear]
+    cameras: [front]
     precision: fp16
+    artifact_source: B01
+    depends_on: [B01]
     stage: tensorrt
-    status: engine-built
-    hypothesis: FP16 reduces engine size and latency with little accuracy loss.
+    status: planned
+    hypothesis: FP16이 정확도를 유지하면서 latency와 engine 크기를 줄인다.
 
   B03:
     name: baseline-int8
     family: precision
     method: tensorrt-int8-ptq
-    cameras: [front, rear]
+    cameras: [front]
     precision: int8
+    artifact_source: B01
+    depends_on: [B01]
     stage: tensorrt
-    status: engine-built
-    hypothesis: INT8 maximizes precision-based compression with possible accuracy loss.
+    status: planned
+    hypothesis: Train calibration 기반 INT8 PTQ의 압축과 정확도 손실을 측정한다.
 
   U01:
     name: unstructured-magnitude-10
     family: unstructured
     method: global-magnitude
     cameras: [front]
-    pruning:
-      sparsity: 0.10
+    pruning: {sparsity: 0.10}
     precision: fp32
     stage: static-analysis
-    status: onnx-exported
-    hypothesis: Low sparsity preserves accuracy but does not reduce a dense graph.
+    status: planned
+    hypothesis: 낮은 비정형 sparsity의 정확도 보존과 dense graph 한계를 확인한다.
 
   U02:
     name: unstructured-magnitude-30
     family: unstructured
     method: global-magnitude
     cameras: [front]
-    pruning:
-      sparsity: 0.30
+    pruning: {sparsity: 0.30}
     precision: fp32
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Representative unstructured pruning does not accelerate dense TensorRT.
+    stage: static-analysis
+    status: static-analysis-rejected
+    hypothesis: 대표 비정형 pruning 대조군으로 실제 가속 여부를 확인한다.
+    result:
+      decision: rejected
+      reason: 30% sparsity에서 dense ONNX 크기·MACs·FLOPs가 감소하지 않았고 정확도가 대폭 하락함.
+      evaluation: results/coco-evaluation/U02-front-pth.json
 
   U03:
     name: unstructured-magnitude-50
     family: unstructured
     method: global-magnitude
     cameras: [front]
-    pruning:
-      sparsity: 0.50
+    pruning: {sparsity: 0.50}
     precision: fp32
     stage: static-analysis
-    status: onnx-exported
-    hypothesis: High unstructured sparsity exposes the accuracy and storage limit.
+    status: planned
+    hypothesis: 높은 비정형 sparsity의 정확도 한계를 확인한다.
 
   M01:
     name: sparse-2to4-dense-control
     family: semi-structured
     method: nvidia-2to4
     cameras: [front]
-    pruning:
-      pattern: "2:4"
+    pruning: {pattern: "2:4"}
     precision: fp16
     sparse_tactic: false
     fine_tuning:
       required: true
-      completed: true
-      status: completed
+      completed: false
+      status: ready
       profile: recovery_2to4
-      epochs: 10
-      training_report: artifacts/experiments/M01/front/recovery/recovery-training.json
-    stage: tensorrt
-    status: engine-built
-    hypothesis: A dense-tactic control isolates sparse tactic acceleration.
+    stage: pruning
+    status: onnx-exported
+    hypothesis: Dense tactic 대조군으로 2:4 sparse tactic 효과를 분리한다.
 
   M02:
     name: sparse-2to4
     family: semi-structured
     method: nvidia-2to4
     cameras: [front]
-    pruning:
-      pattern: "2:4"
+    pruning: {pattern: "2:4"}
     precision: fp16
     sparse_tactic: true
     artifact_source: M01
     depends_on: [M01]
     fine_tuning:
       required: true
-      completed: true
-      status: completed
+      completed: false
+      status: planned
       profile: recovery_2to4
-      epochs: 10
-      training_report: artifacts/experiments/M01/front/recovery/recovery-training.json
     stage: tensorrt
-    status: engine-built
-    hypothesis: Ampere sparse tactics accelerate compliant 2:4 weights.
-
-  M03:
-    name: sparse-2to4-extended-recovery
-    family: semi-structured
-    method: nvidia-2to4
-    cameras: [front]
-    pruning:
-      pattern: "2:4"
-    precision: fp16
-    sparse_tactic: true
-    fine_tuning:
-      required: true
-      completed: true
-      status: completed
-      profile: recovery_2to4_extended
-      epochs: 20
-      training_report: artifacts/experiments/M03/front/recovery/recovery-training.json
-    stage: pruning
-    status: checkpoint-created
-    hypothesis: >-
-      Doubling the recovery budget (20 epochs, no early stopping) recovers the
-      large-object accuracy that the 10-epoch 2:4 recovery (M01/M02) traded
-      away, closing part of the -0.03 mAP50-95 gap to the FP16 baseline.
-
-  Q01:
-    name: int8-smoothquant-ptq
-    family: precision
-    method: modelopt-int8-smoothquant
-    cameras: [front]
-    precision: int8
-    quantization:
-      config: INT8_SMOOTHQUANT_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-    stage: quantization
-    status: engine-built
-    hypothesis: >-
-      Activation-aware INT8 (SmoothQuant, the LLM imatrix analogue) with
-      explicit Q/DQ nodes retains accuracy where uniform TensorRT INT8 PTQ
-      fell back to FP16 kernels, and increases real INT8 kernel coverage.
-
-  Q02:
-    name: mixed-precision-sensitive-fp16
-    family: precision
-    method: modelopt-mixed-precision
-    cameras: [front]
-    precision: mixed
-    quantization:
-      config: INT8_DEFAULT_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-      keep_fp16_patterns:
-        - "*class_embed*"
-        - "*bbox_embed*"
-        - "*segmentation_head*"
-        - "*sampling_offsets*"
-        - "*enc_out*"
-        - "*ref_point*"
-    stage: quantization
-    status: engine-built
-    hypothesis: >-
-      Keeping accuracy-sensitive layers (heads, deformable sampling offsets)
-      in FP16 while quantizing the remaining transformer to INT8 preserves
-      accuracy better than uniform INT8 at similar engine cost.
-
-  Q03:
-    name: int4-weight-only-ffn
-    family: precision
-    method: modelopt-int4-weight-only
-    cameras: [front]
-    precision: int4
-    quantization:
-      config: INT4_BLOCKWISE_WEIGHT_ONLY_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-      quantize_patterns:
-        - "*transformer.decoder.layers.*.linear1*"
-        - "*transformer.decoder.layers.*.linear2*"
-        - "*mlp.fc1*"
-        - "*mlp.fc2*"
-    stage: quantization
-    status: build-failed
-    hypothesis: >-
-      Extreme weight-only INT4 on FFN linears (the LLM K-quant style mix)
-      shrinks the engine well below the FP16 size with bounded accuracy loss;
-      speed is not expected to improve at batch 1.
-
-  Q04:
-    name: fp8-uniform-ptq
-    family: precision
-    method: modelopt-fp8
-    cameras: [front]
-    precision: fp8
-    quantization:
-      config: FP8_DEFAULT_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-    stage: quantization
-    status: engine-built
-    hypothesis: >-
-      FP8 (E4M3) post-training quantization preserves accuracy far better
-      than forced INT8 thanks to its wider dynamic range, giving a viable
-      aggressive-precision path on sm89+ GPUs where INT8 PTQ failed.
-
-  Q05:
-    name: fp8-mixed-measured-sensitivity
-    family: precision
-    method: modelopt-fp8-mixed
-    cameras: [front]
-    precision: mixed
-    quantization:
-      config: FP8_DEFAULT_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-      sensitivity_report: artifacts/experiments/sensitivity/front-fp8-sensitivity.json
-    stage: quantization
-    status: engine-built
-    hypothesis: >-
-      Keeping only the measured-sensitive blocks in FP16 and quantizing the
-      rest to FP8 (the LLM importance-based mixed-precision recipe, driven by
-      a per-block leave-one-in sensitivity sweep instead of heuristics)
-      matches FP16 accuracy at lower precision cost.
-
-  Q06:
-    name: fp8-mixed-kld-sensitivity
-    family: precision
-    method: modelopt-fp8-mixed-kld
-    cameras: [front]
-    precision: mixed
-    quantization:
-      config: FP8_DEFAULT_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-      sensitivity_report: artifacts/experiments/sensitivity/front-fp8-kld.json
-      sensitivity_metric: kl-divergence
-    stage: quantization
-    status: engine-built
-    hypothesis: >-
-      Ranking per-layer sensitivity by output KL divergence (Unsloth Dynamic
-      2.0 style) instead of noisy small-sample mAP drops selects the truly
-      damaging blocks, so an FP8 model that keeps only the top-KLD blocks in
-      FP16 beats the mAP-threshold mixed variant (Q05) at equal or smaller
-      FP16 budget.
-
-  Q07:
-    name: fp8-mixed-targeted-top2
-    family: precision
-    method: modelopt-fp8-mixed
-    cameras: [front]
-    precision: mixed
-    quantization:
-      config: FP8_DEFAULT_CFG
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-      sensitivity_report: artifacts/experiments/sensitivity/front-fp8-targeted.json
-      sensitivity_metric: map-sweep-above-noise
-    stage: quantization
-    status: engine-built
-    hypothesis: >-
-      Protecting only the two blocks with above-noise mAP damage
-      (final_heads, decoder_layer_4) recovers Q05's lossless accuracy at
-      nearly Q04's uniform-FP8 engine size, because detection AP responds to
-      score-ranking changes near the output rather than distributional drift
-      in the backbone.
-
-  W01:
-    name: weight-only-bitwidth-study
-    family: precision
-    method: modelopt-weight-only-fakequant
-    cameras: [front]
-    precision: mixed
-    quantization:
-      configs: [w8_rtn, w4_rtn, w4_awq, w3_rtn, w2_rtn, w4_mixed, w2_mixed]
-      group_size: 128
-      calibration_images: 128
-      calibration_source: data/training/front/valid
-      report: artifacts/experiments/sensitivity/front-weight-bitwidth.json
-    stage: quantization-study
-    status: static-analysis-passed
-    hypothesis: >-
-      GGUF-style weight-only quantization keeps RF-DETR usable at 4 bits
-      (AWQ) and the task-metric-guided K-quant mix (sensitive head/decoder
-      blocks high precision) extends usability below 4 bits, while plain
-      2-bit RTN collapses as reported for DETR PTQ (Q-DETR, QRT-DETR).
+    status: planned
+    hypothesis: 지원 GPU에서 2:4 sparse tactic의 latency 감소를 측정한다.
 
   S01:
     name: structured-decoder-layer-1
     family: structured
     method: decoder-layer
     cameras: [front]
-    pruning:
-      remove_layers: 1
+    pruning: {remove_layers: 1}
     precision: fp32
     fine_tuning:
       required: true
       completed: true
       status: completed
       profile: recovery_structured
-      epochs: 10
+      epochs_completed: 6
+      stopped_early: true
       training_report: artifacts/experiments/S01/front/recovery/recovery-training.json
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Removing one decoder layer reduces the dense graph with tolerable loss.
+      training_report_sha256: 6caa61a6b544a1893dfb1c47b89be7729b6f0ecb002d7638ed4deccaca745218
+    stage: pruning
+    status: onnx-exported
+    hypothesis: Decoder 한 층 제거가 정확도 손실을 제한하면서 graph를 줄인다.
+    result:
+      decision: retained
+      reason: Decoder 1개 제거 후 6 epoch 복구 학습으로 bbox AP를 baseline 대비 0.000411 이내로 유지하고 mask AP와 semantic mIoU를 개선했으며, 최종 ONNX production 동등성 검증을 통과함.
+      evaluation: results/coco-evaluation/S01-front-after-recovery.json
+      evaluation_sha256: f1fdcac30d62cedf994ade45ec7484164d8ec080d22aacb4044c5fb564ab3406
+      baseline_evaluation: results/coco-evaluation/front-rfdetr-seg-large-v1-test.json
+      baseline_evaluation_sha256: 742252e55c46f2c76a7e41a8b9d8382314346b61602d140a54025028a6176633
+      model: artifacts/experiments/S01/front/model.pth
+      model_sha256: 57e45c7553ec8829a53167b11ccc4da6964019f741b5762c087d82b2a899b821
+      onnx: artifacts/experiments/S01/front/model.onnx
+      onnx_sha256: b8e436175ef25eb6885a3e8c48813e7c0ab1ea3d7c2339ab496c701338dba6e1
+      onnx_equivalence: artifacts/experiments/S01/front/onnx-equivalence.json
+      onnx_equivalence_sha256: c19c294995b354437003abbc2be4becd78bd004deb97b85ea141a84b8d00d4e6
+      protocol:
+        phase: after-recovery
+        dataset: data/training/front_session_split_v1/test
+        image_count: 437
+        threshold: 0.001
+        miou_threshold: 0.25
+        resolution: 504
+        device: cuda
+      metrics:
+        baseline:
+          bbox_ap: 0.7377911741138029
+          mask_ap: 0.6010160064002875
+          semantic_miou: 0.7121996004836423
+        candidate:
+          bbox_ap: 0.7373798659018287
+          mask_ap: 0.6027506763432173
+          semantic_miou: 0.7339210573392503
+        delta_absolute:
+          bbox_ap: -0.0004113082119742151
+          mask_ap: 0.0017346699429298118
+          semantic_miou: 0.021721456855608
+        delta_relative_percent:
+          bbox_ap: -0.05574859477930968
+          mask_ap: 0.2886229192662284
+          semantic_miou: 3.0499114069787936
+      equivalence:
+        policy: production-image
+        samples: 10
+        active_query_count: 92
+        active_membership_agreement: 1.0
+        active_class_agreement: 1.0
+        mask_binary_agreement: 1.0
+        passed: true
 
   S02:
     name: structured-decoder-layer-2
     family: structured
     method: decoder-layer
     cameras: [front]
-    pruning:
-      remove_layers: 2
+    pruning: {remove_layers: 2}
     precision: fp32
     fine_tuning:
       required: true
       completed: true
       status: completed
       profile: recovery_structured
-      epochs: 10
+      epochs_completed: 8
+      stopped_early: true
       training_report: artifacts/experiments/S02/front/recovery/recovery-training.json
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Removing two decoder layers trades more accuracy for lower latency.
+      training_report_sha256: 124dd88a5e1b883fbcd62ba2d1330528f6309523ce3d936d41f2aeea89a77dfd
+    stage: pruning
+    status: onnx-exported
+    hypothesis: Decoder 두 층 제거의 효율-정확도 한계를 측정한다.
+    result:
+      decision: rejected
+      reason: Decoder 2개 제거 후 8 epoch 복구했으나 S01 대비 bbox AP 0.017924, mask AP 0.015162가 하락해 정확도 보존 기준을 통과하지 못함. TensorRT 속도는 구조 축소 효과를 기록하기 위한 대조군으로만 측정함.
+      evaluation: results/coco-evaluation/S02-front-after-recovery.json
+      evaluation_sha256: 02ecf10dc67b7062788dc80a66677f30b8648328134d688fb1d71d75492aea6a
+      baseline_evaluation: results/coco-evaluation/front-rfdetr-seg-large-v1-test.json
+      baseline_evaluation_sha256: 742252e55c46f2c76a7e41a8b9d8382314346b61602d140a54025028a6176633
+      model: artifacts/experiments/S02/front/model.pth
+      model_sha256: 42689291d1a0dfabd5938c711baed3067c69245fe68df6b8333b920e09329c84
+      onnx: artifacts/experiments/S02/front/model.onnx
+      onnx_sha256: 70da0768fb50980ffe5186202528c24f12f5a64d0d8f9cb21c68edac9c0b2b00
+      onnx_equivalence: artifacts/experiments/S02/front/onnx-equivalence.json
+      onnx_equivalence_sha256: 2a75ca7673651313d4370344408f43c2c200c1b65656c8a7854da8f1d81e4847
+      protocol:
+        phase: after-recovery
+        dataset: data/training/front_session_split_v1/test
+        image_count: 437
+        threshold: 0.001
+        miou_threshold: 0.25
+        resolution: 504
+        device: cpu
+        cpu_threads: 3
+      metrics:
+        baseline:
+          bbox_ap: 0.7377911741138029
+          mask_ap: 0.6010160064002875
+          semantic_miou: 0.7121996004836423
+        candidate:
+          bbox_ap: 0.7194562251397179
+          mask_ap: 0.5875887213543577
+          semantic_miou: 0.7626912850187898
+        delta_absolute:
+          bbox_ap: -0.018334948974085052
+          mask_ap: -0.013427285045929827
+          semantic_miou: 0.05049168453514752
+        delta_relative_percent:
+          bbox_ap: -2.4851136225786457
+          mask_ap: -2.234097744975366
+          semantic_miou: 7.089541260744811
+      equivalence:
+        policy: production-image
+        samples: 10
+        active_query_count: 144
+        active_membership_agreement: 1.0
+        active_class_agreement: 1.0
+        mask_binary_agreement: 1.0
+        passed: true
 
   S03:
     name: structured-ffn-20
     family: structured
     method: ffn-dimension
     cameras: [front]
-    pruning:
-      reduction: 0.20
+    pruning: {reduction: 0.20}
     precision: fp32
     fine_tuning:
       required: true
-      completed: true
-      status: completed
+      completed: false
+      status: planned
       profile: recovery_structured
-      epochs: 10
-      training_report: artifacts/experiments/S03/front/recovery/recovery-training.json
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Moderate FFN reduction lowers transformer compute.
+    stage: pruning
+    status: static-analysis-rejected
+    hypothesis: FFN 20% 축소가 transformer 연산량을 줄인다.
+    result:
+      decision: rejected
+      reason: FFN 20.31% 축소 대비 전체 parameter 3.00%, FLOPs 0.39%만 감소하고 ONNX 동등성 엄격 기준을 통과하지 못함.
 
   S04:
     name: structured-ffn-40
     family: structured
     method: ffn-dimension
     cameras: [front]
-    pruning:
-      reduction: 0.40
+    pruning: {reduction: 0.40}
     precision: fp32
     fine_tuning:
       required: true
-      completed: true
-      status: completed
+      completed: false
+      status: planned
       profile: recovery_structured
-      epochs: 10
-      training_report: artifacts/experiments/S04/front/recovery/recovery-training.json
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Aggressive FFN reduction explores the efficiency limit.
+    stage: pruning
+    status: planned
+    hypothesis: FFN 40% 축소의 효율-정확도 한계를 측정한다.
 
   C01:
     name: selected-structured-fp16
@@ -377,10 +285,10 @@ experiments:
     precision: fp16
     artifact_source: S01
     selected_experiment: S01
-    depends_on: [S01, S02, S03, S04]
+    depends_on: [S01]
     stage: tensorrt
-    status: engine-built
-    hypothesis: FP16 compounds the benefit of the selected structured model.
+    status: planned
+    hypothesis: 선정 structured 모델과 FP16 효과를 결합한다.
 
   C02:
     name: selected-structured-int8
@@ -390,10 +298,10 @@ experiments:
     precision: int8
     artifact_source: S01
     selected_experiment: S01
-    depends_on: [C01]
+    depends_on: [S01]
     stage: tensorrt
-    status: engine-built
-    hypothesis: INT8 compounds compression if calibration remains stable.
+    status: planned
+    hypothesis: 선정 structured 모델과 INT8 PTQ 효과를 결합한다.
 
   R01:
     name: reduced-resolution-fp16
@@ -402,6 +310,175 @@ experiments:
     cameras: [front]
     precision: fp16
     input_shape: [1, 3, 432, 432]
-    stage: tensorrt
-    status: engine-built
-    hypothesis: Lower input resolution directly reduces notebook inference compute.
+    stage: onnx
+    status: onnx-exported
+    hypothesis: 입력 504에서 432로 축소해 직접적인 연산량 감소를 얻는다.
+    result:
+      decision: retained
+      reason: 432 입력에서 MACs/FLOPs 30.20% 감소 대비 정확도 하락이 제한적임.
+      evaluation: results/coco-evaluation/R01-front-432-pth.json
+      evaluation_sha256: e5a80d1a6931a3a8d81f28956485b49cb0a2e9bb8100921e089c08349e7b14bb
+      baseline_evaluation: results/coco-evaluation/front-rfdetr-seg-large-v1-test.json
+      baseline_evaluation_sha256: 742252e55c46f2c76a7e41a8b9d8382314346b61602d140a54025028a6176633
+      protocol:
+        dataset: data/training/front_session_split_v1/test
+        image_count: 437
+        threshold: 0.001
+        miou_threshold: 0.25
+        baseline_resolution: 504
+        candidate_resolution: 432
+      metrics:
+        baseline:
+          bbox_ap: 0.7377911741138029
+          mask_ap: 0.6010160064002875
+          semantic_miou: 0.7121996004836423
+        candidate:
+          bbox_ap: 0.730660801535274
+          mask_ap: 0.5929736488795913
+          semantic_miou: 0.6968781367116157
+        delta_absolute:
+          bbox_ap: -0.007130372578528887
+          mask_ap: -0.008042357520696264
+          semantic_miou: -0.015321463772026589
+        delta_relative_percent:
+          bbox_ap: -0.9664486142835105
+          mask_ap: -1.3381270107704735
+          semantic_miou: -2.1512878919929257
+
+  Q01:
+    name: int8-smoothquant-ptq
+    family: precision
+    method: modelopt-int8-smoothquant
+    cameras: [front]
+    precision: int8
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: INT8_SMOOTHQUANT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+    stage: quantization
+    status: planned
+    hypothesis: SmoothQuant가 일반 INT8 PTQ보다 activation 손실을 줄인다.
+
+  Q02:
+    name: mixed-precision-sensitive-fp16
+    family: precision
+    method: modelopt-mixed-precision
+    cameras: [front]
+    precision: mixed
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: INT8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+      keep_fp16_patterns:
+        - "*class_embed*"
+        - "*bbox_embed*"
+        - "*segmentation_head*"
+        - "*sampling_offsets*"
+        - "*enc_out*"
+        - "*ref_point*"
+    stage: quantization
+    status: planned
+    hypothesis: 민감 block을 FP16으로 보호해 INT8 정확도를 개선한다.
+
+  Q03:
+    name: int4-weight-only-ffn
+    family: precision
+    method: modelopt-int4-weight-only
+    cameras: [front]
+    precision: int4
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: INT4_BLOCKWISE_WEIGHT_ONLY_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+    stage: quantization-study
+    status: planned
+    hypothesis: INT4 weight-only의 호환성과 정확도 한계를 연구용으로 확인한다.
+
+  Q04:
+    name: fp8-uniform-ptq
+    family: precision
+    method: modelopt-fp8
+    cameras: [front]
+    precision: fp8
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+    stage: quantization
+    status: planned
+    hypothesis: 지원 GPU에서 균일 FP8의 효율과 정확도를 측정한다.
+
+  Q05:
+    name: fp8-mixed-measured-sensitivity
+    family: precision
+    method: modelopt-fp8-mixed
+    cameras: [front]
+    precision: mixed
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+    stage: quantization
+    status: planned
+    hypothesis: 측정된 민감 block만 FP16으로 보호해 FP8 정확도를 회복한다.
+
+  Q06:
+    name: fp8-mixed-kld-sensitivity
+    family: precision
+    method: modelopt-fp8-mixed-kld
+    cameras: [front]
+    precision: mixed
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+      sensitivity_metric: kl-divergence
+    stage: quantization
+    status: planned
+    hypothesis: KLD 민감도 순위로 FP16 보호 block을 선택한다.
+
+  Q07:
+    name: fp8-mixed-targeted-top2
+    family: precision
+    method: modelopt-fp8-mixed
+    cameras: [front]
+    precision: mixed
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      config: FP8_DEFAULT_CFG
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+      sensitivity_metric: map-sweep-above-noise
+    stage: quantization
+    status: planned
+    hypothesis: 상위 민감 block 두 개만 FP16으로 보호한다.
+
+  W01:
+    name: weight-only-bitwidth-study
+    family: precision
+    method: modelopt-weight-only-fakequant
+    cameras: [front]
+    precision: mixed
+    artifact_source: B01
+    depends_on: [B01]
+    quantization:
+      configs: [w8_rtn, w4_rtn, w4_awq, w3_rtn, w2_rtn, w4_mixed, w2_mixed]
+      group_size: 128
+      calibration_images: 128
+      calibration_source: data/training/front_session_split_v1/train
+    stage: quantization-study
+    status: planned
+    hypothesis: Weight-only bit-width별 정확도 한계를 정적 분석한다.

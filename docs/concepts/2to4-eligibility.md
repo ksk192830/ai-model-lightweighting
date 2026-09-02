@@ -13,9 +13,8 @@ MultiheadAttention projection weight를 조사했다.
 | 조사 대상 parameter | 34,083,584 |
 | shape 기준 적용 가능 parameter | 33,906,176 |
 
-전체 layer 목록과 shape, parameter 수, pruning 전 pattern 준수율은
-`artifacts/experiments/M01/front/2to4-eligibility.json`에
-기록했다.
+신규 M01 실행 시 전체 layer 목록, shape, parameter 수와 pruning 전 pattern
+준수율을 `artifacts/experiments/M01/front/2to4-eligibility.json`에 기록한다.
 
 이 결과는 weight shape가 2:4 pattern을 표현할 수 있다는 뜻이며, 실제
 TensorRT sparse tactic 사용을 보장하지 않는다.
@@ -109,47 +108,13 @@ M01/M02는 weight와 precision이 같고 sparse tactic 허용 여부만 달라�
 eligible layer가 확인돼도 실제 sparse tactic 선택이 0개라면 실패가 아니라
 “RF-DETR의 해당 problem size에서는 dense tactic이 선택됨”으로 기록한다.
 
-## Prototype 생성 결과
+## 신규 실험 기록 항목
 
-Fine-tuning 전 변환 가능성과 tactic 선택을 확인하기 위한 prototype을
-생성했다.
+과거 prototype과 engine은 제거했다. 새 checkpoint로 다음 항목을 모두 다시
+측정한다.
 
-| 항목 | M01 dense tactic | M02 sparse tactic |
-|---|---:|---:|
-| Precision | FP16 | FP16 |
-| Engine 크기 | 71,218,924 bytes | 70,759,356 bytes |
-| Sparse flag | 비활성 | 활성 |
-| 최대 eligible 보고 수 | - | 48 |
-| 실제 sparse tactic 선택 | 0 | 3 |
-
-M02 engine은 M01보다 459,568 bytes, 약 0.65% 작다. 이는 latency 결과가
-아니므로 실제 가속 여부는 평가자가 동일한 환경에서 측정해야 한다.
-
-실제 sparse tactic이 선택된 layer:
-
-- projector `cv1` convolution
-- projector `cv2` convolution
-- segmentation head spatial feature projection convolution
-
-Transformer MatMul에서도 sparse kernel 후보가 탐색됐지만 최종 선택은
-0개였다. 전체 이벤트와 layer 이름은
-[`M02 sparse tactic 요약`](../../artifacts/experiments/M02/front/sparse-tactics.json)에
-기록했다.
-
-학습 전 결과는 `prototype-before-recovery/`에 보존했다.
-
-## Recovery fine-tuning 후 최종 생성 결과
-
-| 항목 | M01 dense tactic | M02 sparse tactic |
-|---|---:|---:|
-| Recovery fine-tuning | 10 epochs | M01과 동일 checkpoint |
-| Checkpoint 2:4 준수율 | 100% | 동일 |
-| ONNX 2:4 준수율 | 100% | 동일 ONNX |
-| Engine 크기 | 71,189,508 bytes | 70,647,028 bytes |
-| Sparse flag | 비활성 | 활성 |
-| 최대 eligible 보고 수 | - | 48 |
-| 실제 sparse tactic 선택 | 0 | 3 |
-
-최종 M02 engine은 M01보다 542,480 bytes, 약 0.76% 작다. 선택된 sparse
-tactic은 prototype과 동일한 projector `cv1`, `cv2`, segmentation spatial
-feature projection의 3개 Conv layer다.
+- pruning 전후 2:4 pattern 준수율
+- recovery fine-tuning epoch와 validation 정확도
+- ONNX constant weight의 pattern 준수율
+- TensorRT eligible layer와 실제 sparse tactic 선택 layer
+- M01·M02 engine 크기와 동일 장비 latency

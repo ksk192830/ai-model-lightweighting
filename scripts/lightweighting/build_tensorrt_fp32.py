@@ -13,6 +13,7 @@ from build_tensorrt_fp16 import (
     REPOSITORY_ROOT,
     build_with_python,
     resolve_path,
+    sha256,
 )
 
 
@@ -73,17 +74,30 @@ def main() -> int:
         args.workspace_mib,
         enable_fp16=False,
     )
+    import torch
+
     metadata = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "camera": args.camera,
         "precision": "fp32",
         "source_onnx": str(onnx_path.relative_to(REPOSITORY_ROOT)),
+        "source_onnx_sha256": sha256(onnx_path),
         "engine_path": str(engine_path.relative_to(REPOSITORY_ROOT)),
         "engine_size_bytes": engine_path.stat().st_size,
+        "engine_sha256": sha256(engine_path),
         "platform": platform.platform(),
+        "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+        "compute_capability": (
+            list(torch.cuda.get_device_capability(0))
+            if torch.cuda.is_available()
+            else None
+        ),
+        "torch_version": torch.__version__,
+        "cuda_version": torch.version.cuda,
         "build_backend": "tensorrt-python",
         "tensorrt_version": tensorrt_version,
         "workspace_mib": args.workspace_mib,
+        "profiling_verbosity": "DETAILED",
     }
     metadata_path.write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False) + "\n",

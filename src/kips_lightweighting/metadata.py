@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import platform
 import subprocess
 import sys
@@ -59,6 +60,13 @@ def read_json(path: Path) -> dict[str, Any]:
 
 def refresh_experiment_documents(*experiment_ids: str) -> None:
     """Synchronize canonical metadata and the generated artifact index."""
+    if os.environ.get("KIPS_SKIP_DOCUMENT_REFRESH", "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }:
+        print("experiment document refresh skipped by environment")
+        return
     sync_command = [
         sys.executable,
         str(
