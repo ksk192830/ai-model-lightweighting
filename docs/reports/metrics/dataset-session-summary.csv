@@ -1,0 +1,8 @@
+session_id,assigned_split,exported_images,unique_source_frame_ids,source_train_images,source_valid_images,source_test_images,unique_train_source_frame_ids,start,end
+timestamp-session-00,test,165,165,106,36,23,106,2025-12-22T18:50:50.737914,2025-12-22T18:52:13.704951
+timestamp-session-01,valid,179,179,125,31,23,125,2025-12-22T18:52:35.379345,2025-12-22T18:54:04.879772
+timestamp-session-02,test,272,272,197,53,22,197,2025-12-22T18:55:04.140645,2025-12-22T18:57:20.185738
+timestamp-session-03,train,618,618,434,125,59,434,2025-12-22T19:00:17.131425,2025-12-22T19:03:22.270346
+timestamp-session-04,valid,225,225,159,47,19,159,2025-12-22T19:05:27.938039,2025-12-22T19:06:35.094205
+timestamp-session-05,train,1,1,1,0,0,1,2025-12-22T19:16:36.022745,2025-12-22T19:16:36.022745
+timestamp-session-06,train,1,1,1,0,0,1,2025-12-22T19:16:41.032509,2025-12-22T19:16:41.032509

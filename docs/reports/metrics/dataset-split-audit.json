@@ -1,0 +1,285 @@
+{
+  "dataset": {
+    "source": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_unaugmented",
+    "grouped": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1",
+    "total_exported_images": 4466,
+    "timestamped_exported_images": 1461,
+    "untraceable_exported_images": 3005,
+    "timestamp_sessions": 7,
+    "roboflow_source_version": 8,
+    "roboflow_generated_version": 9,
+    "preprocessing": {},
+    "augmentation": {}
+  },
+  "temporal_grouping": {
+    "threshold_seconds": 2.0,
+    "positive_within_session_gap_count": 1454,
+    "within_gap_seconds": {
+      "p50": 0.31008199999999997,
+      "p95": 1.0098212,
+      "p99": 1.2126229700000002,
+      "max": 1.411046
+    },
+    "boundary_gap_seconds": {
+      "min": 5.009764,
+      "max": 600.92854,
+      "values": [
+        21.674394,
+        59.260873,
+        176.945687,
+        125.667693,
+        600.92854,
+        5.009764
+      ]
+    },
+    "threshold_invariance_interval_seconds": [
+      1.411046,
+      5.009764
+    ]
+  },
+  "source_frame_identity": {
+    "unique_all_original_names": 2798,
+    "unique_timestamp_original_names": 1461,
+    "timestamp_multiplicity_distribution": {
+      "1": 1461
+    },
+    "timestamp_unique_original_names_by_export_split": {
+      "train": 1023,
+      "valid": 292,
+      "test": 146
+    },
+    "timestamp_names_crossing_original_export_splits": 0,
+    "unique_untraceable_original_names": 1337,
+    "untraceable_reused_name_count": 873,
+    "untraceable_names_crossing_original_export_splits": 537,
+    "untraceable_median_multiplicity": 2.0,
+    "untraceable_max_multiplicity": 4
+  },
+  "assignment_search": {
+    "eligible_major_sessions": 5,
+    "all_role_assignments": 243,
+    "feasible_role_assignments_with_1_train_2_valid_2_test": 30,
+    "objective": "lexicographic: max ratio error, total ratio error, test/valid/train class-presence SSE, test recency"
+  },
+  "split_summary": [
+    {
+      "split": "train",
+      "images": 3625,
+      "ratio": 0.8116883116883117,
+      "target_ratio": 0.8,
+      "absolute_ratio_error_pp": 1.1688311688311637,
+      "timestamp_sessions": 3
+    },
+    {
+      "split": "valid",
+      "images": 404,
+      "ratio": 0.09046126287505597,
+      "target_ratio": 0.1,
+      "absolute_ratio_error_pp": 0.9538737124944032,
+      "timestamp_sessions": 2
+    },
+    {
+      "split": "test",
+      "images": 437,
+      "ratio": 0.09785042543663233,
+      "target_ratio": 0.1,
+      "absolute_ratio_error_pp": 0.21495745633676733,
+      "timestamp_sessions": 2
+    }
+  ],
+  "class_presence": [
+    {
+      "split": "train",
+      "condition": "negative",
+      "images": 1236,
+      "image_presence_rate": 0.3409655172413793
+    },
+    {
+      "split": "train",
+      "condition": "out_line",
+      "images": 2324,
+      "image_presence_rate": 0.6411034482758621
+    },
+    {
+      "split": "train",
+      "condition": "parking_lot",
+      "images": 1369,
+      "image_presence_rate": 0.3776551724137931
+    },
+    {
+      "split": "train",
+      "condition": "parking_space",
+      "images": 1170,
+      "image_presence_rate": 0.32275862068965516
+    },
+    {
+      "split": "valid",
+      "condition": "negative",
+      "images": 92,
+      "image_presence_rate": 0.22772277227722773
+    },
+    {
+      "split": "valid",
+      "condition": "out_line",
+      "images": 310,
+      "image_presence_rate": 0.7673267326732673
+    },
+    {
+      "split": "valid",
+      "condition": "parking_lot",
+      "images": 251,
+      "image_presence_rate": 0.6212871287128713
+    },
+    {
+      "split": "valid",
+      "condition": "parking_space",
+      "images": 183,
+      "image_presence_rate": 0.452970297029703
+    },
+    {
+      "split": "test",
+      "condition": "negative",
+      "images": 164,
+      "image_presence_rate": 0.37528604118993136
+    },
+    {
+      "split": "test",
+      "condition": "out_line",
+      "images": 257,
+      "image_presence_rate": 0.5881006864988558
+    },
+    {
+      "split": "test",
+      "condition": "parking_lot",
+      "images": 177,
+      "image_presence_rate": 0.40503432494279173
+    },
+    {
+      "split": "test",
+      "condition": "parking_space",
+      "images": 159,
+      "image_presence_rate": 0.36384439359267734
+    }
+  ],
+  "class_presence_mae_vs_train_pp": {
+    "valid": 15.33274155001707,
+    "test": 3.8947052789394783
+  },
+  "session_summary": [
+    {
+      "session_id": "timestamp-session-00",
+      "assigned_split": "test",
+      "exported_images": 165,
+      "unique_source_frame_ids": 165,
+      "source_train_images": 106,
+      "source_valid_images": 36,
+      "source_test_images": 23,
+      "unique_train_source_frame_ids": 106,
+      "start": "2025-12-22T18:50:50.737914",
+      "end": "2025-12-22T18:52:13.704951"
+    },
+    {
+      "session_id": "timestamp-session-01",
+      "assigned_split": "valid",
+      "exported_images": 179,
+      "unique_source_frame_ids": 179,
+      "source_train_images": 125,
+      "source_valid_images": 31,
+      "source_test_images": 23,
+      "unique_train_source_frame_ids": 125,
+      "start": "2025-12-22T18:52:35.379345",
+      "end": "2025-12-22T18:54:04.879772"
+    },
+    {
+      "session_id": "timestamp-session-02",
+      "assigned_split": "test",
+      "exported_images": 272,
+      "unique_source_frame_ids": 272,
+      "source_train_images": 197,
+      "source_valid_images": 53,
+      "source_test_images": 22,
+      "unique_train_source_frame_ids": 197,
+      "start": "2025-12-22T18:55:04.140645",
+      "end": "2025-12-22T18:57:20.185738"
+    },
+    {
+      "session_id": "timestamp-session-03",
+      "assigned_split": "train",
+      "exported_images": 618,
+      "unique_source_frame_ids": 618,
+      "source_train_images": 434,
+      "source_valid_images": 125,
+      "source_test_images": 59,
+      "unique_train_source_frame_ids": 434,
+      "start": "2025-12-22T19:00:17.131425",
+      "end": "2025-12-22T19:03:22.270346"
+    },
+    {
+      "session_id": "timestamp-session-04",
+      "assigned_split": "valid",
+      "exported_images": 225,
+      "unique_source_frame_ids": 225,
+      "source_train_images": 159,
+      "source_valid_images": 47,
+      "source_test_images": 19,
+      "unique_train_source_frame_ids": 159,
+      "start": "2025-12-22T19:05:27.938039",
+      "end": "2025-12-22T19:06:35.094205"
+    },
+    {
+      "session_id": "timestamp-session-05",
+      "assigned_split": "train",
+      "exported_images": 1,
+      "unique_source_frame_ids": 1,
+      "source_train_images": 1,
+      "source_valid_images": 0,
+      "source_test_images": 0,
+      "unique_train_source_frame_ids": 1,
+      "start": "2025-12-22T19:16:36.022745",
+      "end": "2025-12-22T19:16:36.022745"
+    },
+    {
+      "session_id": "timestamp-session-06",
+      "assigned_split": "train",
+      "exported_images": 1,
+      "unique_source_frame_ids": 1,
+      "source_train_images": 1,
+      "source_valid_images": 0,
+      "source_test_images": 0,
+      "unique_train_source_frame_ids": 1,
+      "start": "2025-12-22T19:16:41.032509",
+      "end": "2025-12-22T19:16:41.032509"
+    }
+  ],
+  "augmentation_audit": [
+    {
+      "split": "train",
+      "images": 3625,
+      "offline_augmented_images": 0,
+      "offline_augmented_rate": 0.0,
+      "augmentation_free_source": true
+    },
+    {
+      "split": "valid",
+      "images": 404,
+      "offline_augmented_images": 0,
+      "offline_augmented_rate": 0.0,
+      "augmentation_free_source": true
+    },
+    {
+      "split": "test",
+      "images": 437,
+      "offline_augmented_images": 0,
+      "offline_augmented_rate": 0.0,
+      "augmentation_free_source": true
+    }
+  ],
+  "verification": {
+    "source_augmentation_free": true,
+    "exact_cross_split_duplicate_images": 0,
+    "capture_session_overlap_count": 0,
+    "coco_reference_errors": 0,
+    "paper_evaluation_ready": true,
+    "reason": "PASS: augmentation-free source and no image/session/reference overlap."
+  }
+}

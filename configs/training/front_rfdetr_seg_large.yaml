@@ -1,0 +1,54 @@
+version: 1
+
+run:
+  name: front-rfdetr-seg-large-v1
+  output_dir: artifacts/training/front-rfdetr-seg-large-v1
+
+model:
+  architecture: RFDETRSegLarge
+  resolution: 504
+  pretrained_weights: models/pretrained/rf-detr-seg-large.pt
+  pretrained_md5: 275f7b094909544ed2841c94a677d07e
+
+dataset:
+  # Roboflow Version 9 (offline augmentation disabled), reassigned by whole
+  # capture sessions. This is the audited paper-training dataset.
+  directory: data/training/front_session_split_v1
+  format: roboflow
+  readiness_report: docs/reports/metrics/dataset-split-audit.json
+  require_paper_ready: true
+  required_splits: [train, valid, test]
+  annotation_file: _annotations.coco.json
+  classes: [front, out_line, parking_lot, parking_space]
+
+training:
+  # The historical front run was capped at 40 but stopped after 19 epochs.
+  # Use 25 as a resumable safety cap and validation mAP for actual stopping.
+  epochs: 25
+  batch_size: 2
+  grad_accum_steps: 8
+  effective_batch_size: 16
+  lr: 1.0e-4
+  lr_encoder: 1.5e-4
+  weight_decay: 1.0e-4
+  lr_scheduler: step
+  lr_drop: 100
+  warmup_epochs: 0.0
+  multi_scale: true
+  expanded_scales: true
+  use_ema: true
+  ema_decay: 0.993
+  early_stopping: true
+  early_stopping_patience: 6
+  early_stopping_min_delta: 0.001
+  checkpoint_interval: 5
+  eval_interval: 1
+  eval_max_dets: 500
+  cls_loss_coef: 5.0
+  mask_point_sample_ratio: 16
+  mask_ce_loss_coef: 5.0
+  mask_dice_loss_coef: 5.0
+  num_workers: 2
+  random_seed: 42
+  tensorboard: false
+  run_test: false

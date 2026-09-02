@@ -1,20 +1,17 @@
-version: 2
-rclone_remote: kips-drive
-drive_root_folder_id: 1R5lKUurZMH6xGiUp-WRDZlCg-sc0bt7B
+version: 3
 
 datasets:
-  calibration:
-    description: INT8 calibration images for front and rear models
-    source_dir: calibration
-    output_dir: data/calibration
-    required_paths:
-      - front/manifest.json
-      - rear/manifest.json
-
-  labeled-test:
-    description: Labeled COCO test data for front and rear models
-    source_dir: labeled_test
-    output_dir: data/labeled_test
-    required_paths:
-      - front/_annotations.coco.json
-      - rear/_annotations.coco.json
+  front:
+    source: roboflow
+    source_version: 9
+    augmentation: none
+    raw_export_dir: data/training/front_unaugmented
+    split_root: data/training/front_session_split_v1
+    train_dir: data/training/front_session_split_v1/train
+    valid_dir: data/training/front_session_split_v1/valid
+    test_dir: data/training/front_session_split_v1/test
+    split_unit: capture_session
+    counts:
+      train: 3625
+      valid: 404
+      test: 437

@@ -1,0 +1,4 @@
+split,images,offline_augmented_images,offline_augmented_rate,augmentation_free_source
+train,3625,0,0.0,True
+valid,404,0,0.0,True
+test,437,0,0.0,True

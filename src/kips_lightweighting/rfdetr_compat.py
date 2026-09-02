@@ -35,6 +35,7 @@ def load_rfdetr_checkpoint(
     *,
     device: str = "cpu",
     num_classes: int,
+    resolution: int | None = None,
 ) -> Any:
     """Load standard or project-defined structured RF-DETR checkpoints."""
     checkpoint = torch.load(
@@ -69,6 +70,7 @@ def load_rfdetr_checkpoint(
             checkpoint_path,
             device=device,
             num_classes=num_classes,
+            **({"resolution": resolution} if resolution is not None else {}),
         )
 
     from rfdetr.models import build_model_from_config
@@ -89,6 +91,8 @@ def load_rfdetr_checkpoint(
             "num_classes": num_classes,
         }
     )
+    if resolution is not None:
+        constructor["resolution"] = resolution
     if is_decoder_pruned:
         constructor["dec_layers"] = decoder_layers
     wrapper = RFDETRSegLarge(**constructor)
