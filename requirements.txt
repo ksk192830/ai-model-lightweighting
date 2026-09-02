@@ -10,6 +10,7 @@ albumentations==2.0.8
 
 # Export and evaluation.
 onnx==1.22.0
+nvidia-modelopt==0.46.0
 pycocotools==2.0.11
 numpy==2.2.6
 Pillow==12.3.0

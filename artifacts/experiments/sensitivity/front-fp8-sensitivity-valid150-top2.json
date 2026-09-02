@@ -1,0 +1,199 @@
+{
+  "created_at_utc": "2026-09-02T17:40:59.789819+00:00",
+  "camera": "front",
+  "quant_config": "FP8_DEFAULT_CFG",
+  "checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "calibration_images": 64,
+  "eval_images": 150,
+  "eval_dir": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1/valid",
+  "threshold": 0.001,
+  "baseline": {
+    "bbox_ap": 0.6823415105264993,
+    "segm_ap": 0.5764587993056514
+  },
+  "blocks": {
+    "backbone_layers_00-02": {
+      "quantizers": 66,
+      "bbox_ap": 0.6800539335150311,
+      "segm_ap": 0.5773338111349007,
+      "drop_bbox": 0.0022875770114682004,
+      "drop_segm": -0.000875011829249317,
+      "drop_max": 0.0022875770114682004
+    },
+    "backbone_layers_03-05": {
+      "quantizers": 66,
+      "bbox_ap": 0.6782308266475537,
+      "segm_ap": 0.5705293447989117,
+      "drop_bbox": 0.004110683878945531,
+      "drop_segm": 0.005929454506739651,
+      "drop_max": 0.005929454506739651
+    },
+    "backbone_layers_06-08": {
+      "quantizers": 66,
+      "bbox_ap": 0.6802112014001113,
+      "segm_ap": 0.5740303323247566,
+      "drop_bbox": 0.002130309126388008,
+      "drop_segm": 0.002428466980894717,
+      "drop_max": 0.002428466980894717
+    },
+    "backbone_layers_09-11": {
+      "quantizers": 66,
+      "bbox_ap": 0.6858273306782132,
+      "segm_ap": 0.5757313391493798,
+      "drop_bbox": -0.0034858201517139475,
+      "drop_segm": 0.0007274601562715644,
+      "drop_max": 0.0007274601562715644
+    },
+    "backbone_projector": {
+      "quantizers": 24,
+      "bbox_ap": 0.6820657302097833,
+      "segm_ap": 0.569961380220523,
+      "drop_bbox": 0.0002757803167159345,
+      "drop_segm": 0.006497419085128353,
+      "drop_max": 0.006497419085128353
+    },
+    "decoder_layer_0": {
+      "quantizers": 27,
+      "bbox_ap": 0.6809131892996139,
+      "segm_ap": 0.5751745023057198,
+      "drop_bbox": 0.0014283212268854095,
+      "drop_segm": 0.0012842969999316,
+      "drop_max": 0.0014283212268854095
+    },
+    "decoder_layer_1": {
+      "quantizers": 27,
+      "bbox_ap": 0.6820042305328418,
+      "segm_ap": 0.5745797141641509,
+      "drop_bbox": 0.00033727999365751327,
+      "drop_segm": 0.0018790851415004806,
+      "drop_max": 0.0018790851415004806
+    },
+    "decoder_layer_2": {
+      "quantizers": 27,
+      "bbox_ap": 0.679110518106843,
+      "segm_ap": 0.5755716626568853,
+      "drop_bbox": 0.003230992419656298,
+      "drop_segm": 0.0008871366487660515,
+      "drop_max": 0.003230992419656298
+    },
+    "decoder_layer_3": {
+      "quantizers": 27,
+      "bbox_ap": 0.6777047354478646,
+      "segm_ap": 0.5756788914860815,
+      "drop_bbox": 0.004636775078634692,
+      "drop_segm": 0.000779907819569825,
+      "drop_max": 0.004636775078634692
+    },
+    "decoder_layer_4": {
+      "quantizers": 27,
+      "bbox_ap": 0.6721551148402451,
+      "segm_ap": 0.5699069866571632,
+      "drop_bbox": 0.010186395686254124,
+      "drop_segm": 0.006551812648488142,
+      "drop_max": 0.010186395686254124
+    },
+    "enc_output_and_heads": {
+      "quantizers": 221,
+      "bbox_ap": 0.6801911013013312,
+      "segm_ap": 0.5759390740161484,
+      "drop_bbox": 0.0021504092251680706,
+      "drop_segm": 0.000519725289502948,
+      "drop_max": 0.0021504092251680706
+    },
+    "final_heads": {
+      "quantizers": 174,
+      "bbox_ap": 0.6651447733282968,
+      "segm_ap": 0.5756602171863333,
+      "drop_bbox": 0.017196737198202472,
+      "drop_segm": 0.0007985821193180476,
+      "drop_max": 0.017196737198202472
+    },
+    "segmentation_head": {
+      "quantizers": 54,
+      "bbox_ap": 0.6823415105264993,
+      "segm_ap": 0.577685211577649,
+      "drop_bbox": 0.0,
+      "drop_segm": -0.0012264122719976012,
+      "drop_max": 0.0
+    }
+  },
+  "block_patterns": {
+    "backbone_layers_00-02": [
+      "*backbone.0.encoder*.layer.0.*",
+      "*backbone.0.encoder*.layer.1.*",
+      "*backbone.0.encoder*.layer.2.*"
+    ],
+    "backbone_layers_03-05": [
+      "*backbone.0.encoder*.layer.3.*",
+      "*backbone.0.encoder*.layer.4.*",
+      "*backbone.0.encoder*.layer.5.*"
+    ],
+    "backbone_layers_06-08": [
+      "*backbone.0.encoder*.layer.6.*",
+      "*backbone.0.encoder*.layer.7.*",
+      "*backbone.0.encoder*.layer.8.*"
+    ],
+    "backbone_layers_09-11": [
+      "*backbone.0.encoder*.layer.9.*",
+      "*backbone.0.encoder*.layer.10.*",
+      "*backbone.0.encoder*.layer.11.*"
+    ],
+    "backbone_projector": [
+      "*backbone.0.projector*"
+    ],
+    "decoder_layer_0": [
+      "*transformer.decoder.layers.0.*"
+    ],
+    "decoder_layer_1": [
+      "*transformer.decoder.layers.1.*"
+    ],
+    "decoder_layer_2": [
+      "*transformer.decoder.layers.2.*"
+    ],
+    "decoder_layer_3": [
+      "*transformer.decoder.layers.3.*"
+    ],
+    "decoder_layer_4": [
+      "*transformer.decoder.layers.4.*"
+    ],
+    "enc_output_and_heads": [
+      "*transformer.enc_output*",
+      "*transformer.enc_out_class_embed*",
+      "*transformer.enc_out_bbox_embed*"
+    ],
+    "final_heads": [
+      "*class_embed*",
+      "*bbox_embed*",
+      "*ref_point_head*"
+    ],
+    "segmentation_head": [
+      "*segmentation_head*"
+    ]
+  },
+  "sensitive_blocks": [
+    "final_heads",
+    "decoder_layer_4"
+  ],
+  "hardware": "NVIDIA GeForce RTX 5060 Ti",
+  "derived_from": "artifacts/experiments/sensitivity/front-fp8-sensitivity-valid150.json",
+  "selection_rule": {
+    "type": "top-k",
+    "k": 2,
+    "metric": "drop_max"
+  },
+  "ranked_blocks": [
+    "final_heads",
+    "decoder_layer_4",
+    "backbone_projector",
+    "backbone_layers_03-05",
+    "decoder_layer_3",
+    "decoder_layer_2",
+    "backbone_layers_06-08",
+    "backbone_layers_00-02",
+    "enc_output_and_heads",
+    "decoder_layer_1",
+    "decoder_layer_0",
+    "backbone_layers_09-11",
+    "segmentation_head"
+  ]
+}

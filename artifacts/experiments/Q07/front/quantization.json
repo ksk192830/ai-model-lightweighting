@@ -1,0 +1,38 @@
+{
+  "created_at_utc": "2026-09-02T17:43:06.643814+00:00",
+  "experiment": "Q07",
+  "camera": "front",
+  "mode": "fp8-mixed",
+  "modelopt_config": "FP8_DEFAULT_CFG",
+  "checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "calibration_dir": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1/train",
+  "calibration_images": 128,
+  "seed": 42,
+  "resolution": 504,
+  "quantizers_total": 729,
+  "quantizers_active": 299,
+  "quantizers_disabled": 201,
+  "keep_fp16_patterns": [
+    "*class_embed*",
+    "*bbox_embed*",
+    "*ref_point_head*",
+    "*transformer.decoder.layers.4.*"
+  ],
+  "sensitive_blocks": [
+    "final_heads",
+    "decoder_layer_4"
+  ],
+  "sensitivity_report": "artifacts/experiments/sensitivity/front-fp8-sensitivity-valid150-top2.json",
+  "quantize_patterns": [],
+  "onnx_path": "artifacts/experiments/Q07/front/model.onnx",
+  "onnx_size_bytes": 131614791,
+  "onnx_qdq_nodes": 516,
+  "onnx_qdq_node_types": {
+    "QuantizeLinear": 0,
+    "DequantizeLinear": 0,
+    "TRT_FP8QuantizeLinear": 258,
+    "TRT_FP8DequantizeLinear": 258
+  },
+  "opset": 19,
+  "device": "cuda"
+}

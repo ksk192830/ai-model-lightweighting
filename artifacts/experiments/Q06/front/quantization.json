@@ -1,0 +1,48 @@
+{
+  "created_at_utc": "2026-09-02T17:42:37.867309+00:00",
+  "experiment": "Q06",
+  "camera": "front",
+  "mode": "fp8-mixed",
+  "modelopt_config": "FP8_DEFAULT_CFG",
+  "checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "calibration_dir": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1/train",
+  "calibration_images": 128,
+  "seed": 42,
+  "resolution": 504,
+  "quantizers_total": 729,
+  "quantizers_active": 235,
+  "quantizers_disabled": 329,
+  "keep_fp16_patterns": [
+    "*backbone.0.projector*",
+    "*class_embed*",
+    "*bbox_embed*",
+    "*ref_point_head*",
+    "*transformer.enc_output*",
+    "*transformer.enc_out_class_embed*",
+    "*transformer.enc_out_bbox_embed*",
+    "*backbone.0.encoder*.layer.2.*",
+    "*backbone.0.encoder*.layer.9.*",
+    "*backbone.0.encoder*.layer.0.*"
+  ],
+  "sensitive_blocks": [
+    "backbone_projector",
+    "final_heads",
+    "enc_output_and_heads",
+    "backbone_layers_02-02",
+    "backbone_layers_09-09",
+    "backbone_layers_00-00"
+  ],
+  "sensitivity_report": "artifacts/experiments/sensitivity/front-fp8-kld-valid48.json",
+  "quantize_patterns": [],
+  "onnx_path": "artifacts/experiments/Q06/front/model.onnx",
+  "onnx_size_bytes": 131521031,
+  "onnx_qdq_nodes": 456,
+  "onnx_qdq_node_types": {
+    "QuantizeLinear": 0,
+    "DequantizeLinear": 0,
+    "TRT_FP8QuantizeLinear": 228,
+    "TRT_FP8DequantizeLinear": 228
+  },
+  "opset": 19,
+  "device": "cuda"
+}

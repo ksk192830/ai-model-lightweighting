@@ -106,6 +106,16 @@ def load_rfdetr_checkpoint(
         wrapper.model_config,
         defaults=defaults,
     )
+    # Match RF-DETR's standard checkpoint loader when a structured checkpoint
+    # is reused at a different export/evaluation resolution.  The learned
+    # patch-grid positional embedding must be resized before load_state_dict;
+    # strict=False does not ignore tensor shape mismatches.
+    from rfdetr.models.weights import interpolate_position_embeddings
+
+    interpolate_position_embeddings(
+        state,
+        wrapper.model_config.positional_encoding_size,
+    )
     incompatible = structured_model.load_state_dict(
         state,
         strict=False,

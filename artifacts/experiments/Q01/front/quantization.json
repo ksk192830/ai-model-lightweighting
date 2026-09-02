@@ -1,0 +1,22 @@
+{
+  "created_at_utc": "2026-09-02T17:29:31.502797+00:00",
+  "experiment": "Q01",
+  "camera": "front",
+  "mode": "smoothquant",
+  "modelopt_config": "INT8_SMOOTHQUANT_CFG",
+  "checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "calibration_dir": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1/train",
+  "calibration_images": 128,
+  "seed": 42,
+  "resolution": 504,
+  "quantizers_total": 729,
+  "quantizers_active": 462,
+  "quantizers_disabled": 0,
+  "keep_fp16_patterns": [],
+  "quantize_patterns": [],
+  "onnx_path": "artifacts/experiments/Q01/front/model.onnx",
+  "onnx_size_bytes": 131761621,
+  "onnx_qdq_nodes": 626,
+  "opset": 17,
+  "device": "cuda"
+}

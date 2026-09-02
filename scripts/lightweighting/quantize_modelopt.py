@@ -286,17 +286,17 @@ def main() -> int:
 
     onnx_model = onnx.load(str(onnx_path))
     onnx.checker.check_model(onnx_model)
-    qdq_nodes = sum(
-        1
-        for node in onnx_model.graph.node
-        if node.op_type
-        in (
-            "QuantizeLinear",
-            "DequantizeLinear",
-            "TRT_FP8QuantizeLinear",
-            "TRT_FP8DequantizeLinear",
-        )
+    qdq_types = (
+        "QuantizeLinear",
+        "DequantizeLinear",
+        "TRT_FP8QuantizeLinear",
+        "TRT_FP8DequantizeLinear",
     )
+    qdq_type_counts = {
+        node_type: sum(1 for node in onnx_model.graph.node if node.op_type == node_type)
+        for node_type in qdq_types
+    }
+    qdq_nodes = sum(qdq_type_counts.values())
     print(f"ONNX Q/DQ nodes: {qdq_nodes}")
 
     report = {
@@ -313,7 +313,15 @@ def main() -> int:
         "quantizers_total": total,
         "quantizers_active": active,
         "quantizers_disabled": disabled,
-        "keep_fp16_patterns": list(keep_fp16) if args.mode == "mixed" else [],
+        "keep_fp16_patterns": (
+            list(keep_fp16) if args.mode in {"mixed", "fp8-mixed"} else []
+        ),
+        "sensitive_blocks": sensitive_blocks,
+        "sensitivity_report": (
+            str(resolve(args.sensitivity_report).relative_to(REPOSITORY_ROOT))
+            if args.sensitivity_report
+            else None
+        ),
         "quantize_patterns": list(int4_targets) if args.mode == "int4-ffn" else [],
         "onnx_path": (
             str(onnx_path.relative_to(REPOSITORY_ROOT))
@@ -322,7 +330,8 @@ def main() -> int:
         ),
         "onnx_size_bytes": onnx_path.stat().st_size,
         "onnx_qdq_nodes": qdq_nodes,
-        "opset": args.opset,
+        "onnx_qdq_node_types": qdq_type_counts,
+        "opset": opset,
         "device": device,
     }
     report_path.write_text(
