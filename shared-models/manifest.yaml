@@ -1,79 +1,29 @@
-version: 1
+version: 2
 format: onnx
-onnx_opset: 17
-
+source_checkpoint: artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth
+source_checkpoint_sha256: 769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620
 models:
-  - file: M01-M02-front-2to4-recovery.pth
-    experiment_ids: [M01, M02]
-    camera: front
-    description: Final 10-epoch recovery checkpoint shared by M01 and M02.
-    size_bytes: 142531025
-    sha256: 31d0db02679d552aeb03d8c0ca5d2709a2108760952abe7a0cda55bbf64d80ee
-
   - file: B01-front-baseline.onnx
     experiment_ids: [B01, B02, B03]
     camera: front
-    description: Baseline ONNX shared by TensorRT FP32, FP16, and INT8 builds.
-    size_bytes: 130677728
-    sha256: c600beac9ec02007612914b6ed15397f3942e1ae956de82b87bdb59f8fb178a4
-
-  - file: B01-rear-baseline.onnx
-    experiment_ids: [B01, B02, B03]
-    camera: rear
-    description: Baseline ONNX shared by TensorRT FP32, FP16, and INT8 builds.
-    size_bytes: 130677726
-    sha256: e547b49ac52cb5cf0233ce7e4a47cab640611d93022bd55997ed9fbdb3dfbccf
-
-  - file: U01-front-magnitude-s10.onnx
-    experiment_ids: [U01]
-    camera: front
-    description: Global magnitude unstructured pruning at 10 percent sparsity.
-    size_bytes: 130677811
-    sha256: d7f9f68f6ef4fd3b9709166928b412d24b5813b3d02b6591505c57fff6520a4a
-
-  - file: U02-front-magnitude-s30.onnx
-    experiment_ids: [U02]
-    camera: front
-    description: Global magnitude unstructured pruning at 30 percent sparsity.
-    size_bytes: 130677811
-    sha256: 4525ddb75fa909aa733d31f130dba99c5692d8c67539a798ce310f52c49fd31f
-
-  - file: U03-front-magnitude-s50.onnx
-    experiment_ids: [U03]
-    camera: front
-    description: Global magnitude unstructured pruning at 50 percent sparsity.
-    size_bytes: 130677811
-    sha256: c24ec56e88c1de97207fc0e5a232d12f18e7a319da0f77a051da2135ec803503
-
-  - file: M01-M02-front-2to4-recovery.onnx
-    experiment_ids: [M01, M02]
-    camera: front
-    description: Fine-tuned NVIDIA 2:4 ONNX shared by dense and sparse tactic builds.
-    size_bytes: 130677785
-    sha256: 19f70a9916fbdd16401046144e8ce38e61deb6b588a2114b959e849d1b4c00b0
-
-  - file: S01-front-structured-recovery.onnx
-    experiment_ids: [S01, C01, C02]
-    camera: front
-    description: Recovery-trained structured decoder ONNX used by the selected combined builds.
-    size_bytes: 124477506
-    sha256: 9b8b51969433816e886b29e72bcf1266fde40ac21ad2ae5297f722a4d4409b19
-
+    description: 신규 leakage-safe baseline의 FP32 ONNX. FP32, FP16, INT8 engine의 공통 입력.
+    size_bytes: 130677849
+    sha256: 78d6936a1f4736d348fd75194e2aaa43a81b42b291863437f381618aa82c02b8
   - file: R01-front-432.onnx
     experiment_ids: [R01]
     camera: front
-    description: Reduced-resolution 432x432 ONNX used by the R01 FP16 engine build.
-    size_bytes: 129955126
-    sha256: f506ab8fdffce3559a07bf2152f3ee48bdd4ae4cb353dd6b76947256af249b29
-
-  - file: Q07-front-fp8-mixed-targeted.onnx
-    experiment_ids: [Q07]
+    description: 검증된 432×432 입력 ONNX. R01 FP16 engine의 입력.
+    size_bytes: 129955207
+    sha256: e5a8c934b000d46e32d098c48dfd947dfd609451a54d2dbc4657d802ee87514a
+  - file: S01-front-structured-recovery.onnx
+    experiment_ids: [S01, C01, C02]
     camera: front
-    onnx_opset: 19
-    description: >-
-      FP8 Q/DQ ONNX (TRT_FP8QuantizeLinear custom ops) with final_heads and
-      decoder layer 4 kept FP16. Engine build requires TensorRT 10.x on an
-      sm89+ GPU (Ada/Hopper/Blackwell); FP8 kernels do not exist on Ampere.
-      Build with scripts/lightweighting/build_tensorrt_fp16.py --onnx <this>.
-    size_bytes: 131614789
-    sha256: 93afa34f0af4c96f6d8602edf36496460aa85b381b54dc760a4bebca3ef1fd1f
+    description: Decoder 1개를 제거하고 6 epoch 복구 학습한 검증 ONNX. S01 FP32와 C01 FP16, C02 INT8 engine의 공통 입력.
+    size_bytes: 124477541
+    sha256: b8e436175ef25eb6885a3e8c48813e7c0ab1ea3d7c2339ab496c701338dba6e1
+  - file: S02-front-structured-recovery.onnx
+    experiment_ids: [S02]
+    camera: front
+    description: Decoder 2개를 제거하고 8 epoch 복구 학습한 검증 ONNX. 최종 선정에서는 탈락했으나 구조 축소 TensorRT 대조군으로 유지.
+    size_bytes: 118276976
+    sha256: 70da0768fb50980ffe5186202528c24f12f5a64d0d8f9cb21c68edac9c0b2b00
