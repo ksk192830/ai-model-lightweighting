@@ -1,0 +1,87 @@
+{
+  "created_at_utc": "2026-09-02T12:20:23.420372+00:00",
+  "checkpoint": "artifacts/experiments/S01/front/model.pth",
+  "checkpoint_sha256": "57e45c7553ec8829a53167b11ccc4da6964019f741b5762c087d82b2a899b821",
+  "onnx": "artifacts/experiments/S01/front/model.onnx",
+  "onnx_sha256": "b8e436175ef25eb6885a3e8c48813e7c0ab1ea3d7c2339ab496c701338dba6e1",
+  "input_shape": [
+    1,
+    3,
+    504,
+    504
+  ],
+  "samples": 10,
+  "seed": 42,
+  "input_mode": "real-images",
+  "selected_images": [
+    "data/training/front_session_split_v1/test/frame_000825_20251222_185626_132583_png.rf.f417cff5269024d36a1f48738cb6b4e2.jpg",
+    "data/training/front_session_split_v1/test/frame_000150_20251222_185105_211812_png.rf.477661bb7b846023afc2c39f82112002.jpg",
+    "data/training/front_session_split_v1/test/frame_000035_20251222_185507_152434_png.rf.7bae70dba65f5d1c6abf4ee312e560a6.jpg",
+    "data/training/front_session_split_v1/test/frame_001075_20251222_185651_723670_png.rf.984d313ab4594d7ccbc41f8b8a5049fe.jpg",
+    "data/training/front_session_split_v1/test/frame_000355_20251222_185539_784570_png.rf.59abb0bbc1679ca678cc7e7cb68201f0.jpg",
+    "data/training/front_session_split_v1/test/frame_000320_20251222_185122_218684_png.rf.2c0f7171b0a95a0957355a441caff01a.jpg",
+    "data/training/front_session_split_v1/test/frame_000290_20251222_185533_100142_png.rf.385dcef9ac6dcda091cb62fc7757924b.jpg",
+    "data/training/front_session_split_v1/test/frame_000185_20251222_185108_722312_png.rf.3657376f19f1658cd56140888e933df0.jpg",
+    "data/training/front_session_split_v1/test/frame_001065_20251222_185650_471451_png.rf.bbac1cc8cd0055066f590273b29e44cc.jpg",
+    "data/training/front_session_split_v1/test/frame_000135_20251222_185517_156612_png.rf.065435af99d95abbb1fb3f411959775d.jpg"
+  ],
+  "provider": "CPUExecutionProvider",
+  "validation_policy": "Production-image mode requires identical confidence-threshold membership and active-query classes, bounded confidence-score, box, and mask errors, plus binary-mask agreement. Raw logits and all-query errors remain diagnostic because low-confidence DETR proposal ties are not predictions.",
+  "comparisons": {
+    "dets": {
+      "shape": [
+        1,
+        200,
+        4
+      ],
+      "max_abs_error": 0.0009489059448242188,
+      "mean_abs_error": 1.9203635133635545e-06,
+      "max_limit": 0.0001,
+      "passed": false
+    },
+    "labels": {
+      "shape": [
+        1,
+        200,
+        5
+      ],
+      "max_abs_error": 0.006985664367675781,
+      "mean_abs_error": 1.5178966441453667e-05,
+      "max_limit": 0.0005,
+      "passed": false
+    },
+    "masks": {
+      "shape": [
+        1,
+        200,
+        126,
+        126
+      ],
+      "max_abs_error": 0.07261276245117188,
+      "mean_abs_error": 0.0002431570836051833,
+      "max_limit": 0.05,
+      "mean_limit": 0.0005,
+      "passed": false
+    }
+  },
+  "raw_comparison_passed": false,
+  "production_comparison": {
+    "confidence_threshold": 0.05,
+    "active_query_count": 92,
+    "max_abs_error": {
+      "dets": 6.556510925292969e-06,
+      "labels": 0.0018820762634277344,
+      "masks": 0.0033464431762695312
+    },
+    "active_score_max_abs_error": 0.00023597478866577148,
+    "active_score_max_limit": 0.0005,
+    "active_membership_agreement": 1.0,
+    "active_membership_agreement_limit": 1.0,
+    "active_class_agreement": 1.0,
+    "active_class_agreement_limit": 1.0,
+    "mask_binary_agreement": 1.0,
+    "mask_binary_agreement_limit": 0.999,
+    "passed": true
+  },
+  "passed": true
+}

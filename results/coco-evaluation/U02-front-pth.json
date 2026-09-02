@@ -1,0 +1,59 @@
+{
+  "created_at_utc": "2026-09-02T11:08:20.874599+00:00",
+  "checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/U02/front/model.pth",
+  "checkpoint_size_bytes": 142492293,
+  "dataset": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1/test",
+  "image_count": 437,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "categories": {
+    "0": "front",
+    "1": "out_line",
+    "2": "parking_lot",
+    "3": "parking_space"
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "hardware": "NVIDIA GeForce RTX 5060 Ti",
+  "torch": "2.10.0+cu128",
+  "prediction_count": 87397,
+  "metrics": {
+    "bbox": {
+      "ap": 0.0964420404021494,
+      "ap50": 0.15198892114507578,
+      "ap75": 0.10342890322454325,
+      "ap_small": 8.607760205704809e-05,
+      "ap_medium": 0.1326636444020872,
+      "ap_large": 0.1123699222139881,
+      "ar1": 0.21547477578033586,
+      "ar10": 0.35590152350053245,
+      "ar100": 0.42943747130241317,
+      "ar_small": 0.010126582278481013,
+      "ar_medium": 0.6599693838499808,
+      "ar_large": 0.4559827729348277
+    },
+    "segm": {
+      "ap": 0.0820217893445066,
+      "ap50": 0.13487782974780843,
+      "ap75": 0.08500645224326021,
+      "ap_small": 0.0,
+      "ap_medium": 0.07481610762190784,
+      "ap_large": 0.11275642783738249,
+      "ar1": 0.17206488927933503,
+      "ar10": 0.256718667627297,
+      "ar100": 0.28138932198827254,
+      "ar_small": 0.0,
+      "ar_medium": 0.29668962877918104,
+      "ar_large": 0.3040161892901619
+    },
+    "semantic_miou": 0.03284892982056239,
+    "semantic_iou_by_category": {
+      "1": 0.03427777004429501,
+      "2": 0.06426901941739215,
+      "3": 0.0
+    }
+  }
+}

@@ -5,14 +5,18 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import os
 import platform
+import random
 import statistics
+import subprocess
 import time
 from datetime import datetime, timezone
 from importlib.metadata import version
 from pathlib import Path
+from typing import Any
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -32,11 +36,35 @@ from supervision import Detections  # noqa: E402
 
 
 DEFAULT_CONFIG = REPOSITORY_ROOT / "configs" / "baseline.yaml"
+EXPERIMENT_DEFAULTS = yaml.safe_load(
+    (REPOSITORY_ROOT / "configs/experiments/defaults.yaml").read_text(
+        encoding="utf-8"
+    )
+)
+DEFAULT_BENCHMARK_THRESHOLD = float(
+    EXPERIMENT_DEFAULTS["evaluation_protocol"]["latency"]
+    ["postprocess_confidence_threshold"]
+)
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "results" / "benchmarks"
 DEFAULT_ENGINE_DIR = REPOSITORY_ROOT / "artifacts" / "experiments"
 BASELINE_EXPERIMENTS = {"fp32": "B01", "fp16": "B02", "int8": "B03"}
+IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".webp"}
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
+
+
+def postprocess_num_select(output_shape: tuple[int, ...]) -> int:
+    """Return RF-DETR's static query count for postprocessing."""
+    if (
+        len(output_shape) != 3
+        or output_shape[0] != 1
+        or output_shape[1] < 1
+        or output_shape[2] != 4
+    ):
+        raise ValueError(
+            f"Expected a static batch-1 [B,Q,4] dets output, got {output_shape}."
+        )
+    return output_shape[1]
 
 
 def parse_args() -> argparse.Namespace:
@@ -44,7 +72,20 @@ def parse_args() -> argparse.Namespace:
         description="Benchmark PyTorch or TensorRT inference."
     )
     parser.add_argument("--camera", choices=("front", "rear"), required=True)
-    parser.add_argument("--image", type=Path, required=True)
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument("--image", type=Path)
+    input_group.add_argument(
+        "--image-dir",
+        type=Path,
+        help="Directory sampled deterministically for a multi-image benchmark.",
+    )
+    parser.add_argument(
+        "--sample-count",
+        type=int,
+        default=32,
+        help="Images sampled from --image-dir (default: 32).",
+    )
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
         "--backend",
         choices=("pytorch", "fp32", "fp16", "int8", "tensorrt"),
@@ -59,7 +100,9 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="Override the default TensorRT engine path.",
     )
-    parser.add_argument("--threshold", type=float, default=0.5)
+    parser.add_argument(
+        "--threshold", type=float, default=DEFAULT_BENCHMARK_THRESHOLD
+    )
     parser.add_argument("--warmup", type=int, default=10)
     parser.add_argument("--runs", type=int, default=100)
     parser.add_argument(
@@ -142,7 +185,11 @@ class TensorRTRunner:
             raise RuntimeError(
                 f"Expected a static NCHW batch-1 input, got {tuple(self.input.shape)}."
             )
-        self.postprocess = PostProcess(num_select=300)
+        # Fine-tuned RF-DETR models set num_select to num_queries. A fixed 300
+        # would select extra low-confidence query/class pairs for the current
+        # 200-query segmentation exports and skew COCO AP at threshold 0.001.
+        self.num_select = postprocess_num_select(tuple(self.outputs["dets"].shape))
+        self.postprocess = PostProcess(num_select=self.num_select)
 
     def predict(self, image: Image.Image, threshold: float) -> Detections:
         source_image = np.array(image)
@@ -224,12 +271,72 @@ def percentile(values: list[float], percentile_value: float) -> float:
     return float(np.percentile(np.asarray(values), percentile_value))
 
 
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def image_files(directory: Path, count: int, seed: int) -> list[Path]:
+    candidates = sorted(
+        path
+        for path in directory.rglob("*")
+        if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    )
+    if count < 1:
+        raise ValueError("--sample-count must be at least one.")
+    if len(candidates) < count:
+        raise ValueError(
+            f"Requested {count} images, but found {len(candidates)} in {directory}."
+        )
+    random.Random(seed).shuffle(candidates)
+    return candidates[:count]
+
+
+def portable(path: Path) -> str:
+    try:
+        return str(path.relative_to(REPOSITORY_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def hardware_name(device: str) -> str:
     if device == "cuda":
         return torch.cuda.get_device_name(torch.cuda.current_device())
     if device == "mps":
         return f"Apple {platform.machine()}"
     return platform.processor() or platform.machine()
+
+
+def gpu_telemetry(device: str) -> dict[str, Any] | None:
+    if device != "cuda":
+        return None
+    fields = (
+        "driver_version",
+        "power.limit",
+        "temperature.gpu",
+        "clocks.sm",
+        "clocks.mem",
+        "pstate",
+    )
+    try:
+        completed = subprocess.run(
+            [
+                "nvidia-smi",
+                "--query-gpu=" + ",".join(fields),
+                "--format=csv,noheader,nounits",
+                "--id=0",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        values = [value.strip() for value in completed.stdout.splitlines()[0].split(",")]
+        return dict(zip(fields, values, strict=True))
+    except (FileNotFoundError, IndexError, subprocess.CalledProcessError, ValueError):
+        return {"unavailable": True}
 
 
 def append_csv(path: Path, record: dict) -> None:
@@ -251,9 +358,19 @@ def main() -> int:
     if not 0.0 <= args.threshold <= 1.0:
         raise ValueError("--threshold must be between 0 and 1.")
 
-    image_path = resolve_path(args.image)
-    if not image_path.is_file():
-        raise FileNotFoundError(f"Image not found: {image_path}")
+    if args.image is not None:
+        image_paths = [resolve_path(args.image)]
+        if not image_paths[0].is_file():
+            raise FileNotFoundError(f"Image not found: {image_paths[0]}")
+        image_selection = "single explicitly specified image"
+    else:
+        image_dir = resolve_path(args.image_dir)
+        if not image_dir.is_dir():
+            raise FileNotFoundError(f"Image directory not found: {image_dir}")
+        image_paths = image_files(image_dir, args.sample_count, args.seed)
+        image_selection = (
+            "lexical sort, Python random.Random(seed) shuffle, first N"
+        )
 
     model_config = load_model_config(args.config, args.camera)
     checkpoint = resolve_path(
@@ -264,7 +381,10 @@ def main() -> int:
     if args.backend == "pytorch" and not checkpoint.is_file():
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint}")
     class_names = list(model_config["classes"])
-    image = Image.open(image_path).convert("RGB")
+    images: list[Image.Image] = []
+    for image_path in image_paths:
+        with Image.open(image_path) as source:
+            images.append(source.convert("RGB"))
 
     if args.backend == "pytorch":
         device = select_device(args.device)
@@ -276,7 +396,7 @@ def main() -> int:
         )
         if args.optimize:
             model.optimize_for_inference()
-        predict = lambda: model.predict(image, threshold=args.threshold)
+        predict = lambda image: model.predict(image, threshold=args.threshold)
         precision = "fp32"
         framework = "pytorch"
         framework_version = torch.__version__
@@ -299,7 +419,7 @@ def main() -> int:
         if not model_path.is_file():
             raise FileNotFoundError(f"TensorRT engine not found: {model_path}")
         runner = TensorRTRunner(model_path)
-        predict = lambda: runner.predict(image, threshold=args.threshold)
+        predict = lambda image: runner.predict(image, threshold=args.threshold)
         precision = (
             "int8-fp16-fallback"
             if precision_name == "int8"
@@ -311,13 +431,18 @@ def main() -> int:
     print(f"device: {device} ({hardware_name(device)})")
     print(f"backend: {args.backend}")
     print(f"model: {model_path}")
+    print(f"benchmark images: {len(images)}")
+    gpu_state_before = gpu_telemetry(device)
     print(f"warmup: {args.warmup}")
     for index in range(args.warmup):
-        predict()
+        predict(images[index % len(images)])
         synchronize(device)
         print(f"\rwarmup: {index + 1}/{args.warmup}", end="", flush=True)
     if args.warmup:
         print()
+
+    if device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
 
     timings_ms: list[float] = []
     detection_counts: list[int] = []
@@ -325,15 +450,19 @@ def main() -> int:
     for index in range(args.runs):
         synchronize(device)
         started = time.perf_counter()
-        detections = predict()
+        detections = predict(images[index % len(images)])
         synchronize(device)
         elapsed_ms = (time.perf_counter() - started) * 1000.0
         timings_ms.append(elapsed_ms)
         detection_counts.append(len(detections))
         print(f"\rrun: {index + 1}/{args.runs}", end="", flush=True)
     print()
+    gpu_state_after = gpu_telemetry(device)
 
     mean_ms = statistics.fmean(timings_ms)
+    standard_deviation_ms = (
+        statistics.stdev(timings_ms) if len(timings_ms) > 1 else 0.0
+    )
     timestamp = datetime.now(timezone.utc).isoformat()
     result = {
         "timestamp_utc": timestamp,
@@ -344,6 +473,16 @@ def main() -> int:
         "framework_version": framework_version,
         "device": device,
         "hardware": hardware_name(device),
+        "gpu_compute_capability": (
+            list(torch.cuda.get_device_capability(0)) if device == "cuda" else None
+        ),
+        "gpu_total_memory_bytes": (
+            torch.cuda.get_device_properties(0).total_memory
+            if device == "cuda"
+            else None
+        ),
+        "gpu_state_before": gpu_state_before,
+        "gpu_state_after": gpu_state_after,
         "python_version": platform.python_version(),
         "torch_version": torch.__version__,
         "rfdetr_version": version("rfdetr"),
@@ -351,13 +490,21 @@ def main() -> int:
         "cudnn_version": (
             torch.backends.cudnn.version() if torch.backends.cudnn.is_available() else ""
         ),
-        "image": (
-            str(image_path.relative_to(REPOSITORY_ROOT))
-            if image_path.is_relative_to(REPOSITORY_ROOT)
-            else str(image_path)
+        "model_sha256": sha256(model_path),
+        "batch_size": 1,
+        "benchmark_scope": (
+            "end-to-end inference from an in-memory RGB PIL image: "
+            "preprocessing, host-to-device copy, model execution, "
+            "postprocessing, and device-to-host result copy"
         ),
-        "image_width": image.width,
-        "image_height": image.height,
+        "disk_image_decode_included": False,
+        "synchronization": "device synchronized before and after every run",
+        "image_selection": image_selection,
+        "image_selection_seed": args.seed,
+        "image_count": len(image_paths),
+        "images": [portable(path) for path in image_paths],
+        "image_widths": sorted({image.width for image in images}),
+        "image_heights": sorted({image.height for image in images}),
         "threshold": args.threshold,
         "warmup_runs": args.warmup,
         "measured_runs": args.runs,
@@ -365,12 +512,25 @@ def main() -> int:
         "model_size_bytes": model_path.stat().st_size,
         "mean_ms": mean_ms,
         "median_ms": statistics.median(timings_ms),
+        "standard_deviation_ms": standard_deviation_ms,
+        "coefficient_of_variation": standard_deviation_ms / mean_ms,
         "min_ms": min(timings_ms),
         "max_ms": max(timings_ms),
+        "p05_ms": percentile(timings_ms, 5),
+        "p25_ms": percentile(timings_ms, 25),
+        "p75_ms": percentile(timings_ms, 75),
         "p95_ms": percentile(timings_ms, 95),
+        "p99_ms": percentile(timings_ms, 99),
+        "iqr_ms": percentile(timings_ms, 75) - percentile(timings_ms, 25),
         "fps": 1000.0 / mean_ms,
         "detection_count_min": min(detection_counts),
         "detection_count_max": max(detection_counts),
+        "gpu_peak_allocated_bytes": (
+            torch.cuda.max_memory_allocated() if device == "cuda" else None
+        ),
+        "gpu_peak_reserved_bytes": (
+            torch.cuda.max_memory_reserved() if device == "cuda" else None
+        ),
     }
 
     output_dir = resolve_path(args.output_dir)

@@ -1,0 +1,86 @@
+{
+  "created_at_utc": "2026-09-02T13:45:42.957815+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "M01",
+  "name": "sparse-2to4-dense-control",
+  "camera": "front",
+  "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "source_checkpoint_sha256": "769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620",
+  "artifact_checkpoint_sha256": "19f4c6f4e4f6f2e553a3af0c0db5d999ba2cf0bebb086f251c0468859f661707",
+  "method": "nvidia-2to4",
+  "family": "semi-structured",
+  "pruning": {
+    "pattern": "2:4"
+  },
+  "precision": "fp16",
+  "fine_tuning": {
+    "required": true,
+    "completed": false,
+    "status": "ready",
+    "profile": "recovery_2to4"
+  },
+  "input_shape": [
+    1,
+    3,
+    504,
+    504
+  ],
+  "batch_size": 1,
+  "classes": [
+    "front",
+    "out_line",
+    "parking_lot",
+    "parking_space"
+  ],
+  "onnx_opset": 17,
+  "artifacts": {
+    "checkpoint": "artifacts/experiments/M01/front/model.pth",
+    "onnx": "artifacts/experiments/M01/front/model.onnx",
+    "sparsity": "artifacts/experiments/M01/front/sparsity.json",
+    "static_analysis": "artifacts/experiments/M01/front/static-analysis.json",
+    "build_command": "artifacts/experiments/M01/front/build-command.txt",
+    "build_log": "artifacts/experiments/M01/front/build.log",
+    "onnx-build_json": "artifacts/experiments/M01/front/onnx-build.json",
+    "comparison_B01": "artifacts/experiments/M01/front/comparison-B01.json",
+    "2to4_eligibility": "artifacts/experiments/M01/front/2to4-eligibility.json",
+    "onnx_2to4": "artifacts/experiments/M01/front/onnx-2to4.json",
+    "fine_tuning_preflight": "artifacts/experiments/M01/front/fine-tuning-preflight.json",
+    "onnx_equivalence": "artifacts/experiments/M01/front/onnx-equivalence.json",
+    "recovery_training": "artifacts/experiments/M01/front/recovery/recovery-training.json"
+  },
+  "build_details": {
+    "onnx-build": {
+      "created_at_utc": "2026-09-02T11:45:29.579121+00:00",
+      "camera": "front",
+      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/M01/front/model.pth",
+      "onnx_path": "artifacts/experiments/M01/front/model.onnx",
+      "onnx_size_bytes": 130677820,
+      "opset": 17,
+      "batch_size": 1,
+      "resolution": 504,
+      "inputs": {
+        "input": [
+          1,
+          3,
+          504,
+          504
+        ]
+      },
+      "outputs": [
+        "dets",
+        "labels",
+        "masks"
+      ],
+      "classes": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ],
+      "validated_by_onnx_checker": true
+    }
+  },
+  "status": "onnx-exported"
+}

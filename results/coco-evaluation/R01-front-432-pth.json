@@ -1,0 +1,60 @@
+{
+  "created_at_utc": "2026-09-02T12:01:55.108428+00:00",
+  "checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "checkpoint_size_bytes": 142492037,
+  "dataset": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1/test",
+  "image_count": 437,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "categories": {
+    "0": "front",
+    "1": "out_line",
+    "2": "parking_lot",
+    "3": "parking_space"
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "resolution": 432,
+  "hardware": "cpu",
+  "torch": "2.10.0+cu128",
+  "prediction_count": 86457,
+  "metrics": {
+    "bbox": {
+      "ap": 0.730660801535274,
+      "ap50": 0.9279943351031779,
+      "ap75": 0.7827083360700375,
+      "ap_small": 0.26849034766764895,
+      "ap_medium": 0.5648953484432965,
+      "ap_large": 0.8455901267399376,
+      "ar1": 0.7209732783556352,
+      "ar10": 0.8313160649385001,
+      "ar100": 0.8714007159931262,
+      "ar_small": 0.6746835443037975,
+      "ar_medium": 0.8248564867967852,
+      "ar_large": 0.9320957866334577
+    },
+    "segm": {
+      "ap": 0.5929736488795913,
+      "ap50": 0.8348572593974023,
+      "ap75": 0.6394422090356489,
+      "ap_small": 0.04509539218193491,
+      "ap_medium": 0.526453162874297,
+      "ap_large": 0.7042514152386641,
+      "ar1": 0.5975911931711738,
+      "ar10": 0.6829359395892379,
+      "ar100": 0.7138934134466955,
+      "ar_small": 0.28227848101265823,
+      "ar_medium": 0.6684845005740527,
+      "ar_large": 0.7956543171440432
+    },
+    "semantic_miou": 0.6968781367116157,
+    "semantic_iou_by_category": {
+      "1": 0.4276742046978642,
+      "2": 0.7758347558049806,
+      "3": 0.8871254496320023
+    }
+  }
+}

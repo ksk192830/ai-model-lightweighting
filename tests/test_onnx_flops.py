@@ -54,6 +54,12 @@ class OnnxOperationAnalysisTest(unittest.TestCase):
         self.assertEqual(report["estimated_macs"], expected_conv + expected_matmul)
         self.assertEqual(report["estimated_flops"], 2 * (expected_conv + expected_matmul))
         self.assertEqual(report["compute_node_coverage"], 1.0)
+        self.assertEqual(report["total_graph_nodes"], 2)
+        self.assertEqual(report["excluded_operator_nodes"], 0)
+        self.assertEqual(report["estimated_node_fraction_of_graph"], 1.0)
+        self.assertEqual(
+            report["by_operator"]["Conv"]["flops"], 2 * expected_conv
+        )
 
 
 if __name__ == "__main__":

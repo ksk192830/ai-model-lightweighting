@@ -1,0 +1,246 @@
+{
+  "created_at_utc": "2026-09-02T13:52:56.804728+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiments_checked": 6,
+  "errors": 0,
+  "valid": true,
+  "results": [
+    {
+      "experiment_id": "B01",
+      "camera": "front",
+      "registry_status": "onnx-exported",
+      "resolved_artifact_status": "onnx-exported",
+      "inventory": {
+        "onnx": {
+          "path": "artifacts/experiments/B01/front/model.onnx",
+          "size_bytes": 130677849,
+          "sha256": "78d6936a1f4736d348fd75194e2aaa43a81b42b291863437f381618aa82c02b8"
+        },
+        "metadata": {
+          "path": "artifacts/experiments/B01/front/metadata.json",
+          "size_bytes": 2097,
+          "sha256": "0e5cba80f5999b97b2db73405bcc574a0648331d7b606a9adb974b04812b7146"
+        },
+        "static_analysis": {
+          "path": "artifacts/experiments/B01/front/static-analysis.json",
+          "size_bytes": 49296,
+          "sha256": "33729ad786be4d6b32cab8d4e6681937e56f444d4f5494b78807523f67fb8096"
+        },
+        "build_command": {
+          "path": "artifacts/experiments/B01/front/build-command.txt",
+          "size_bytes": 433,
+          "sha256": "69ec334181a2614119f60c66256d81b4df1a32ec23c806b3e66e7a93df3873b3"
+        },
+        "build_log": {
+          "path": "artifacts/experiments/B01/front/build.log",
+          "size_bytes": 6733,
+          "sha256": "3d8fdc86071e431c3e55810bfb7c92eccb83428fd257469a5bba9f6cc50171b8"
+        }
+      },
+      "issues": [],
+      "valid": true
+    },
+    {
+      "experiment_id": "R01",
+      "camera": "front",
+      "registry_status": "onnx-exported",
+      "resolved_artifact_status": "onnx-exported",
+      "inventory": {
+        "onnx": {
+          "path": "artifacts/experiments/R01/front/model.onnx",
+          "size_bytes": 129955207,
+          "sha256": "e5a8c934b000d46e32d098c48dfd947dfd609451a54d2dbc4657d802ee87514a"
+        },
+        "metadata": {
+          "path": "artifacts/experiments/R01/front/metadata.json",
+          "size_bytes": 3661,
+          "sha256": "821ddebeb590571b96b15782ef5f558fdfbc2ef84ab0e77e0977d858b2112dea"
+        },
+        "static_analysis": {
+          "path": "artifacts/experiments/R01/front/static-analysis.json",
+          "size_bytes": 2330,
+          "sha256": "913f40ef4c43acba360257d8d1ee3a11dc83822bf17b214b40042ae3984ff791"
+        },
+        "build_command": {
+          "path": "artifacts/experiments/R01/front/build-command.txt",
+          "size_bytes": 433,
+          "sha256": "e502ba0082a5b07ee6b393518dc761641f609b6ec6dc3761123806959b47757b"
+        },
+        "build_log": {
+          "path": "artifacts/experiments/R01/front/build.log",
+          "size_bytes": 7395,
+          "sha256": "dbb54e745905ea90397ed9fa0123a178d0e91905749ceef980bd19a4a91c2c1b"
+        }
+      },
+      "issues": [],
+      "valid": true
+    },
+    {
+      "experiment_id": "S01",
+      "camera": "front",
+      "registry_status": "onnx-exported",
+      "resolved_artifact_status": "onnx-exported",
+      "inventory": {
+        "checkpoint": {
+          "path": "artifacts/experiments/S01/front/model.pth",
+          "size_bytes": 136353661,
+          "sha256": "57e45c7553ec8829a53167b11ccc4da6964019f741b5762c087d82b2a899b821"
+        },
+        "onnx": {
+          "path": "artifacts/experiments/S01/front/model.onnx",
+          "size_bytes": 124477541,
+          "sha256": "b8e436175ef25eb6885a3e8c48813e7c0ab1ea3d7c2339ab496c701338dba6e1"
+        },
+        "metadata": {
+          "path": "artifacts/experiments/S01/front/metadata.json",
+          "size_bytes": 5261,
+          "sha256": "7fd59eb79e9cacc87d36ae07592a0bba2021229ac6400e5dfd3d978d018b1144"
+        },
+        "static_analysis": {
+          "path": "artifacts/experiments/S01/front/static-analysis.json",
+          "size_bytes": 47064,
+          "sha256": "f59d4610b6f1dc45fd62e91f0c7a91b28673b74ee2373b552c940cfd50ceeac5"
+        },
+        "build_command": {
+          "path": "artifacts/experiments/S01/front/build-command.txt",
+          "size_bytes": 402,
+          "sha256": "4251a6795b0538d1807f40f5dfcdd4886aa874f209da659010fed964329f71ee"
+        },
+        "build_log": {
+          "path": "artifacts/experiments/S01/front/build.log",
+          "size_bytes": 7895,
+          "sha256": "623914a73b25d2feafbad54d82a16268afd2dae364f90c0db7ced81dc4eb464b"
+        }
+      },
+      "issues": [],
+      "valid": true
+    },
+    {
+      "experiment_id": "S02",
+      "camera": "front",
+      "registry_status": "onnx-exported",
+      "resolved_artifact_status": "onnx-exported",
+      "inventory": {
+        "checkpoint": {
+          "path": "artifacts/experiments/S02/front/model.pth",
+          "size_bytes": 130178485,
+          "sha256": "42689291d1a0dfabd5938c711baed3067c69245fe68df6b8333b920e09329c84"
+        },
+        "onnx": {
+          "path": "artifacts/experiments/S02/front/model.onnx",
+          "size_bytes": 118276976,
+          "sha256": "70da0768fb50980ffe5186202528c24f12f5a64d0d8f9cb21c68edac9c0b2b00"
+        },
+        "metadata": {
+          "path": "artifacts/experiments/S02/front/metadata.json",
+          "size_bytes": 5322,
+          "sha256": "fd9736578e1bce2b43f752e1ba2acc32b9cf50988fe90385ff6b9f0b788ca2e4"
+        },
+        "static_analysis": {
+          "path": "artifacts/experiments/S02/front/static-analysis.json",
+          "size_bytes": 44832,
+          "sha256": "b1c7d200c871feea73305b4118e1579c64151f96807f5d18e152de26892a7a8c"
+        },
+        "build_command": {
+          "path": "artifacts/experiments/S02/front/build-command.txt",
+          "size_bytes": 402,
+          "sha256": "b330a0be775cadddc92546d9a3b1b09bd16f5890a2d1c14ccdd6574e823b10a2"
+        },
+        "build_log": {
+          "path": "artifacts/experiments/S02/front/build.log",
+          "size_bytes": 7895,
+          "sha256": "9dfa287240b4716313fa90f7ca263f5009f7e82f7044a71e6455cf18022337a6"
+        }
+      },
+      "issues": [],
+      "valid": true
+    },
+    {
+      "experiment_id": "U02",
+      "camera": "front",
+      "registry_status": "static-analysis-rejected",
+      "resolved_artifact_status": "static-analysis-rejected",
+      "inventory": {
+        "checkpoint": {
+          "path": "artifacts/experiments/U02/front/model.pth",
+          "size_bytes": 142492293,
+          "sha256": "32e9d925ee6b431bcc8a2982a82ab730c4ea47e28ae064b5df9a53d24af8479e"
+        },
+        "onnx": {
+          "path": "artifacts/experiments/U02/front/model.onnx",
+          "size_bytes": 130677820,
+          "sha256": "843fba772d4edbf3b35aad366c482945bab77cbe97efced2e24f88d03231800c"
+        },
+        "metadata": {
+          "path": "artifacts/experiments/U02/front/metadata.json",
+          "size_bytes": 2399,
+          "sha256": "e6b9e0448475b43b8e6c8149c5baf3525a8c1400e273f72dbe1f4961aede826f"
+        },
+        "static_analysis": {
+          "path": "artifacts/experiments/U02/front/static-analysis.json",
+          "size_bytes": 52851,
+          "sha256": "9b00294f67690f86139fc3d58b8286ed5ef65e0d33982aae5449f153f04c7ac3"
+        },
+        "build_command": {
+          "path": "artifacts/experiments/U02/front/build-command.txt",
+          "size_bytes": 404,
+          "sha256": "73fe1309c042b42c35d637cfb05ac04b41267aa46afcf24bb78cc8c8ae0683b9"
+        },
+        "build_log": {
+          "path": "artifacts/experiments/U02/front/build.log",
+          "size_bytes": 6733,
+          "sha256": "29cf93d008057c533c6fbd414e96784519038b81f4f9408724b70a2f4b298d39"
+        }
+      },
+      "issues": [],
+      "valid": true
+    },
+    {
+      "experiment_id": "M01",
+      "camera": "front",
+      "registry_status": "onnx-exported",
+      "resolved_artifact_status": "onnx-exported",
+      "inventory": {
+        "checkpoint": {
+          "path": "artifacts/experiments/M01/front/model.pth",
+          "size_bytes": 142530309,
+          "sha256": "19f4c6f4e4f6f2e553a3af0c0db5d999ba2cf0bebb086f251c0468859f661707"
+        },
+        "onnx": {
+          "path": "artifacts/experiments/M01/front/model.onnx",
+          "size_bytes": 130677820,
+          "sha256": "baad92ff5625acee9d73db42cd3d91477f4fceb6abef7a5fd2cda02eb0f6c302"
+        },
+        "metadata": {
+          "path": "artifacts/experiments/M01/front/metadata.json",
+          "size_bytes": 2792,
+          "sha256": "86a2e511946fe8d767b0d54533b50c16d3b7148d5b02c529319157ce9697ab44"
+        },
+        "sparsity": {
+          "path": "artifacts/experiments/M01/front/sparsity.json",
+          "size_bytes": 77334,
+          "sha256": "2b0192fb033e1d9ad1b7f030eecaf24a374f2ed018bbc9fd319b4c3b023aaf23"
+        },
+        "static_analysis": {
+          "path": "artifacts/experiments/M01/front/static-analysis.json",
+          "size_bytes": 50352,
+          "sha256": "e740adf7f3b95d7f534f00f068a3fe6beb04bc40af18db0c2eeacb4e96409462"
+        },
+        "build_command": {
+          "path": "artifacts/experiments/M01/front/build-command.txt",
+          "size_bytes": 402,
+          "sha256": "468186893a67efe82c7d0b3aebbe577b0f14eb8e8cf7e870bf743eec14916133"
+        },
+        "build_log": {
+          "path": "artifacts/experiments/M01/front/build.log",
+          "size_bytes": 7395,
+          "sha256": "25cbb573ce36fde608324ca66f6a0311cb4ec9907702f60d6c530e69ee94ccd8"
+        }
+      },
+      "issues": [],
+      "valid": true
+    }
+  ]
+}

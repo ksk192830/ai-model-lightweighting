@@ -1,0 +1,144 @@
+{
+  "created_at_utc": "2026-09-02T14:30:36.697741+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "S02",
+  "name": "structured-decoder-layer-2",
+  "camera": "front",
+  "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "source_checkpoint_sha256": "769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620",
+  "artifact_checkpoint_sha256": "42689291d1a0dfabd5938c711baed3067c69245fe68df6b8333b920e09329c84",
+  "method": "decoder-layer",
+  "family": "structured",
+  "pruning": {
+    "remove_layers": 2
+  },
+  "precision": "fp32",
+  "fine_tuning": {
+    "required": true,
+    "completed": true,
+    "status": "completed",
+    "profile": "recovery_structured",
+    "epochs_completed": 8,
+    "stopped_early": true,
+    "training_report": "artifacts/experiments/S02/front/recovery/recovery-training.json",
+    "training_report_sha256": "124dd88a5e1b883fbcd62ba2d1330528f6309523ce3d936d41f2aeea89a77dfd"
+  },
+  "input_shape": [
+    1,
+    3,
+    504,
+    504
+  ],
+  "batch_size": 1,
+  "classes": [
+    "front",
+    "out_line",
+    "parking_lot",
+    "parking_space"
+  ],
+  "onnx_opset": 17,
+  "artifacts": {
+    "checkpoint": "artifacts/experiments/S02/front/model.pth",
+    "onnx": "artifacts/experiments/S02/front/model.onnx",
+    "static_analysis": "artifacts/experiments/S02/front/static-analysis.json",
+    "build_command": "artifacts/experiments/S02/front/build-command.txt",
+    "build_log": "artifacts/experiments/S02/front/build.log",
+    "onnx-build_json": "artifacts/experiments/S02/front/onnx-build.json",
+    "comparison_B01": "artifacts/experiments/S02/front/comparison-B01.json",
+    "structured_pruning": "artifacts/experiments/S02/front/structured-pruning.json",
+    "onnx_equivalence": "artifacts/experiments/S02/front/onnx-equivalence.json",
+    "coco_evaluation": "results/coco-evaluation/S02-front-after-recovery.json",
+    "recovery_training": "artifacts/experiments/S02/front/recovery/recovery-training.json",
+    "prototype_before_recovery": "artifacts/experiments/S02/front/prototype-before-recovery"
+  },
+  "build_details": {
+    "onnx-build": {
+      "created_at_utc": "2026-09-02T13:33:04.766917+00:00",
+      "camera": "front",
+      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/S02/front/model.pth",
+      "onnx_path": "artifacts/experiments/S02/front/model.onnx",
+      "onnx_size_bytes": 118276976,
+      "opset": 17,
+      "batch_size": 1,
+      "resolution": 504,
+      "inputs": {
+        "input": [
+          1,
+          3,
+          504,
+          504
+        ]
+      },
+      "outputs": [
+        "dets",
+        "labels",
+        "masks"
+      ],
+      "classes": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ],
+      "validated_by_onnx_checker": true
+    }
+  },
+  "result": {
+    "decision": "rejected",
+    "reason": "Decoder 2개 제거 후 8 epoch 복구했으나 S01 대비 bbox AP 0.017924, mask AP 0.015162가 하락해 정확도 보존 기준을 통과하지 못함. TensorRT 속도는 구조 축소 효과를 기록하기 위한 대조군으로만 측정함.",
+    "evaluation": "results/coco-evaluation/S02-front-after-recovery.json",
+    "evaluation_sha256": "02ecf10dc67b7062788dc80a66677f30b8648328134d688fb1d71d75492aea6a",
+    "baseline_evaluation": "results/coco-evaluation/front-rfdetr-seg-large-v1-test.json",
+    "baseline_evaluation_sha256": "742252e55c46f2c76a7e41a8b9d8382314346b61602d140a54025028a6176633",
+    "model": "artifacts/experiments/S02/front/model.pth",
+    "model_sha256": "42689291d1a0dfabd5938c711baed3067c69245fe68df6b8333b920e09329c84",
+    "onnx": "artifacts/experiments/S02/front/model.onnx",
+    "onnx_sha256": "70da0768fb50980ffe5186202528c24f12f5a64d0d8f9cb21c68edac9c0b2b00",
+    "onnx_equivalence": "artifacts/experiments/S02/front/onnx-equivalence.json",
+    "onnx_equivalence_sha256": "2a75ca7673651313d4370344408f43c2c200c1b65656c8a7854da8f1d81e4847",
+    "protocol": {
+      "phase": "after-recovery",
+      "dataset": "data/training/front_session_split_v1/test",
+      "image_count": 437,
+      "threshold": 0.001,
+      "miou_threshold": 0.25,
+      "resolution": 504,
+      "device": "cpu",
+      "cpu_threads": 3
+    },
+    "metrics": {
+      "baseline": {
+        "bbox_ap": 0.7377911741138029,
+        "mask_ap": 0.6010160064002875,
+        "semantic_miou": 0.7121996004836423
+      },
+      "candidate": {
+        "bbox_ap": 0.7194562251397179,
+        "mask_ap": 0.5875887213543577,
+        "semantic_miou": 0.7626912850187898
+      },
+      "delta_absolute": {
+        "bbox_ap": -0.018334948974085052,
+        "mask_ap": -0.013427285045929827,
+        "semantic_miou": 0.05049168453514752
+      },
+      "delta_relative_percent": {
+        "bbox_ap": -2.4851136225786457,
+        "mask_ap": -2.234097744975366,
+        "semantic_miou": 7.089541260744811
+      }
+    },
+    "equivalence": {
+      "policy": "production-image",
+      "samples": 10,
+      "active_query_count": 144,
+      "active_membership_agreement": 1.0,
+      "active_class_agreement": 1.0,
+      "mask_binary_agreement": 1.0,
+      "passed": true
+    }
+  },
+  "status": "onnx-exported"
+}

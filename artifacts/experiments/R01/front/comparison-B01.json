@@ -1,0 +1,117 @@
+{
+  "created_at_utc": "2026-09-02T14:30:36.690928+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "baseline_experiment_id": "B01",
+  "candidate_experiment_id": "R01",
+  "camera": "front",
+  "engine_size_bytes": {
+    "baseline": null,
+    "candidate": null,
+    "delta": null,
+    "delta_ratio": null
+  },
+  "onnx_size_bytes": {
+    "baseline": 130677849,
+    "candidate": 129955207,
+    "delta": -722642,
+    "delta_ratio": -0.00552995022132634
+  },
+  "onnx_initializer_parameters": {
+    "baseline": 32537747,
+    "candidate": 32358035,
+    "delta": -179712,
+    "delta_ratio": -0.005523185117887849
+  },
+  "onnx_nodes": {
+    "baseline": 2127,
+    "candidate": 2127,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "estimated_macs": {
+    "baseline": 54083668224,
+    "candidate": 37749285120,
+    "delta": -16334383104,
+    "delta_ratio": -0.3020206217586311
+  },
+  "estimated_flops": {
+    "baseline": 108167336448,
+    "candidate": 75498570240,
+    "delta": -32668766208,
+    "delta_ratio": -0.3020206217586311
+  },
+  "prunable_parameters": {
+    "baseline": 34759584,
+    "candidate": 0,
+    "delta": -34759584,
+    "delta_ratio": -1.0
+  },
+  "sparsity": {
+    "baseline": 0.0,
+    "candidate": null
+  },
+  "inputs": {
+    "baseline": {
+      "input": [
+        1,
+        3,
+        504,
+        504
+      ]
+    },
+    "candidate": {
+      "input": [
+        1,
+        3,
+        432,
+        432
+      ]
+    },
+    "equal": false
+  },
+  "outputs": {
+    "baseline": {
+      "dets": [
+        1,
+        200,
+        4
+      ],
+      "labels": [
+        1,
+        200,
+        5
+      ],
+      "masks": [
+        1,
+        200,
+        126,
+        126
+      ]
+    },
+    "candidate": {
+      "dets": [
+        1,
+        200,
+        4
+      ],
+      "labels": [
+        1,
+        200,
+        5
+      ],
+      "masks": [
+        1,
+        200,
+        108,
+        108
+      ]
+    },
+    "equal": false
+  },
+  "conclusion": {
+    "dense_graph_shape_reduced": true,
+    "engine_size_materially_reduced": false
+  }
+}

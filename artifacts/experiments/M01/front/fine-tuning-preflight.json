@@ -1,0 +1,113 @@
+{
+  "created_at_utc": "2026-09-02T11:44:46.897448+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "M01",
+  "camera": "front",
+  "training_api": {
+    "entry_point": "RFDETR.train(**kwargs)",
+    "backend": "PyTorch Lightning",
+    "custom_callback_note": "RFDETR.train discards legacy callbacks dictionaries; use RFDETRModelModule/RFDETRDataModule/build_trainer and append the 2:4 Lightning callback before trainer.fit."
+  },
+  "checkpoint": {
+    "path": "artifacts/experiments/M01/front/model.pth",
+    "load_success": true,
+    "load_error": "",
+    "original_dataset_dir": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1",
+    "original_dataset_available": true,
+    "original_hyperparameters": {
+      "epochs": 25,
+      "lr": 0.0001,
+      "lr_encoder": 0.00015,
+      "batch_size": 2,
+      "grad_accum_steps": 8,
+      "dataset_file": "roboflow"
+    }
+  },
+  "configured_recovery": {
+    "status": "ready",
+    "dataset_file": "roboflow",
+    "dataset_dir": "data/training/front_session_split_v1",
+    "dataset_source": {
+      "provider": "roboflow",
+      "workspace": "hmobility-fvu9x",
+      "project": "parking_front",
+      "version": 9,
+      "export_format": "coco-segmentation"
+    },
+    "output_dir": "artifacts/experiments/M01/front/recovery",
+    "epochs": 10,
+    "lr": 1e-05,
+    "lr_encoder": 1.5e-05,
+    "batch_size": 2,
+    "grad_accum_steps": 8,
+    "effective_batch_size": 16,
+    "weight_decay": 0.0001,
+    "lr_scheduler": "cosine",
+    "warmup_epochs": 1,
+    "use_ema": true,
+    "ema_decay": 0.993,
+    "early_stopping": true,
+    "early_stopping_patience": 3,
+    "checkpoint_interval": 1,
+    "random_seed": 42,
+    "required_splits": [
+      "train",
+      "valid"
+    ],
+    "required_annotation_file": "_annotations.coco.json"
+  },
+  "dataset": {
+    "configured_path": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1",
+    "required_split_annotations": {
+      "train": true,
+      "valid": true
+    },
+    "split_is_coco": {
+      "train": true,
+      "valid": true
+    },
+    "split_categories": {
+      "train": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ],
+      "valid": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ]
+    },
+    "labeled_test_path": "data/labeled_test/front/_annotations.coco.json",
+    "labeled_test_is_coco": false,
+    "labeled_test_is_training_dataset": false,
+    "reason": "labeled_test is an evaluation-only split and has no train/valid directory pair"
+  },
+  "classes": {
+    "expected": [
+      "front",
+      "out_line",
+      "parking_lot",
+      "parking_space"
+    ],
+    "checkpoint": [
+      "front",
+      "out_line",
+      "parking_lot",
+      "parking_space"
+    ],
+    "labeled_test": [],
+    "order_matches": false
+  },
+  "dependencies": {
+    "pytorch_lightning": true,
+    "albumentations": true,
+    "pycocotools": true
+  },
+  "blockers": [],
+  "training_allowed": true
+}

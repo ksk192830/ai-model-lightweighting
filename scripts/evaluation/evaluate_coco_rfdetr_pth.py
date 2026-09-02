@@ -9,6 +9,7 @@ TensorRT conversion exists. Reports bbox AP, mask AP, and semantic mask mIoU.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from collections import defaultdict
@@ -16,9 +17,23 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
+import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+EVALUATION_PROTOCOL = yaml.safe_load(
+    (REPOSITORY_ROOT / "configs/experiments/defaults.yaml").read_text(
+        encoding="utf-8"
+    )
+)["evaluation_protocol"]
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,11 +50,20 @@ def parse_args() -> argparse.Namespace:
         help="Result file stem; defaults to the checkpoint stem.",
     )
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--threshold", type=float, default=0.001)
+    parser.add_argument(
+        "--resolution",
+        type=int,
+        help="Optional square inference resolution (for example, 432 for R01).",
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=float(EVALUATION_PROTOCOL["coco_ap_confidence_threshold"]),
+    )
     parser.add_argument(
         "--miou-threshold",
         type=float,
-        default=0.25,
+        default=float(EVALUATION_PROTOCOL["semantic_miou_confidence_threshold"]),
         help="Confidence threshold used for semantic mask mIoU (default: 0.25).",
     )
     parser.add_argument(
@@ -97,6 +121,7 @@ def main() -> int:
         checkpoint,
         device=args.device,
         num_classes=num_classes,
+        resolution=args.resolution,
     )
 
     bbox_predictions: list[dict] = []
@@ -187,7 +212,9 @@ def main() -> int:
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "checkpoint": str(checkpoint),
         "checkpoint_size_bytes": checkpoint.stat().st_size,
+        "checkpoint_sha256": sha256(checkpoint),
         "dataset": str(dataset),
+        "annotation_sha256": sha256(annotation_path),
         "image_count": len(image_ids),
         "category_ids": category_ids,
         "categories": {
@@ -196,6 +223,17 @@ def main() -> int:
         },
         "threshold": args.threshold,
         "miou_threshold": args.miou_threshold,
+        "evaluation_protocol": {
+            "source": "configs/experiments/defaults.yaml",
+            "bbox": "COCOeval bbox AP@[IoU=0.50:0.05:0.95], maxDets=100",
+            "segmentation": "COCOeval segm AP@[IoU=0.50:0.05:0.95], maxDets=100",
+            "semantic_miou": (
+                "dataset-level per-class intersection/union after unioning "
+                "instance masks with confidence >= miou_threshold"
+            ),
+            "nms": "not applied; DETR query predictions are ranked directly",
+        },
+        "resolution": args.resolution,
         "hardware": (
             torch.cuda.get_device_name(0)
             if torch.cuda.is_available()

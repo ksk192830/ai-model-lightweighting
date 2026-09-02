@@ -1,0 +1,17 @@
+{
+  "method": "decoder-layer",
+  "original_decoder_layers": 5,
+  "remaining_decoder_layers": 3,
+  "removed_decoder_layers": [
+    3,
+    4
+  ],
+  "removed_state_entries": 56,
+  "removed_lightning_state_entries": 56,
+  "parameters_before": 35564543,
+  "parameters_after": 32483135,
+  "removed_parameters": 3081408,
+  "parameter_reduction": 0.08664269916247765,
+  "decoder_removed_parameters": 2943680,
+  "segmentation_removed_parameters": 137728
+}

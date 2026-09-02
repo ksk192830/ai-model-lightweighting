@@ -1,7 +1,8 @@
 # 모델 경량화 평가 개념 정리
 
 이 문서는 평가 결과를 읽고 비교하기 위한 개념 문서다. 실행 절차와 현재
-작업 상태는 [평가 작업 인수인계](../handoffs/evaluation-handoff.md)를 참고한다.
+현재 실행 기준은 [신규 Front 경량화 2차 계획](../guides/front-lightweighting-round-2.md)을
+참고한다.
 
 ## 1. 평가를 나누는 세 축
 
@@ -24,8 +25,10 @@
 
 실제 객체 중 모델이 찾아낸 비율이다. 낮으면 미탐이 많다.
 
-Precision과 Recall은 이 프로젝트에서 confidence 0.25의 운영 지점을
-기준으로 계산한다. AP와 달리 특정 threshold에서의 동작 특성을 보여준다.
+현재 자동 평가의 기본 산출물은 COCO AP/AR와 semantic mIoU다.
+특정 confidence의 단일 precision/recall은 임계값 선정 실험을 별도로
+수행했을 때만 보고하며, 현재 결과 JSON에 없는 값을 논문에 기재하지
+않는다.
 
 ### mAP50
 
@@ -81,11 +84,11 @@ FPS뿐 아니라 P95도 함께 확인한다.
 ## 5. confidence를 두 개로 사용하는 이유
 
 - AP 평가 confidence: 0.001
-- 운영 confidence: 0.25
+- semantic mIoU confidence: 0.25
 
 AP는 precision-recall 곡선 전체가 필요하므로 낮은 confidence에서 예측을
-충분히 수집한다. 반면 실제 운영 Precision, Recall과 semantic mIoU는 사용할
-예측만 남기는 0.25를 적용한다. AP를 0.25로 평가하면 저신뢰 예측이 사라져
+충분히 수집한다. 반면 semantic mIoU는 사용할 예측만 남기는
+0.25를 적용한다. AP를 0.25로 평가하면 저신뢰 예측이 사라져
 곡선이 잘리고 모델 성능이 왜곡될 수 있다.
 
 ## 6. 클래스 ID 정렬
@@ -123,20 +126,42 @@ Pareto에 포함됐다는 사실만으로 최적 모델이 되는 것은 아니�
 - 데이터셋과 split
 - 입력 해상도
 - batch size
-- confidence와 NMS IoU
+- AP 수집 confidence와 semantic mIoU confidence
 - 평가 API와 클래스 매핑
 - GPU, 전력 모드, warm-up과 반복 횟수
+
+RF-DETR/DETR 평가에서는 현재 NMS를 적용하지 않고 query 예측을
+score 순으로 직접 평가한다. 따라서 YOLO와 같은 NMS 기반 모델과 비교할
+때는 postprocess 차이를 반드시 밝힌다.
 
 R01은 432 입력이고 YOLO는 512 입력이며 모델 계열도 다르다. 그래프에는
 참고점으로 포함할 수 있지만 RF-DETR 504 후보와 완전히 동일 조건의
 경량화 실험으로 해석해서는 안 된다.
 
-## 9. 이 프로젝트의 결과 해석
+## 9. 이번 실험의 해석 원칙
 
-- C01: 정확도·속도·크기의 균형이 가장 좋음
-- S01: bbox와 Mask AP가 가장 높지만 속도 이득이 작음
-- B02: FP16으로 정확도를 보존하면서 실시간 속도 달성
-- B03: INT8이지만 B02 대비 크기·속도 추가 이득이 거의 없음
-- M01/M02: mIoU에 비해 AP가 낮아 개별 객체 품질 손실이 나타남
-- R01: 가장 빠른 RF-DETR이지만 해상도 감소에 따른 정확도 손실 존재
-- YOLO: 매우 작고 빠르지만 bbox와 mask 정확도가 크게 낮음
+과거 모델 결과는 제거했으므로 후보별 우열을 미리 가정하지 않는다. 신규
+baseline에서 다시 측정한 정확도, latency, FPS, engine 크기와 메모리만 사용해
+Pareto 후보를 선정한다.
+
+## 10. 이번 실험의 자동 수용 기준
+
+기준은 `configs/experiments/defaults.yaml`을 단일 원본으로 삼으며
+자동 파이프라인이 직접 읽는다. 이 값은 보편적 통계 유의성 기준이 아니라
+본 프로젝트의 사전 정의 engineering gate다.
+
+- B01 대비 bbox AP·mask AP 절대 하락 허용치: 각 0.01
+- B01 대비 semantic mIoU 절대 하락 허용치: 0.02
+- S02를 S01 대신 선택하는 추가 조건: bbox/mask AP 하락 0.005 이하,
+  mIoU 하락 0.01 이하, TensorRT median latency 5% 이상 감소
+- INT8: FP16 대비 median latency 10% 이상 감소와 B01 대비 AP 보존
+- 2:4 sparse: dense control 대비 median latency 10% 이상 감소,
+  sparse tactic 선택 근거, AP 보존을 모두 요구
+
+## 11. 고정 반복 benchmark의 한계
+
+현재 437장 split은 후보 개발 과정에서 반복 사용했다. 따라서
+같은 데이터에서의 공정한 상대 비교용 `fixed benchmark` 이지만, 더 이상
+완전히 손대지 않은 confirmatory test로 표현하지 않는다. 외적
+일반화를 강하게 주장하려면 별도 촬영 세션을 추가로 확보해 단 한 번
+최종 평가해야 한다.

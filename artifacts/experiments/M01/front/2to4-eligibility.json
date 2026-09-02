@@ -1,0 +1,3141 @@
+{
+  "created_at_utc": "2026-09-02T11:44:19.634201+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "M01",
+  "camera": "front",
+  "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "total_layers": 206,
+  "eligible_layers_by_shape": 200,
+  "ineligible_layers_by_shape": 6,
+  "total_parameters": 34083584,
+  "eligible_parameters_by_shape": 33906176,
+  "notes": [
+    "Shape eligibility does not guarantee TensorRT sparse tactic selection.",
+    "ONNX must contain a constant-weight Convolution or MatrixMultiply.",
+    "TensorRT verbose build logs are the final source of tactic selection."
+  ],
+  "layers": [
+    {
+      "name": "transformer.decoder.layers.0.self_attn.in_proj_weight",
+      "type": "MultiheadAttention.in_proj",
+      "shape": [
+        768,
+        256
+      ],
+      "parameters": 196608,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "embedding dimension divisible by 4",
+      "pattern_groups": 49152,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.self_attn.out_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.cross_attn.sampling_offsets.weight",
+      "type": "Linear",
+      "shape": [
+        64,
+        256
+      ],
+      "parameters": 16384,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 4096,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.cross_attn.attention_weights.weight",
+      "type": "Linear",
+      "shape": [
+        32,
+        256
+      ],
+      "parameters": 8192,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 2048,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.cross_attn.value_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.cross_attn.output_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.linear1.weight",
+      "type": "Linear",
+      "shape": [
+        2048,
+        256
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.0.linear2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        2048
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 2048,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.self_attn.in_proj_weight",
+      "type": "MultiheadAttention.in_proj",
+      "shape": [
+        768,
+        256
+      ],
+      "parameters": 196608,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "embedding dimension divisible by 4",
+      "pattern_groups": 49152,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.self_attn.out_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.cross_attn.sampling_offsets.weight",
+      "type": "Linear",
+      "shape": [
+        64,
+        256
+      ],
+      "parameters": 16384,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 4096,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.cross_attn.attention_weights.weight",
+      "type": "Linear",
+      "shape": [
+        32,
+        256
+      ],
+      "parameters": 8192,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 2048,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.cross_attn.value_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.cross_attn.output_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.linear1.weight",
+      "type": "Linear",
+      "shape": [
+        2048,
+        256
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.1.linear2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        2048
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 2048,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.self_attn.in_proj_weight",
+      "type": "MultiheadAttention.in_proj",
+      "shape": [
+        768,
+        256
+      ],
+      "parameters": 196608,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "embedding dimension divisible by 4",
+      "pattern_groups": 49152,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.self_attn.out_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.cross_attn.sampling_offsets.weight",
+      "type": "Linear",
+      "shape": [
+        64,
+        256
+      ],
+      "parameters": 16384,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 4096,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.cross_attn.attention_weights.weight",
+      "type": "Linear",
+      "shape": [
+        32,
+        256
+      ],
+      "parameters": 8192,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 2048,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.cross_attn.value_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.cross_attn.output_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.linear1.weight",
+      "type": "Linear",
+      "shape": [
+        2048,
+        256
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.2.linear2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        2048
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 2048,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.self_attn.in_proj_weight",
+      "type": "MultiheadAttention.in_proj",
+      "shape": [
+        768,
+        256
+      ],
+      "parameters": 196608,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "embedding dimension divisible by 4",
+      "pattern_groups": 49152,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.self_attn.out_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.cross_attn.sampling_offsets.weight",
+      "type": "Linear",
+      "shape": [
+        64,
+        256
+      ],
+      "parameters": 16384,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 4096,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.cross_attn.attention_weights.weight",
+      "type": "Linear",
+      "shape": [
+        32,
+        256
+      ],
+      "parameters": 8192,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 2048,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.cross_attn.value_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.cross_attn.output_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.linear1.weight",
+      "type": "Linear",
+      "shape": [
+        2048,
+        256
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.3.linear2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        2048
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 2048,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.self_attn.in_proj_weight",
+      "type": "MultiheadAttention.in_proj",
+      "shape": [
+        768,
+        256
+      ],
+      "parameters": 196608,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "embedding dimension divisible by 4",
+      "pattern_groups": 49152,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.self_attn.out_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.cross_attn.sampling_offsets.weight",
+      "type": "Linear",
+      "shape": [
+        64,
+        256
+      ],
+      "parameters": 16384,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 4096,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.cross_attn.attention_weights.weight",
+      "type": "Linear",
+      "shape": [
+        32,
+        256
+      ],
+      "parameters": 8192,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 2048,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.cross_attn.value_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.cross_attn.output_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.linear1.weight",
+      "type": "Linear",
+      "shape": [
+        2048,
+        256
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.layers.4.linear2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        2048
+      ],
+      "parameters": 524288,
+      "reduction_axis_size": 2048,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 131072,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.ref_point_head.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        512
+      ],
+      "parameters": 131072,
+      "reduction_axis_size": 512,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 32768,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.decoder.ref_point_head.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.3.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.4.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.5.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.6.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.7.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.8.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.9.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.10.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.11.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_output.12.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.0.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.0.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.0.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.1.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.1.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.1.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.2.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.2.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.2.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.3.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.3.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.3.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.4.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.4.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.4.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.5.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.5.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.5.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.6.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.6.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.6.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.7.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.7.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.7.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.8.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.8.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.8.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.9.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.9.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.9.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.10.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.10.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.10.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.11.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.11.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.11.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.12.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.12.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_bbox_embed.12.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.0.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.1.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.2.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.3.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.4.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.5.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.6.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.7.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.8.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.9.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.10.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.11.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "transformer.enc_out_class_embed.12.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "class_embed.weight",
+      "type": "Linear",
+      "shape": [
+        5,
+        256
+      ],
+      "parameters": 1280,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 320,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "bbox_embed.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "bbox_embed.layers.1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "bbox_embed.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        4,
+        256
+      ],
+      "parameters": 1024,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 256,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.blocks.0.dwconv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "parameters": 2304,
+      "reduction_axis_size": 1,
+      "eligible_by_shape": false,
+      "reason": "input channels per group not divisible by 4",
+      "pattern_groups": 0,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": null
+    },
+    {
+      "name": "segmentation_head.blocks.0.pwconv1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.blocks.1.dwconv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "parameters": 2304,
+      "reduction_axis_size": 1,
+      "eligible_by_shape": false,
+      "reason": "input channels per group not divisible by 4",
+      "pattern_groups": 0,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": null
+    },
+    {
+      "name": "segmentation_head.blocks.1.pwconv1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.blocks.2.dwconv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "parameters": 2304,
+      "reduction_axis_size": 1,
+      "eligible_by_shape": false,
+      "reason": "input channels per group not divisible by 4",
+      "pattern_groups": 0,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": null
+    },
+    {
+      "name": "segmentation_head.blocks.2.pwconv1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.blocks.3.dwconv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "parameters": 2304,
+      "reduction_axis_size": 1,
+      "eligible_by_shape": false,
+      "reason": "input channels per group not divisible by 4",
+      "pattern_groups": 0,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": null
+    },
+    {
+      "name": "segmentation_head.blocks.3.pwconv1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.blocks.4.dwconv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        1,
+        3,
+        3
+      ],
+      "parameters": 2304,
+      "reduction_axis_size": 1,
+      "eligible_by_shape": false,
+      "reason": "input channels per group not divisible by 4",
+      "pattern_groups": 0,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": null
+    },
+    {
+      "name": "segmentation_head.blocks.4.pwconv1.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.spatial_features_proj.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        256,
+        1,
+        1
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.query_features_block.layers.0.weight",
+      "type": "Linear",
+      "shape": [
+        1024,
+        256
+      ],
+      "parameters": 262144,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 65536,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.query_features_block.layers.2.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        1024
+      ],
+      "parameters": 262144,
+      "reduction_axis_size": 1024,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 65536,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "segmentation_head.query_features_proj.weight",
+      "type": "Linear",
+      "shape": [
+        256,
+        256
+      ],
+      "parameters": 65536,
+      "reduction_axis_size": 256,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 16384,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.embeddings.patch_embeddings.projection.weight",
+      "type": "Conv2d",
+      "shape": [
+        384,
+        3,
+        12,
+        12
+      ],
+      "parameters": 165888,
+      "reduction_axis_size": 3,
+      "eligible_by_shape": false,
+      "reason": "input channels per group not divisible by 4",
+      "pattern_groups": 0,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": null
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.0.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.0.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.1.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.1.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.2.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.2.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.3.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.3.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.4.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.4.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.5.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.5.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.6.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.6.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.7.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.7.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.8.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.8.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.9.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.9.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.10.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.10.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.attention.query.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.attention.key.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.attention.value.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.output.dense.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        384
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.11.mlp.fc1.weight",
+      "type": "Linear",
+      "shape": [
+        1536,
+        384
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 384,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.encoder.encoder.encoder.layer.11.mlp.fc2.weight",
+      "type": "Linear",
+      "shape": [
+        384,
+        1536
+      ],
+      "parameters": 589824,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input features divisible by 4",
+      "pattern_groups": 147456,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.cv1.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        1536,
+        1,
+        1
+      ],
+      "parameters": 393216,
+      "reduction_axis_size": 1536,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 98304,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.cv2.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        256,
+        640,
+        1,
+        1
+      ],
+      "parameters": 163840,
+      "reduction_axis_size": 640,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 40960,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.m.0.cv1.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        128,
+        128,
+        3,
+        3
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 128,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.m.0.cv2.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        128,
+        128,
+        3,
+        3
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 128,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.m.1.cv1.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        128,
+        128,
+        3,
+        3
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 128,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.m.1.cv2.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        128,
+        128,
+        3,
+        3
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 128,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.m.2.cv1.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        128,
+        128,
+        3,
+        3
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 128,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    },
+    {
+      "name": "backbone.0.projector.stages.0.0.m.2.cv2.conv.weight",
+      "type": "Conv2d",
+      "shape": [
+        128,
+        128,
+        3,
+        3
+      ],
+      "parameters": 147456,
+      "reduction_axis_size": 128,
+      "eligible_by_shape": true,
+      "reason": "input channels per group divisible by 4",
+      "pattern_groups": 36864,
+      "compliant_groups_before_pruning": 0,
+      "pattern_compliance_before_pruning": 0.0
+    }
+  ]
+}

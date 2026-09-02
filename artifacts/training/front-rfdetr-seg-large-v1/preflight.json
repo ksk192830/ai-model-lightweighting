@@ -1,0 +1,67 @@
+{
+  "checked_at_utc": "2026-09-02T06:08:10.674114+00:00",
+  "environment": {
+    "python": "3.10.12",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0",
+    "rfdetr": "1.8.1",
+    "pytorch_lightning": "2.6.5",
+    "albumentations": "2.0.8",
+    "pycocotools": "2.0.11",
+    "cuda_available": true,
+    "cuda_runtime": "12.8",
+    "cudnn": 91002,
+    "hardware": {
+      "device": "cuda",
+      "accelerator": "gpu",
+      "devices": 1,
+      "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+      "gpu_memory_bytes": 8073248768
+    }
+  },
+  "dataset_dir": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1",
+  "splits": {
+    "train": {
+      "images": 3625,
+      "annotations": 4872,
+      "negative_images": 1236,
+      "class_annotations": {
+        "front": 0,
+        "out_line": 2330,
+        "parking_lot": 1371,
+        "parking_space": 1171
+      }
+    },
+    "valid": {
+      "images": 404,
+      "annotations": 744,
+      "negative_images": 92,
+      "class_annotations": {
+        "front": 0,
+        "out_line": 310,
+        "parking_lot": 251,
+        "parking_space": 183
+      }
+    },
+    "test": {
+      "images": 437,
+      "annotations": 593,
+      "negative_images": 164,
+      "class_annotations": {
+        "front": 0,
+        "out_line": 257,
+        "parking_lot": 177,
+        "parking_space": 159
+      }
+    }
+  },
+  "paper_readiness": {
+    "ready": true,
+    "reason": "PASS: augmentation-free source and no image/session/reference overlap.",
+    "report": "/home/scope/ai 경량화 및 최적화 논문/docs/reports/metrics/dataset-split-audit.json",
+    "audited_dataset": "/home/scope/ai 경량화 및 최적화 논문/data/training/front_session_split_v1"
+  },
+  "provisional_override": false,
+  "status": "pass"
+}

@@ -1,0 +1,448 @@
+{
+  "created_at_utc": "2026-09-02T15:05:20.602810+00:00",
+  "overall_status": "IN_PROGRESS",
+  "protocol_source": "configs/experiments/defaults.yaml",
+  "protocol": {
+    "dataset_role": "fixed_repeated_benchmark",
+    "dataset_dir": "data/training/front_session_split_v1/test",
+    "expected_images": 437,
+    "coco_ap_confidence_threshold": 0.001,
+    "semantic_miou_confidence_threshold": 0.25,
+    "coco_iou_thresholds": "0.50:0.05:0.95",
+    "coco_max_detections_per_image": 100,
+    "onnx_dataset_parity_max_absolute_delta": 0.005,
+    "graph_equivalence": {
+      "samples": 10,
+      "sample_seed": 42,
+      "confidence_threshold": 0.05,
+      "boxes_max_absolute_error": 0.0001,
+      "scores_max_absolute_error": 0.0005,
+      "masks_max_absolute_error": 0.05,
+      "masks_mean_absolute_error": 0.0005,
+      "active_membership_agreement": 1.0,
+      "active_class_agreement": 1.0,
+      "active_mask_binary_agreement": 0.999
+    },
+    "latency": {
+      "batch_size": 1,
+      "warmup_runs": 20,
+      "measured_runs": 200,
+      "sampled_images": 32,
+      "sample_seed": 42,
+      "postprocess_confidence_threshold": 0.25,
+      "primary_statistic": "median_ms",
+      "secondary_statistics": [
+        "mean_ms",
+        "p95_ms",
+        "iqr_ms",
+        "coefficient_of_variation"
+      ],
+      "scope": "end_to_end_in_memory_image",
+      "disk_image_decode_included": false
+    }
+  },
+  "selection_gates": {
+    "accuracy_vs_baseline": {
+      "bbox_ap_max_absolute_drop": 0.01,
+      "mask_ap_max_absolute_drop": 0.01,
+      "semantic_miou_max_absolute_drop": 0.02
+    },
+    "structured_comparison": {
+      "candidate": "S02",
+      "reference": "S01",
+      "bbox_ap_max_absolute_drop": 0.005,
+      "mask_ap_max_absolute_drop": 0.005,
+      "semantic_miou_max_absolute_drop": 0.01,
+      "median_latency_min_relative_reduction": 0.05
+    },
+    "int8_vs_fp16": {
+      "candidate": "B03",
+      "accuracy_reference": "B01",
+      "latency_reference": "B02",
+      "bbox_ap_max_absolute_drop": 0.01,
+      "mask_ap_max_absolute_drop": 0.01,
+      "median_latency_min_relative_reduction": 0.1
+    },
+    "sparse_vs_dense_control": {
+      "candidate": "M02",
+      "accuracy_reference": "M01",
+      "latency_reference": "M01",
+      "require_sparse_tactic_evidence": true,
+      "bbox_ap_max_absolute_drop": 0.005,
+      "mask_ap_max_absolute_drop": 0.005,
+      "median_latency_min_relative_reduction": 0.1
+    }
+  },
+  "summary": {
+    "checks": 43,
+    "required_failures": 0,
+    "pending": 5,
+    "advisories": 9
+  },
+  "checks": [
+    {
+      "id": "dataset-leakage-integrity",
+      "category": "dataset",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "augmentation-free=True; cross-split duplicates=0; session overlap=0; COCO reference errors=0"
+    },
+    {
+      "id": "evaluation-image-count",
+      "category": "dataset",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "configured=437; actual COCO images=437"
+    },
+    {
+      "id": "split-ratio-realization",
+      "category": "dataset",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "train=3625 (81.17%), valid=404 (9.05%), test=437 (9.79%)"
+    },
+    {
+      "id": "evaluation-B01",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/front-rfdetr-seg-large-v1-test.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-provenance-B01",
+      "category": "reproducibility",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
+    },
+    {
+      "id": "evaluation-R01",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/R01-front-432-pth.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-provenance-R01",
+      "category": "reproducibility",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
+    },
+    {
+      "id": "evaluation-S01",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/S01-front-after-recovery.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-provenance-S01",
+      "category": "reproducibility",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
+    },
+    {
+      "id": "evaluation-S02",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/S02-front-after-recovery.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-provenance-S02",
+      "category": "reproducibility",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
+    },
+    {
+      "id": "evaluation-U02",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/U02-front-pth.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-provenance-U02",
+      "category": "reproducibility",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
+    },
+    {
+      "id": "onnx-evaluation-B01-B01-front-baseline-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/B01-front-baseline-onnx.json; query count/parity valid"
+    },
+    {
+      "id": "onnx-evaluation-R01-R01-front-432-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/R01-front-432-onnx.json; query count/parity valid"
+    },
+    {
+      "id": "onnx-evaluation-S01-S01-front-after-recovery-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/S01-front-after-recovery-onnx.json; query count/parity valid"
+    },
+    {
+      "id": "onnx-evaluation-S02-S02-front-after-recovery-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/S02-front-after-recovery-onnx.json; query count/parity valid"
+    },
+    {
+      "id": "graph-equivalence-B01",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/B01/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-schema-B01",
+      "category": "conversion",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy graph report predates strict active-membership/class/score fields; full-dataset ONNX accuracy parity is available"
+    },
+    {
+      "id": "graph-equivalence-R01",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/R01/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-schema-R01",
+      "category": "conversion",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "legacy graph report predates strict active-membership/class/score fields; full-dataset ONNX accuracy parity is available"
+    },
+    {
+      "id": "graph-equivalence-S01",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S01/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-S02",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S02/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-U02",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/U02/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=True; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-S03",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S03/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=False; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-M01",
+      "category": "conversion",
+      "status": "PENDING",
+      "severity": "required",
+      "evidence": "artifacts/experiments/M01/front/onnx-equivalence.json; prototype report is superseded when recovery completes"
+    },
+    {
+      "id": "static-analysis-B01",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/B01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-U02",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/U02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-M01",
+      "category": "static-analysis",
+      "status": "PENDING",
+      "severity": "required",
+      "evidence": "artifacts/experiments/M01/front/static-analysis.json; status=partial; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=awaiting refresh"
+    },
+    {
+      "id": "static-analysis-M02",
+      "category": "static-analysis",
+      "status": "PENDING",
+      "severity": "required",
+      "evidence": "missing artifacts/experiments/M02/front/static-analysis.json"
+    },
+    {
+      "id": "static-analysis-S01",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9659090909090909; estimated/all-node fraction=0.0869120654396728"
+    },
+    {
+      "id": "static-analysis-S02",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9691358024691358; estimated/all-node fraction=0.08805384183959619"
+    },
+    {
+      "id": "static-analysis-S03",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-R01",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/R01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "desktop-pipeline-protocol-binding",
+      "category": "automation",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "pipeline status=waiting-for-recovery; running queue records the canonical protocol"
+    },
+    {
+      "id": "post-recovery-protocol-binding",
+      "category": "automation",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "M01 post-recovery status=waiting-for-training; canonical protocol match=True"
+    },
+    {
+      "id": "latency-results",
+      "category": "latency",
+      "status": "PENDING",
+      "severity": "required",
+      "evidence": "TensorRT engines/benchmarks are waiting for M01 recovery"
+    },
+    {
+      "id": "engine-summary",
+      "category": "automation",
+      "status": "PENDING",
+      "severity": "required",
+      "evidence": "desktop engine summary will be generated after recovery/build/evaluation"
+    },
+    {
+      "id": "pipeline-stage-wiring",
+      "category": "automation",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "engine inspection, paper table/figure, static report, and final audit are wired"
+    },
+    {
+      "id": "paper-report-source",
+      "category": "automation",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "paper outputs consume only the current desktop engine summary"
+    },
+    {
+      "id": "int8-calibration-binding",
+      "category": "automation",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "train-only deterministic calibration: count=128, seed=42"
+    },
+    {
+      "id": "fixed-benchmark-reuse",
+      "category": "study-design",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "437 images are a repeated comparative benchmark, not an untouched confirmatory test; collect a new session for external-generalization claims"
+    },
+    {
+      "id": "training-seed-replication",
+      "category": "study-design",
+      "status": "WARN",
+      "severity": "advisory",
+      "evidence": "current recovery results use seed 42 only; report this as a deterministic engineering comparison or add multiple training seeds for variance estimates"
+    }
+  ],
+  "candidate_gate_outcomes": [
+    {
+      "experiment_id": "R01",
+      "comparison": "accuracy_vs_B01",
+      "outcome": "PASS",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": true,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.007130372578528887,
+        "mask_ap": -0.008042357520696264,
+        "semantic_miou": -0.015321463772026589
+      }
+    },
+    {
+      "experiment_id": "S01",
+      "comparison": "accuracy_vs_B01",
+      "outcome": "PASS",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": true,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.0004113082119742151,
+        "mask_ap": 0.0017346699429298118,
+        "semantic_miou": 0.021721456855608
+      }
+    },
+    {
+      "experiment_id": "S02",
+      "comparison": "accuracy_vs_B01",
+      "outcome": "REJECT",
+      "metric_gates": {
+        "bbox_ap": false,
+        "mask_ap": false,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.018334948974085052,
+        "mask_ap": -0.013427285045929827,
+        "semantic_miou": 0.05049168453514752
+      }
+    },
+    {
+      "experiment_id": "U02",
+      "comparison": "accuracy_vs_B01",
+      "outcome": "REJECT",
+      "metric_gates": {
+        "bbox_ap": false,
+        "mask_ap": false,
+        "semantic_miou": false
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.6413491337116535,
+        "mask_ap": -0.5189942170557809,
+        "semantic_miou": -0.6793506706630799
+      }
+    }
+  ],
+  "validity_note": "The 437-image split has been used repeatedly during candidate development. It is valid as a fixed comparative benchmark but is not an untouched confirmatory test set. Claims of final external generalization require a new held-out capture session."
+}

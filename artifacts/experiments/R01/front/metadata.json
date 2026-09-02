@@ -1,0 +1,114 @@
+{
+  "created_at_utc": "2026-09-02T14:30:36.772774+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "R01",
+  "name": "reduced-resolution-fp16",
+  "camera": "front",
+  "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "source_checkpoint_sha256": "769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620",
+  "artifact_checkpoint_sha256": null,
+  "method": "input-resolution",
+  "family": "input",
+  "pruning": null,
+  "precision": "fp16",
+  "fine_tuning": {
+    "required": false
+  },
+  "input_shape": [
+    1,
+    3,
+    432,
+    432
+  ],
+  "batch_size": 1,
+  "classes": [
+    "front",
+    "out_line",
+    "parking_lot",
+    "parking_space"
+  ],
+  "onnx_opset": 17,
+  "artifacts": {
+    "onnx": "artifacts/experiments/R01/front/model.onnx",
+    "static_analysis": "artifacts/experiments/R01/front/static-analysis.json",
+    "build_command": "artifacts/experiments/R01/front/build-command.txt",
+    "build_log": "artifacts/experiments/R01/front/build.log",
+    "onnx-build_json": "artifacts/experiments/R01/front/onnx-build.json",
+    "comparison_B01": "artifacts/experiments/R01/front/comparison-B01.json",
+    "onnx_equivalence": "artifacts/experiments/R01/front/onnx-equivalence.json",
+    "coco_evaluation": "results/coco-evaluation/R01-front-432-pth.json"
+  },
+  "build_details": {
+    "onnx-build": {
+      "created_at_utc": "2026-09-02T11:44:08.991720+00:00",
+      "camera": "front",
+      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+      "onnx_path": "artifacts/experiments/R01/front/model.onnx",
+      "onnx_size_bytes": 129955207,
+      "opset": 17,
+      "batch_size": 1,
+      "resolution": 432,
+      "inputs": {
+        "input": [
+          1,
+          3,
+          432,
+          432
+        ]
+      },
+      "outputs": [
+        "dets",
+        "labels",
+        "masks"
+      ],
+      "classes": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ],
+      "validated_by_onnx_checker": true
+    }
+  },
+  "result": {
+    "decision": "retained",
+    "reason": "432 입력에서 MACs/FLOPs 30.20% 감소 대비 정확도 하락이 제한적임.",
+    "evaluation": "results/coco-evaluation/R01-front-432-pth.json",
+    "evaluation_sha256": "e5a80d1a6931a3a8d81f28956485b49cb0a2e9bb8100921e089c08349e7b14bb",
+    "baseline_evaluation": "results/coco-evaluation/front-rfdetr-seg-large-v1-test.json",
+    "baseline_evaluation_sha256": "742252e55c46f2c76a7e41a8b9d8382314346b61602d140a54025028a6176633",
+    "protocol": {
+      "dataset": "data/training/front_session_split_v1/test",
+      "image_count": 437,
+      "threshold": 0.001,
+      "miou_threshold": 0.25,
+      "baseline_resolution": 504,
+      "candidate_resolution": 432
+    },
+    "metrics": {
+      "baseline": {
+        "bbox_ap": 0.7377911741138029,
+        "mask_ap": 0.6010160064002875,
+        "semantic_miou": 0.7121996004836423
+      },
+      "candidate": {
+        "bbox_ap": 0.730660801535274,
+        "mask_ap": 0.5929736488795913,
+        "semantic_miou": 0.6968781367116157
+      },
+      "delta_absolute": {
+        "bbox_ap": -0.007130372578528887,
+        "mask_ap": -0.008042357520696264,
+        "semantic_miou": -0.015321463772026589
+      },
+      "delta_relative_percent": {
+        "bbox_ap": -0.9664486142835105,
+        "mask_ap": -1.3381270107704735,
+        "semantic_miou": -2.1512878919929257
+      }
+    }
+  },
+  "status": "onnx-exported"
+}

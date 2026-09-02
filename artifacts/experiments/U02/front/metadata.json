@@ -1,0 +1,84 @@
+{
+  "created_at_utc": "2026-09-02T14:30:36.869408+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "U02",
+  "name": "unstructured-magnitude-30",
+  "camera": "front",
+  "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "source_checkpoint_sha256": "769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620",
+  "artifact_checkpoint_sha256": "32e9d925ee6b431bcc8a2982a82ab730c4ea47e28ae064b5df9a53d24af8479e",
+  "method": "global-magnitude",
+  "family": "unstructured",
+  "pruning": {
+    "sparsity": 0.3
+  },
+  "precision": "fp32",
+  "fine_tuning": {
+    "required": false
+  },
+  "input_shape": [
+    1,
+    3,
+    504,
+    504
+  ],
+  "batch_size": 1,
+  "classes": [
+    "front",
+    "out_line",
+    "parking_lot",
+    "parking_space"
+  ],
+  "onnx_opset": 17,
+  "artifacts": {
+    "checkpoint": "artifacts/experiments/U02/front/model.pth",
+    "onnx": "artifacts/experiments/U02/front/model.onnx",
+    "static_analysis": "artifacts/experiments/U02/front/static-analysis.json",
+    "build_command": "artifacts/experiments/U02/front/build-command.txt",
+    "build_log": "artifacts/experiments/U02/front/build.log",
+    "onnx-build_json": "artifacts/experiments/U02/front/onnx-build.json",
+    "comparison_B01": "artifacts/experiments/U02/front/comparison-B01.json",
+    "onnx_equivalence": "artifacts/experiments/U02/front/onnx-equivalence.json",
+    "coco_evaluation": "results/coco-evaluation/U02-front-pth.json"
+  },
+  "build_details": {
+    "onnx-build": {
+      "created_at_utc": "2026-09-02T10:55:43.609978+00:00",
+      "camera": "front",
+      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/U02/front/model.pth",
+      "onnx_path": "artifacts/experiments/U02/front/model.onnx",
+      "onnx_size_bytes": 130677820,
+      "opset": 17,
+      "batch_size": 1,
+      "resolution": 504,
+      "inputs": {
+        "input": [
+          1,
+          3,
+          504,
+          504
+        ]
+      },
+      "outputs": [
+        "dets",
+        "labels",
+        "masks"
+      ],
+      "classes": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ],
+      "validated_by_onnx_checker": true
+    }
+  },
+  "result": {
+    "decision": "rejected",
+    "reason": "30% sparsity에서 dense ONNX 크기·MACs·FLOPs가 감소하지 않았고 정확도가 대폭 하락함.",
+    "evaluation": "results/coco-evaluation/U02-front-pth.json"
+  },
+  "status": "static-analysis-rejected"
+}

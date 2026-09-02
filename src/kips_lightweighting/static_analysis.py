@@ -126,6 +126,10 @@ def onnx_operation_analysis(model: Any) -> dict[str, Any]:
             )
 
     compute_nodes = supported_nodes + unresolved_nodes
+    total_graph_nodes = len(inferred.graph.node)
+    excluded_nodes = sum(unsupported_types.values())
+    for entry in by_operator.values():
+        entry["flops"] = entry["macs"] * 2
     return {
         "estimated_macs": macs,
         "estimated_flops": macs * 2,
@@ -136,8 +140,13 @@ def onnx_operation_analysis(model: Any) -> dict[str, Any]:
         ),
         "supported_compute_nodes": supported_nodes,
         "unresolved_compute_nodes": unresolved_nodes,
+        "total_graph_nodes": total_graph_nodes,
+        "excluded_operator_nodes": excluded_nodes,
         "compute_node_coverage": (
             supported_nodes / compute_nodes if compute_nodes else 1.0
+        ),
+        "estimated_node_fraction_of_graph": (
+            supported_nodes / total_graph_nodes if total_graph_nodes else 1.0
         ),
         "nodes_with_symbolic_dimensions_assumed_one": (
             nodes_with_symbolic_assumptions
@@ -145,6 +154,13 @@ def onnx_operation_analysis(model: Any) -> dict[str, Any]:
         "by_operator": by_operator,
         "excluded_operator_types": unsupported_types,
         "constant_initializers": len(initializers),
+        "interpretation": (
+            "Partial dense-arithmetic lower bound. Coverage is the resolved "
+            "fraction among Conv/MatMul/Gemm nodes, not the fraction of all "
+            "ONNX operators. Elementwise, normalization, activation, resize, "
+            "control-flow, and data-movement costs are excluded. This value "
+            "must not be interpreted as measured latency or total backend work."
+        ),
     }
 
 
@@ -170,7 +186,30 @@ def checkpoint_analysis(path: Path) -> dict[str, Any]:
     layers = []
     total = 0
     zeros = 0
+    state_tensor_count = 0
+    state_tensor_elements = 0
+    state_tensor_bytes = 0
+    floating_tensor_count = 0
+    floating_tensor_elements = 0
+    floating_tensor_bytes = 0
+    dtype_inventory: dict[str, dict[str, int]] = {}
     for name, tensor in state.items():
+        if not isinstance(tensor, torch.Tensor):
+            continue
+        state_tensor_count += 1
+        state_tensor_elements += tensor.numel()
+        state_tensor_bytes += tensor.numel() * tensor.element_size()
+        dtype = str(tensor.dtype).removeprefix("torch.")
+        dtype_entry = dtype_inventory.setdefault(
+            dtype, {"tensors": 0, "elements": 0, "bytes": 0}
+        )
+        dtype_entry["tensors"] += 1
+        dtype_entry["elements"] += tensor.numel()
+        dtype_entry["bytes"] += tensor.numel() * tensor.element_size()
+        if tensor.is_floating_point():
+            floating_tensor_count += 1
+            floating_tensor_elements += tensor.numel()
+            floating_tensor_bytes += tensor.numel() * tensor.element_size()
         if not is_prunable(name, tensor):
             continue
         count = tensor.numel()
@@ -188,15 +227,31 @@ def checkpoint_analysis(path: Path) -> dict[str, Any]:
         )
     return {
         "checkpoint_size_bytes": path.stat().st_size,
+        "model_state_tensors": state_tensor_count,
+        "model_state_elements": state_tensor_elements,
+        "model_state_tensor_bytes": state_tensor_bytes,
+        "floating_model_state_tensors": floating_tensor_count,
+        "floating_model_state_elements": floating_tensor_elements,
+        "floating_model_state_tensor_bytes": floating_tensor_bytes,
+        "model_state_dtype_inventory": dict(sorted(dtype_inventory.items())),
         "prunable_layers": len(layers),
         "prunable_parameters": total,
+        "prunable_fraction_of_model_state_elements": (
+            total / state_tensor_elements if state_tensor_elements else 0.0
+        ),
         "zeros": zeros,
         "sparsity": zeros / total if total else 0.0,
+        "terminology": (
+            "model_state_elements counts every tensor element in checkpoint['model']; "
+            "prunable_parameters counts floating tensors with ndim>=2 whose key "
+            "ends in 'weight'. Neither value independently proves trainability."
+        ),
         "layers": layers,
     }
 
 
 def onnx_analysis(path: Path) -> dict[str, Any]:
+    import numpy as np
     import onnx
 
     model = onnx.load(str(path))
@@ -210,22 +265,44 @@ def onnx_analysis(path: Path) -> dict[str, Any]:
             for dimension in value.type.tensor_type.shape.dim
         ]
 
-    initializers = sum(
-        int(torch.tensor(initializer.dims).prod().item())
-        for initializer in model.graph.initializer
-        if initializer.dims
-    )
+    initializer_elements = 0
+    initializer_tensor_bytes = 0
+    initializer_dtypes: dict[str, dict[str, int]] = {}
+    for initializer in model.graph.initializer:
+        elements = int(torch.tensor(initializer.dims).prod().item()) if initializer.dims else 1
+        try:
+            itemsize = int(
+                np.dtype(
+                    onnx.helper.tensor_dtype_to_np_dtype(initializer.data_type)
+                ).itemsize
+            )
+        except (KeyError, TypeError, ValueError):
+            itemsize = 0
+        dtype = str(onnx.TensorProto.DataType.Name(initializer.data_type)).lower()
+        entry = initializer_dtypes.setdefault(
+            dtype, {"tensors": 0, "elements": 0, "bytes": 0}
+        )
+        entry["tensors"] += 1
+        entry["elements"] += elements
+        entry["bytes"] += elements * itemsize
+        initializer_elements += elements
+        initializer_tensor_bytes += elements * itemsize
     operation_analysis = onnx_operation_analysis(model)
     return {
         "onnx_size_bytes": path.stat().st_size,
         "onnx_nodes": len(model.graph.node),
         "onnx_initializers": len(model.graph.initializer),
-        "onnx_initializer_parameters": initializers,
+        # Kept for backward compatibility with existing comparisons. ONNX
+        # initializers may include constants and are not necessarily trainable.
+        "onnx_initializer_parameters": initializer_elements,
+        "onnx_initializer_elements": initializer_elements,
+        "onnx_initializer_tensor_bytes": initializer_tensor_bytes,
+        "onnx_initializer_dtype_inventory": dict(sorted(initializer_dtypes.items())),
         **operation_analysis,
-        "flops_status": (
-            "estimated-lower-bound"
-            if operation_analysis["unresolved_compute_nodes"] == 0
-            else "partial"
+        "flops_status": "partial-lower-bound",
+        "initializer_terminology": (
+            "Initializer elements include all ONNX constant tensors and must not "
+            "be labeled as trainable parameters without an independent mapping."
         ),
         "onnx_checker_valid": True,
         "inputs": {

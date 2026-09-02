@@ -1,0 +1,2263 @@
+{
+  "created_at_utc": "2026-09-02T14:30:35.956436+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "experiment_id": "U02",
+  "checkpoint": {
+    "checkpoint_size_bytes": 142492293,
+    "model_state_tensors": 573,
+    "model_state_elements": 35564543,
+    "model_state_tensor_bytes": 142258172,
+    "floating_model_state_tensors": 572,
+    "floating_model_state_elements": 35564543,
+    "floating_model_state_tensor_bytes": 142258172,
+    "model_state_dtype_inventory": {
+      "bool": {
+        "tensors": 1,
+        "elements": 0,
+        "bytes": 0
+      },
+      "float32": {
+        "tensors": 572,
+        "elements": 35564543,
+        "bytes": 142258172
+      }
+    },
+    "prunable_layers": 208,
+    "prunable_parameters": 34759584,
+    "prunable_fraction_of_model_state_elements": 0.9773662493006026,
+    "zeros": 10427875,
+    "sparsity": 0.2999999942461912,
+    "terminology": "model_state_elements counts every tensor element in checkpoint['model']; prunable_parameters counts floating tensors with ndim>=2 whose key ends in 'weight'. Neither value independently proves trainability.",
+    "layers": [
+      {
+        "name": "transformer.decoder.layers.0.self_attn.in_proj_weight",
+        "shape": [
+          768,
+          256
+        ],
+        "parameters": 196608,
+        "zeros": 20620,
+        "sparsity": 0.10487874348958333
+      },
+      {
+        "name": "transformer.decoder.layers.0.self_attn.out_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6130,
+        "sparsity": 0.093536376953125
+      },
+      {
+        "name": "transformer.decoder.layers.0.cross_attn.sampling_offsets.weight",
+        "shape": [
+          64,
+          256
+        ],
+        "parameters": 16384,
+        "zeros": 5016,
+        "sparsity": 0.30615234375
+      },
+      {
+        "name": "transformer.decoder.layers.0.cross_attn.attention_weights.weight",
+        "shape": [
+          32,
+          256
+        ],
+        "parameters": 8192,
+        "zeros": 2516,
+        "sparsity": 0.30712890625
+      },
+      {
+        "name": "transformer.decoder.layers.0.cross_attn.value_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5819,
+        "sparsity": 0.0887908935546875
+      },
+      {
+        "name": "transformer.decoder.layers.0.cross_attn.output_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5520,
+        "sparsity": 0.084228515625
+      },
+      {
+        "name": "transformer.decoder.layers.0.linear1.weight",
+        "shape": [
+          2048,
+          256
+        ],
+        "parameters": 524288,
+        "zeros": 65310,
+        "sparsity": 0.12456893920898438
+      },
+      {
+        "name": "transformer.decoder.layers.0.linear2.weight",
+        "shape": [
+          256,
+          2048
+        ],
+        "parameters": 524288,
+        "zeros": 66919,
+        "sparsity": 0.1276378631591797
+      },
+      {
+        "name": "transformer.decoder.layers.1.self_attn.in_proj_weight",
+        "shape": [
+          768,
+          256
+        ],
+        "parameters": 196608,
+        "zeros": 27137,
+        "sparsity": 0.13802591959635416
+      },
+      {
+        "name": "transformer.decoder.layers.1.self_attn.out_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8444,
+        "sparsity": 0.12884521484375
+      },
+      {
+        "name": "transformer.decoder.layers.1.cross_attn.sampling_offsets.weight",
+        "shape": [
+          64,
+          256
+        ],
+        "parameters": 16384,
+        "zeros": 3736,
+        "sparsity": 0.22802734375
+      },
+      {
+        "name": "transformer.decoder.layers.1.cross_attn.attention_weights.weight",
+        "shape": [
+          32,
+          256
+        ],
+        "parameters": 8192,
+        "zeros": 1272,
+        "sparsity": 0.1552734375
+      },
+      {
+        "name": "transformer.decoder.layers.1.cross_attn.value_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6207,
+        "sparsity": 0.0947113037109375
+      },
+      {
+        "name": "transformer.decoder.layers.1.cross_attn.output_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6262,
+        "sparsity": 0.095550537109375
+      },
+      {
+        "name": "transformer.decoder.layers.1.linear1.weight",
+        "shape": [
+          2048,
+          256
+        ],
+        "parameters": 524288,
+        "zeros": 67160,
+        "sparsity": 0.1280975341796875
+      },
+      {
+        "name": "transformer.decoder.layers.1.linear2.weight",
+        "shape": [
+          256,
+          2048
+        ],
+        "parameters": 524288,
+        "zeros": 69165,
+        "sparsity": 0.13192176818847656
+      },
+      {
+        "name": "transformer.decoder.layers.2.self_attn.in_proj_weight",
+        "shape": [
+          768,
+          256
+        ],
+        "parameters": 196608,
+        "zeros": 24179,
+        "sparsity": 0.12298075358072917
+      },
+      {
+        "name": "transformer.decoder.layers.2.self_attn.out_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8203,
+        "sparsity": 0.1251678466796875
+      },
+      {
+        "name": "transformer.decoder.layers.2.cross_attn.sampling_offsets.weight",
+        "shape": [
+          64,
+          256
+        ],
+        "parameters": 16384,
+        "zeros": 2961,
+        "sparsity": 0.18072509765625
+      },
+      {
+        "name": "transformer.decoder.layers.2.cross_attn.attention_weights.weight",
+        "shape": [
+          32,
+          256
+        ],
+        "parameters": 8192,
+        "zeros": 1084,
+        "sparsity": 0.13232421875
+      },
+      {
+        "name": "transformer.decoder.layers.2.cross_attn.value_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6329,
+        "sparsity": 0.0965728759765625
+      },
+      {
+        "name": "transformer.decoder.layers.2.cross_attn.output_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6434,
+        "sparsity": 0.098175048828125
+      },
+      {
+        "name": "transformer.decoder.layers.2.linear1.weight",
+        "shape": [
+          2048,
+          256
+        ],
+        "parameters": 524288,
+        "zeros": 69333,
+        "sparsity": 0.13224220275878906
+      },
+      {
+        "name": "transformer.decoder.layers.2.linear2.weight",
+        "shape": [
+          256,
+          2048
+        ],
+        "parameters": 524288,
+        "zeros": 71500,
+        "sparsity": 0.13637542724609375
+      },
+      {
+        "name": "transformer.decoder.layers.3.self_attn.in_proj_weight",
+        "shape": [
+          768,
+          256
+        ],
+        "parameters": 196608,
+        "zeros": 23752,
+        "sparsity": 0.12080891927083333
+      },
+      {
+        "name": "transformer.decoder.layers.3.self_attn.out_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8898,
+        "sparsity": 0.135772705078125
+      },
+      {
+        "name": "transformer.decoder.layers.3.cross_attn.sampling_offsets.weight",
+        "shape": [
+          64,
+          256
+        ],
+        "parameters": 16384,
+        "zeros": 2779,
+        "sparsity": 0.16961669921875
+      },
+      {
+        "name": "transformer.decoder.layers.3.cross_attn.attention_weights.weight",
+        "shape": [
+          32,
+          256
+        ],
+        "parameters": 8192,
+        "zeros": 978,
+        "sparsity": 0.119384765625
+      },
+      {
+        "name": "transformer.decoder.layers.3.cross_attn.value_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6272,
+        "sparsity": 0.095703125
+      },
+      {
+        "name": "transformer.decoder.layers.3.cross_attn.output_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6455,
+        "sparsity": 0.0984954833984375
+      },
+      {
+        "name": "transformer.decoder.layers.3.linear1.weight",
+        "shape": [
+          2048,
+          256
+        ],
+        "parameters": 524288,
+        "zeros": 72828,
+        "sparsity": 0.13890838623046875
+      },
+      {
+        "name": "transformer.decoder.layers.3.linear2.weight",
+        "shape": [
+          256,
+          2048
+        ],
+        "parameters": 524288,
+        "zeros": 76423,
+        "sparsity": 0.1457653045654297
+      },
+      {
+        "name": "transformer.decoder.layers.4.self_attn.in_proj_weight",
+        "shape": [
+          768,
+          256
+        ],
+        "parameters": 196608,
+        "zeros": 23519,
+        "sparsity": 0.11962381998697917
+      },
+      {
+        "name": "transformer.decoder.layers.4.self_attn.out_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 9669,
+        "sparsity": 0.1475372314453125
+      },
+      {
+        "name": "transformer.decoder.layers.4.cross_attn.sampling_offsets.weight",
+        "shape": [
+          64,
+          256
+        ],
+        "parameters": 16384,
+        "zeros": 2519,
+        "sparsity": 0.15374755859375
+      },
+      {
+        "name": "transformer.decoder.layers.4.cross_attn.attention_weights.weight",
+        "shape": [
+          32,
+          256
+        ],
+        "parameters": 8192,
+        "zeros": 1136,
+        "sparsity": 0.138671875
+      },
+      {
+        "name": "transformer.decoder.layers.4.cross_attn.value_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6850,
+        "sparsity": 0.104522705078125
+      },
+      {
+        "name": "transformer.decoder.layers.4.cross_attn.output_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 7039,
+        "sparsity": 0.1074066162109375
+      },
+      {
+        "name": "transformer.decoder.layers.4.linear1.weight",
+        "shape": [
+          2048,
+          256
+        ],
+        "parameters": 524288,
+        "zeros": 76263,
+        "sparsity": 0.1454601287841797
+      },
+      {
+        "name": "transformer.decoder.layers.4.linear2.weight",
+        "shape": [
+          256,
+          2048
+        ],
+        "parameters": 524288,
+        "zeros": 84988,
+        "sparsity": 0.16210174560546875
+      },
+      {
+        "name": "transformer.decoder.ref_point_head.layers.0.weight",
+        "shape": [
+          256,
+          512
+        ],
+        "parameters": 131072,
+        "zeros": 16127,
+        "sparsity": 0.12303924560546875
+      },
+      {
+        "name": "transformer.decoder.ref_point_head.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6921,
+        "sparsity": 0.1056060791015625
+      },
+      {
+        "name": "transformer.enc_output.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6001,
+        "sparsity": 0.0915679931640625
+      },
+      {
+        "name": "transformer.enc_output.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6062,
+        "sparsity": 0.092498779296875
+      },
+      {
+        "name": "transformer.enc_output.2.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5841,
+        "sparsity": 0.0891265869140625
+      },
+      {
+        "name": "transformer.enc_output.3.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5904,
+        "sparsity": 0.090087890625
+      },
+      {
+        "name": "transformer.enc_output.4.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5842,
+        "sparsity": 0.089141845703125
+      },
+      {
+        "name": "transformer.enc_output.5.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5885,
+        "sparsity": 0.0897979736328125
+      },
+      {
+        "name": "transformer.enc_output.6.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6121,
+        "sparsity": 0.0933990478515625
+      },
+      {
+        "name": "transformer.enc_output.7.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 6032,
+        "sparsity": 0.092041015625
+      },
+      {
+        "name": "transformer.enc_output.8.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5987,
+        "sparsity": 0.0913543701171875
+      },
+      {
+        "name": "transformer.enc_output.9.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5996,
+        "sparsity": 0.09149169921875
+      },
+      {
+        "name": "transformer.enc_output.10.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5916,
+        "sparsity": 0.09027099609375
+      },
+      {
+        "name": "transformer.enc_output.11.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5919,
+        "sparsity": 0.0903167724609375
+      },
+      {
+        "name": "transformer.enc_output.12.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 5993,
+        "sparsity": 0.0914459228515625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.0.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8520,
+        "sparsity": 0.1300048828125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.0.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 12949,
+        "sparsity": 0.1975860595703125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.0.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 466,
+        "sparsity": 0.455078125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.1.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8524,
+        "sparsity": 0.13006591796875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.1.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 12849,
+        "sparsity": 0.1960601806640625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.1.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 482,
+        "sparsity": 0.470703125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.2.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8763,
+        "sparsity": 0.1337127685546875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.2.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 12882,
+        "sparsity": 0.196563720703125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.2.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 466,
+        "sparsity": 0.455078125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.3.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8557,
+        "sparsity": 0.1305694580078125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.3.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13025,
+        "sparsity": 0.1987457275390625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.3.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 474,
+        "sparsity": 0.462890625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.4.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8623,
+        "sparsity": 0.1315765380859375
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.4.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13082,
+        "sparsity": 0.199615478515625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.4.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 475,
+        "sparsity": 0.4638671875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.5.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8611,
+        "sparsity": 0.1313934326171875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.5.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13139,
+        "sparsity": 0.2004852294921875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.5.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 473,
+        "sparsity": 0.4619140625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.6.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8670,
+        "sparsity": 0.132293701171875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.6.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 12922,
+        "sparsity": 0.197174072265625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.6.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 482,
+        "sparsity": 0.470703125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.7.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8621,
+        "sparsity": 0.1315460205078125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.7.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13056,
+        "sparsity": 0.19921875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.7.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 482,
+        "sparsity": 0.470703125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.8.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8638,
+        "sparsity": 0.131805419921875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.8.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13190,
+        "sparsity": 0.201263427734375
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.8.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 474,
+        "sparsity": 0.462890625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.9.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8508,
+        "sparsity": 0.12982177734375
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.9.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13107,
+        "sparsity": 0.1999969482421875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.9.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 468,
+        "sparsity": 0.45703125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.10.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8426,
+        "sparsity": 0.128570556640625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.10.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13081,
+        "sparsity": 0.1996002197265625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.10.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 475,
+        "sparsity": 0.4638671875
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.11.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8488,
+        "sparsity": 0.1295166015625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.11.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13180,
+        "sparsity": 0.20111083984375
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.11.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 485,
+        "sparsity": 0.4736328125
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.12.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8762,
+        "sparsity": 0.133697509765625
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.12.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 13158,
+        "sparsity": 0.200775146484375
+      },
+      {
+        "name": "transformer.enc_out_bbox_embed.12.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 478,
+        "sparsity": 0.466796875
+      },
+      {
+        "name": "transformer.enc_out_class_embed.0.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 162,
+        "sparsity": 0.1265625
+      },
+      {
+        "name": "transformer.enc_out_class_embed.1.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 179,
+        "sparsity": 0.13984375
+      },
+      {
+        "name": "transformer.enc_out_class_embed.2.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 186,
+        "sparsity": 0.1453125
+      },
+      {
+        "name": "transformer.enc_out_class_embed.3.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 165,
+        "sparsity": 0.12890625
+      },
+      {
+        "name": "transformer.enc_out_class_embed.4.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 159,
+        "sparsity": 0.12421875
+      },
+      {
+        "name": "transformer.enc_out_class_embed.5.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 154,
+        "sparsity": 0.1203125
+      },
+      {
+        "name": "transformer.enc_out_class_embed.6.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 144,
+        "sparsity": 0.1125
+      },
+      {
+        "name": "transformer.enc_out_class_embed.7.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 195,
+        "sparsity": 0.15234375
+      },
+      {
+        "name": "transformer.enc_out_class_embed.8.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 177,
+        "sparsity": 0.13828125
+      },
+      {
+        "name": "transformer.enc_out_class_embed.9.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 166,
+        "sparsity": 0.1296875
+      },
+      {
+        "name": "transformer.enc_out_class_embed.10.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 184,
+        "sparsity": 0.14375
+      },
+      {
+        "name": "transformer.enc_out_class_embed.11.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 163,
+        "sparsity": 0.12734375
+      },
+      {
+        "name": "transformer.enc_out_class_embed.12.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 153,
+        "sparsity": 0.11953125
+      },
+      {
+        "name": "class_embed.weight",
+        "shape": [
+          5,
+          256
+        ],
+        "parameters": 1280,
+        "zeros": 140,
+        "sparsity": 0.109375
+      },
+      {
+        "name": "bbox_embed.layers.0.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 7138,
+        "sparsity": 0.108917236328125
+      },
+      {
+        "name": "bbox_embed.layers.1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 9722,
+        "sparsity": 0.148345947265625
+      },
+      {
+        "name": "bbox_embed.layers.2.weight",
+        "shape": [
+          4,
+          256
+        ],
+        "parameters": 1024,
+        "zeros": 433,
+        "sparsity": 0.4228515625
+      },
+      {
+        "name": "segmentation_head.blocks.0.dwconv.weight",
+        "shape": [
+          256,
+          1,
+          3,
+          3
+        ],
+        "parameters": 2304,
+        "zeros": 76,
+        "sparsity": 0.03298611111111111
+      },
+      {
+        "name": "segmentation_head.blocks.0.pwconv1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 7764,
+        "sparsity": 0.11846923828125
+      },
+      {
+        "name": "segmentation_head.blocks.1.dwconv.weight",
+        "shape": [
+          256,
+          1,
+          3,
+          3
+        ],
+        "parameters": 2304,
+        "zeros": 68,
+        "sparsity": 0.029513888888888888
+      },
+      {
+        "name": "segmentation_head.blocks.1.pwconv1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 9235,
+        "sparsity": 0.1409149169921875
+      },
+      {
+        "name": "segmentation_head.blocks.2.dwconv.weight",
+        "shape": [
+          256,
+          1,
+          3,
+          3
+        ],
+        "parameters": 2304,
+        "zeros": 102,
+        "sparsity": 0.044270833333333336
+      },
+      {
+        "name": "segmentation_head.blocks.2.pwconv1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 7986,
+        "sparsity": 0.121856689453125
+      },
+      {
+        "name": "segmentation_head.blocks.3.dwconv.weight",
+        "shape": [
+          256,
+          1,
+          3,
+          3
+        ],
+        "parameters": 2304,
+        "zeros": 105,
+        "sparsity": 0.045572916666666664
+      },
+      {
+        "name": "segmentation_head.blocks.3.pwconv1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8442,
+        "sparsity": 0.128814697265625
+      },
+      {
+        "name": "segmentation_head.blocks.4.dwconv.weight",
+        "shape": [
+          256,
+          1,
+          3,
+          3
+        ],
+        "parameters": 2304,
+        "zeros": 113,
+        "sparsity": 0.04904513888888889
+      },
+      {
+        "name": "segmentation_head.blocks.4.pwconv1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 8266,
+        "sparsity": 0.126129150390625
+      },
+      {
+        "name": "segmentation_head.spatial_features_proj.weight",
+        "shape": [
+          256,
+          256,
+          1,
+          1
+        ],
+        "parameters": 65536,
+        "zeros": 13152,
+        "sparsity": 0.20068359375
+      },
+      {
+        "name": "segmentation_head.query_features_block.layers.0.weight",
+        "shape": [
+          1024,
+          256
+        ],
+        "parameters": 262144,
+        "zeros": 28657,
+        "sparsity": 0.10931777954101562
+      },
+      {
+        "name": "segmentation_head.query_features_block.layers.2.weight",
+        "shape": [
+          256,
+          1024
+        ],
+        "parameters": 262144,
+        "zeros": 31234,
+        "sparsity": 0.11914825439453125
+      },
+      {
+        "name": "segmentation_head.query_features_proj.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536,
+        "zeros": 10152,
+        "sparsity": 0.1549072265625
+      },
+      {
+        "name": "refpoint_embed.weight",
+        "shape": [
+          2600,
+          4
+        ],
+        "parameters": 10400,
+        "zeros": 1460,
+        "sparsity": 0.14038461538461539
+      },
+      {
+        "name": "query_feat.weight",
+        "shape": [
+          2600,
+          256
+        ],
+        "parameters": 665600,
+        "zeros": 5921,
+        "sparsity": 0.008895733173076924
+      },
+      {
+        "name": "backbone.0.encoder.encoder.embeddings.patch_embeddings.projection.weight",
+        "shape": [
+          384,
+          3,
+          12,
+          12
+        ],
+        "parameters": 165888,
+        "zeros": 100276,
+        "sparsity": 0.6044801311728395
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 73536,
+        "sparsity": 0.4986979166666667
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 64808,
+        "sparsity": 0.4395073784722222
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 78296,
+        "sparsity": 0.5309787326388888
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.0.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 84193,
+        "sparsity": 0.5709703233506944
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.0.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 301487,
+        "sparsity": 0.5111473931206597
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.0.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 347187,
+        "sparsity": 0.5886281331380209
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 54741,
+        "sparsity": 0.3712361653645833
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 55666,
+        "sparsity": 0.3775092230902778
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 75598,
+        "sparsity": 0.5126817491319444
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.1.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 77876,
+        "sparsity": 0.5281304253472222
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.1.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 314793,
+        "sparsity": 0.5337066650390625
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.1.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 353716,
+        "sparsity": 0.5996975368923612
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 56183,
+        "sparsity": 0.3810153537326389
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 55982,
+        "sparsity": 0.3796522352430556
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 72091,
+        "sparsity": 0.4888983832465278
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.2.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 76641,
+        "sparsity": 0.5197550455729166
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.2.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 312729,
+        "sparsity": 0.5302073160807291
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.2.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 354052,
+        "sparsity": 0.6002671983506944
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 47317,
+        "sparsity": 0.3208889431423611
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 52309,
+        "sparsity": 0.3547431098090278
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 73347,
+        "sparsity": 0.4974161783854167
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.3.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 76571,
+        "sparsity": 0.5192803276909722
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.3.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 294753,
+        "sparsity": 0.4997304280598958
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.3.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 346632,
+        "sparsity": 0.5876871744791666
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 50007,
+        "sparsity": 0.3391316731770833
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 52986,
+        "sparsity": 0.3593343098958333
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 71454,
+        "sparsity": 0.4845784505208333
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.4.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 74048,
+        "sparsity": 0.5021701388888888
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.4.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 280114,
+        "sparsity": 0.4749111599392361
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.4.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 332646,
+        "sparsity": 0.5639750162760416
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 48383,
+        "sparsity": 0.3281182183159722
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 52447,
+        "sparsity": 0.3556789822048611
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 68866,
+        "sparsity": 0.4670274522569444
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.5.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 71580,
+        "sparsity": 0.4854329427083333
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.5.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 262108,
+        "sparsity": 0.4443834092881944
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.5.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 310752,
+        "sparsity": 0.52685546875
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 47103,
+        "sparsity": 0.3194376627604167
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 50825,
+        "sparsity": 0.3446790907118056
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 57994,
+        "sparsity": 0.3932969835069444
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.6.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 60199,
+        "sparsity": 0.4082505967881944
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.6.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 234331,
+        "sparsity": 0.3972896999782986
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.6.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 275377,
+        "sparsity": 0.4668799506293403
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 42922,
+        "sparsity": 0.2910834418402778
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 46003,
+        "sparsity": 0.3119778103298611
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 57997,
+        "sparsity": 0.3933173285590278
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.7.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 60658,
+        "sparsity": 0.4113633897569444
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.7.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 215782,
+        "sparsity": 0.3658413357204861
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.7.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 245286,
+        "sparsity": 0.415863037109375
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 38704,
+        "sparsity": 0.2624782986111111
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 42002,
+        "sparsity": 0.2848442925347222
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 52453,
+        "sparsity": 0.3557196723090278
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.8.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 53623,
+        "sparsity": 0.3636542426215278
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.8.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 197992,
+        "sparsity": 0.3356797960069444
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.8.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 217566,
+        "sparsity": 0.368865966796875
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 38110,
+        "sparsity": 0.2584499782986111
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 41129,
+        "sparsity": 0.2789238823784722
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 38735,
+        "sparsity": 0.2626885308159722
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.9.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 39862,
+        "sparsity": 0.2703314887152778
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.9.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 167736,
+        "sparsity": 0.2843831380208333
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.9.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 170475,
+        "sparsity": 0.2890268961588542
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 31617,
+        "sparsity": 0.21441650390625
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 33080,
+        "sparsity": 0.2243381076388889
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 38423,
+        "sparsity": 0.2605726453993056
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.10.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 38936,
+        "sparsity": 0.2640516493055556
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.10.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 142480,
+        "sparsity": 0.24156358506944445
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.10.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 136056,
+        "sparsity": 0.23067220052083334
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.attention.query.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 27605,
+        "sparsity": 0.18720838758680555
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.attention.key.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 29046,
+        "sparsity": 0.19698079427083334
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.attention.value.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 34325,
+        "sparsity": 0.2327813042534722
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.11.attention.output.dense.weight",
+        "shape": [
+          384,
+          384
+        ],
+        "parameters": 147456,
+        "zeros": 34589,
+        "sparsity": 0.23457166883680555
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.11.mlp.fc1.weight",
+        "shape": [
+          1536,
+          384
+        ],
+        "parameters": 589824,
+        "zeros": 120180,
+        "sparsity": 0.20375569661458334
+      },
+      {
+        "name": "backbone.0.encoder.encoder.encoder.layer.11.mlp.fc2.weight",
+        "shape": [
+          384,
+          1536
+        ],
+        "parameters": 589824,
+        "zeros": 113243,
+        "sparsity": 0.1919945610894097
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.cv1.conv.weight",
+        "shape": [
+          256,
+          1536,
+          1,
+          1
+        ],
+        "parameters": 393216,
+        "zeros": 48038,
+        "sparsity": 0.12216695149739583
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.cv2.conv.weight",
+        "shape": [
+          256,
+          640,
+          1,
+          1
+        ],
+        "parameters": 163840,
+        "zeros": 17880,
+        "sparsity": 0.109130859375
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.m.0.cv1.conv.weight",
+        "shape": [
+          128,
+          128,
+          3,
+          3
+        ],
+        "parameters": 147456,
+        "zeros": 20145,
+        "sparsity": 0.13661702473958334
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.m.0.cv2.conv.weight",
+        "shape": [
+          128,
+          128,
+          3,
+          3
+        ],
+        "parameters": 147456,
+        "zeros": 18202,
+        "sparsity": 0.1234402126736111
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.m.1.cv1.conv.weight",
+        "shape": [
+          128,
+          128,
+          3,
+          3
+        ],
+        "parameters": 147456,
+        "zeros": 16482,
+        "sparsity": 0.11177571614583333
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.m.1.cv2.conv.weight",
+        "shape": [
+          128,
+          128,
+          3,
+          3
+        ],
+        "parameters": 147456,
+        "zeros": 17183,
+        "sparsity": 0.11652967664930555
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.m.2.cv1.conv.weight",
+        "shape": [
+          128,
+          128,
+          3,
+          3
+        ],
+        "parameters": 147456,
+        "zeros": 16251,
+        "sparsity": 0.11020914713541667
+      },
+      {
+        "name": "backbone.0.projector.stages.0.0.m.2.cv2.conv.weight",
+        "shape": [
+          128,
+          128,
+          3,
+          3
+        ],
+        "parameters": 147456,
+        "zeros": 17044,
+        "sparsity": 0.11558702256944445
+      }
+    ]
+  },
+  "onnx": {
+    "onnx_size_bytes": 130677820,
+    "onnx_nodes": 2127,
+    "onnx_initializers": 447,
+    "onnx_initializer_parameters": 32537747,
+    "onnx_initializer_elements": 32537747,
+    "onnx_initializer_tensor_bytes": 130150988,
+    "onnx_initializer_dtype_inventory": {
+      "float": {
+        "tensors": 447,
+        "elements": 32537747,
+        "bytes": 130150988
+      }
+    },
+    "estimated_macs": 54083668224,
+    "estimated_flops": 108167336448,
+    "convention": "1 multiply-accumulate (MAC) = 2 FLOPs",
+    "scope": "Conv, MatMul, and Gemm; unresolved symbolic dimensions are set to one, so totals are conservative lower-bound estimates",
+    "supported_compute_nodes": 183,
+    "unresolved_compute_nodes": 7,
+    "total_graph_nodes": 2127,
+    "excluded_operator_nodes": 1937,
+    "compute_node_coverage": 0.9631578947368421,
+    "estimated_node_fraction_of_graph": 0.08603667136812412,
+    "nodes_with_symbolic_dimensions_assumed_one": 61,
+    "by_operator": {
+      "Conv": {
+        "nodes": 15,
+        "macs": 2836024576,
+        "flops": 5672049152
+      },
+      "MatMul": {
+        "nodes": 163,
+        "macs": 51182107648,
+        "flops": 102364215296
+      },
+      "Gemm": {
+        "nodes": 5,
+        "macs": 65536000,
+        "flops": 131072000
+      }
+    },
+    "excluded_operator_types": {
+      "Constant": 651,
+      "Cast": 40,
+      "Shape": 37,
+      "Slice": 76,
+      "Concat": 48,
+      "Reshape": 158,
+      "Transpose": 147,
+      "ConstantOfShape": 11,
+      "Mul": 147,
+      "Equal": 9,
+      "Where": 11,
+      "Expand": 15,
+      "Add": 225,
+      "Tile": 2,
+      "LayerNormalization": 60,
+      "Sqrt": 51,
+      "Div": 45,
+      "Softmax": 22,
+      "Erf": 18,
+      "Sigmoid": 8,
+      "Split": 21,
+      "Unsqueeze": 43,
+      "ScatterND": 2,
+      "Gather": 11,
+      "Greater": 2,
+      "Less": 1,
+      "And": 1,
+      "Not": 3,
+      "ReduceSum": 6,
+      "Relu": 10,
+      "Exp": 3,
+      "ReduceMax": 1,
+      "TopK": 1,
+      "GatherElements": 1,
+      "Sin": 4,
+      "Cos": 4,
+      "Squeeze": 30,
+      "Sub": 5,
+      "GridSample": 5,
+      "Resize": 1,
+      "Einsum": 1
+    },
+    "constant_initializers": 447,
+    "interpretation": "Partial dense-arithmetic lower bound. Coverage is the resolved fraction among Conv/MatMul/Gemm nodes, not the fraction of all ONNX operators. Elementwise, normalization, activation, resize, control-flow, and data-movement costs are excluded. This value must not be interpreted as measured latency or total backend work.",
+    "flops_status": "partial-lower-bound",
+    "initializer_terminology": "Initializer elements include all ONNX constant tensors and must not be labeled as trainable parameters without an independent mapping.",
+    "onnx_checker_valid": true,
+    "inputs": {
+      "input": [
+        1,
+        3,
+        504,
+        504
+      ]
+    },
+    "outputs": {
+      "dets": [
+        1,
+        200,
+        4
+      ],
+      "labels": [
+        1,
+        200,
+        5
+      ],
+      "masks": [
+        1,
+        200,
+        126,
+        126
+      ]
+    }
+  }
+}

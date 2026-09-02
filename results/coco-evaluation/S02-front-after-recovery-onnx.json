@@ -1,0 +1,127 @@
+{
+  "created_at_utc": "2026-09-02T13:52:42.020159+00:00",
+  "started_at_utc": "2026-09-02T13:46:16.982460+00:00",
+  "experiment_id": "S02",
+  "camera": "front",
+  "onnx": "artifacts/experiments/S02/front/model.onnx",
+  "onnx_size_bytes": 118276976,
+  "onnx_sha256": "70da0768fb50980ffe5186202528c24f12f5a64d0d8f9cb21c68edac9c0b2b00",
+  "dataset": "data/training/front_session_split_v1/test",
+  "annotation_sha256": "8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba",
+  "image_count": 437,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "categories": {
+    "0": "front",
+    "1": "out_line",
+    "2": "parking_lot",
+    "3": "parking_space"
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "resolution": 504,
+  "postprocess_num_select": 200,
+  "provider": "CPUExecutionProvider",
+  "providers_active": [
+    "CPUExecutionProvider"
+  ],
+  "onnxruntime": "1.23.2",
+  "torch": "2.10.0+cu128",
+  "rfdetr": "1.8.1",
+  "hardware": "x86_64",
+  "thread_limits": {
+    "intra_op": 3,
+    "inter_op": 1
+  },
+  "prediction_count": 85842,
+  "timing": {
+    "wall_seconds": 385.0376778650025,
+    "inference_seconds": 206.6271316520506,
+    "inference_mean_ms": 472.8309648788343,
+    "end_to_end_mean_ms": 874.4878007506253,
+    "end_to_end_images_per_second": 1.1349538632767673
+  },
+  "metrics": {
+    "bbox": {
+      "ap": 0.7194594687215895,
+      "ap50": 0.9280032061170186,
+      "ap75": 0.7777038440292684,
+      "ap_small": 0.3014408369407356,
+      "ap_medium": 0.6301354017786438,
+      "ap_large": 0.8231518494200618,
+      "ar1": 0.7390228973733507,
+      "ar10": 0.8296426905889613,
+      "ar100": 0.8731953996480731,
+      "ar_small": 0.6886075949367088,
+      "ar_medium": 0.8358017604286262,
+      "ar_large": 0.917162204234122
+    },
+    "segm": {
+      "ap": 0.5876014446121401,
+      "ap50": 0.8271312420862684,
+      "ap75": 0.6396020595566975,
+      "ap_small": 0.04844937500305835,
+      "ap_medium": 0.4444888855840195,
+      "ap_large": 0.7048927168450821,
+      "ar1": 0.6204801603152106,
+      "ar10": 0.6994254883100498,
+      "ar100": 0.723615523332685,
+      "ar_small": 0.32278481012658233,
+      "ar_medium": 0.6814772292384232,
+      "ar_large": 0.8021326276463263
+    },
+    "semantic_miou": 0.7626893034897696,
+    "semantic_iou_by_category": {
+      "1": 0.589604738577498,
+      "2": 0.8211501115923105,
+      "3": 0.8773130602995002
+    }
+  },
+  "pytorch_parity": {
+    "comparison_scope": "dataset-level accuracy parity; raw tensor equivalence is validated separately",
+    "reference_result": "results/coco-evaluation/S02-front-after-recovery.json",
+    "reference_result_sha256": "02ecf10dc67b7062788dc80a66677f30b8648328134d688fb1d71d75492aea6a",
+    "protocol_checks": {
+      "image_count": true,
+      "threshold": true,
+      "miou_threshold": true
+    },
+    "prediction_count": {
+      "reference": 85842,
+      "candidate": 85842,
+      "delta": 0,
+      "absolute_delta": 0,
+      "absolute_delta_ratio": 0.0,
+      "note": "Net count difference after identical score > threshold filtering; a proxy for threshold-boundary crossings, not a paired crossing count."
+    },
+    "reference": {
+      "bbox_ap": 0.7194562251397179,
+      "mask_ap": 0.5875887213543577,
+      "semantic_miou": 0.7626912850187898
+    },
+    "candidate": {
+      "bbox_ap": 0.7194594687215895,
+      "mask_ap": 0.5876014446121401,
+      "semantic_miou": 0.7626893034897696
+    },
+    "delta_absolute": {
+      "bbox_ap": 3.2435818716480824e-06,
+      "mask_ap": 1.2723257782454311e-05,
+      "semantic_miou": -1.9815290202007674e-06
+    },
+    "tolerances": {
+      "bbox_ap": 0.005,
+      "mask_ap": 0.005,
+      "semantic_miou": 0.005
+    },
+    "within_tolerance": {
+      "bbox_ap": true,
+      "mask_ap": true,
+      "semantic_miou": true
+    },
+    "passed": true
+  }
+}

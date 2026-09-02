@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import sys
 from collections import defaultdict
@@ -13,9 +14,15 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import numpy as np
+import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+EVALUATION_PROTOCOL = yaml.safe_load(
+    (REPOSITORY_ROOT / "configs/experiments/defaults.yaml").read_text(
+        encoding="utf-8"
+    )
+)["evaluation_protocol"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -24,11 +31,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--camera", choices=("front", "rear"), required=True)
     parser.add_argument("--engine", type=Path)
     parser.add_argument("--dataset-dir", type=Path)
-    parser.add_argument("--threshold", type=float, default=0.001)
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=float(EVALUATION_PROTOCOL["coco_ap_confidence_threshold"]),
+    )
     parser.add_argument(
         "--miou-threshold",
         type=float,
-        default=0.25,
+        default=float(EVALUATION_PROTOCOL["semantic_miou_confidence_threshold"]),
         help="Confidence threshold used for semantic mask mIoU (default: 0.25).",
     )
     parser.add_argument(
@@ -68,6 +79,14 @@ def repository_relative(path: Path) -> str:
         return str(path)
 
 
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def summarize_coco(evaluation: object) -> dict[str, float]:
     names = (
         "ap",
@@ -94,7 +113,15 @@ def image_path(dataset: Path, image_dir: Path, file_name: str) -> Path:
     return direct if direct.is_file() else image_dir / file_name
 
 
-MASK_CSV_FIELDS = ("Mask AP", "Mask AP50", "Mask AP75", "Mask mIoU")
+COCO_CSV_FIELDS = (
+    "BBox AP",
+    "BBox AP50",
+    "BBox AP75",
+    "Mask AP",
+    "Mask AP50",
+    "Mask AP75",
+    "Mask mIoU",
+)
 
 
 def annotation_mask(annotation: dict, height: int, width: int) -> np.ndarray:
@@ -144,7 +171,7 @@ def update_metrics_csv(
         reader = csv.DictReader(handle)
         fieldnames = list(reader.fieldnames or [])
         rows = list(reader)
-    for field in MASK_CSV_FIELDS:
+    for field in COCO_CSV_FIELDS:
         if field not in fieldnames:
             fieldnames.append(field)
 
@@ -193,7 +220,8 @@ def main() -> int:
         or Path(f"artifacts/experiments/{args.experiment}/{args.camera}/model.engine")
     )
     dataset = resolve(
-        args.dataset_dir or Path(f"data/labeled_test/{args.camera}")
+        args.dataset_dir
+        or Path("data/training/front_session_split_v1/test")
     )
     annotation_path = dataset / "_annotations.coco.json"
     image_dir = dataset / "images"
@@ -221,6 +249,7 @@ def main() -> int:
         runner.predict(first, threshold=args.threshold)
     torch.cuda.synchronize()
 
+    bbox_predictions: list[dict] = []
     segmentation_predictions: list[dict] = []
     intersections: dict[int, int] = defaultdict(int)
     unions: dict[int, int] = defaultdict(int)
@@ -245,6 +274,12 @@ def main() -> int:
                 "category_id": category_id,
                 "score": float(detections.confidence[detection_index]),
             }
+            x1, y1, x2, y2 = (
+                float(value) for value in detections.xyxy[detection_index]
+            )
+            bbox_predictions.append(
+                {**common, "bbox": [x1, y1, x2 - x1, y2 - y1]}
+            )
             if masks is not None:
                 mask = masks[detection_index].astype(bool)
                 encoded = mask_utils.encode(
@@ -275,16 +310,23 @@ def main() -> int:
         print(f"\rimages: {index}/{len(image_ids)}", end="", flush=True)
     print()
 
+    if not bbox_predictions:
+        raise RuntimeError("The engine produced no detections.")
     if not segmentation_predictions:
         raise RuntimeError("The engine produced no segmentation masks.")
-    detected = coco.loadRes(segmentation_predictions)
-    evaluation = COCOeval(coco, detected, "segm")
-    evaluation.params.imgIds = image_ids
-    evaluation.params.catIds = category_ids
-    evaluation.evaluate()
-    evaluation.accumulate()
-    evaluation.summarize()
-    segmentation_metrics = summarize_coco(evaluation)
+
+    def evaluate(predictions: list[dict], iou_type: str) -> dict[str, float]:
+        detected = coco.loadRes(predictions)
+        evaluation = COCOeval(coco, detected, iou_type)
+        evaluation.params.imgIds = image_ids
+        evaluation.params.catIds = category_ids
+        evaluation.evaluate()
+        evaluation.accumulate()
+        evaluation.summarize()
+        return summarize_coco(evaluation)
+
+    bbox_metrics = evaluate(bbox_predictions, "bbox")
+    segmentation_metrics = evaluate(segmentation_predictions, "segm")
     miou, category_ious = semantic_iou(intersections, unions)
 
     result = {
@@ -293,18 +335,36 @@ def main() -> int:
         "camera": args.camera,
         "engine": repository_relative(engine),
         "engine_size_bytes": engine.stat().st_size,
+        "engine_sha256": sha256(engine),
         "dataset": repository_relative(dataset),
+        "annotation_sha256": sha256(annotation_path),
         "image_count": len(image_ids),
         "category_ids": category_ids,
+        "categories": {
+            str(category["id"]): category["name"]
+            for category in coco.loadCats(coco.getCatIds())
+        },
         "threshold": args.threshold,
         "miou_threshold": args.miou_threshold,
+        "postprocess_num_select": runner.num_select,
+        "evaluation_protocol": {
+            "source": "configs/experiments/defaults.yaml",
+            "bbox": "COCOeval bbox AP@[IoU=0.50:0.05:0.95], maxDets=100",
+            "segmentation": "COCOeval segm AP@[IoU=0.50:0.05:0.95], maxDets=100",
+            "semantic_miou": (
+                "dataset-level per-class intersection/union after unioning "
+                "instance masks with confidence >= miou_threshold"
+            ),
+            "nms": "not applied; DETR query predictions are ranked directly",
+        },
         "warmup": args.warmup,
         "hardware": torch.cuda.get_device_name(0),
         "torch": torch.__version__,
         "cuda": torch.version.cuda,
         "tensorrt": runner.trt.__version__,
-        "prediction_count": len(segmentation_predictions),
+        "prediction_count": len(bbox_predictions),
         "metrics": {
+            "bbox": bbox_metrics,
             "segm": segmentation_metrics,
             "semantic_miou": miou,
             "semantic_iou_by_category": {
@@ -326,6 +386,9 @@ def main() -> int:
             engine,
             args.experiment,
             {
+                "BBox AP": bbox_metrics["ap"],
+                "BBox AP50": bbox_metrics["ap50"],
+                "BBox AP75": bbox_metrics["ap75"],
                 "Mask AP": segmentation_metrics["ap"],
                 "Mask AP50": segmentation_metrics["ap50"],
                 "Mask AP75": segmentation_metrics["ap75"],
