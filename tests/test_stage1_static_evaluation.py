@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+import yaml
+
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts/reporting/generate_stage1_static_evaluation.py"
 SPEC = importlib.util.spec_from_file_location("stage1_static", MODULE_PATH)
@@ -120,3 +122,20 @@ def test_markdown_does_not_hide_unperformed_candidates() -> None:
     )
 
     assert "미수행 1개" in markdown
+
+
+def test_repository_registry_and_stage1_report_exclude_w_family() -> None:
+    root = MODULE_PATH.parents[2]
+    registry = yaml.safe_load(
+        (root / "configs/experiments/registry.yaml").read_text(encoding="utf-8")
+    )["experiments"]
+    report = json.loads(
+        (root / "results/stage1-static-evaluation.json").read_text(encoding="utf-8")
+    )
+
+    assert len(registry) == 26
+    assert not any(experiment_id.startswith("W") for experiment_id in registry)
+    assert report["candidate_count"] == 26
+    assert not any(
+        row["experiment_id"].startswith("W") for row in report["rows"]
+    )

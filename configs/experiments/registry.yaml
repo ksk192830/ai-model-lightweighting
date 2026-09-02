@@ -627,24 +627,3 @@ experiments:
     stage: quantization
     status: onnx-exported
     hypothesis: 상위 민감 block 두 개만 FP16으로 보호한다.
-
-  W01:
-    name: weight-only-bitwidth-study
-    family: precision
-    method: modelopt-weight-only-fakequant
-    cameras: [front]
-    precision: mixed
-    artifact_source: B01
-    depends_on: [B01]
-    quantization:
-      configs: [w8_rtn, w4_rtn, w4_awq, w3_rtn, w2_rtn, w4_mixed, w2_mixed]
-      group_size: 128
-      calibration_images: 128
-      calibration_source: data/training/front_session_split_v1/train
-    stage: quantization-study
-    status: static-analysis-rejected
-    hypothesis: Weight-only bit-width별 정확도 한계를 정적 분석한다.
-    result:
-      decision: rejected
-      reason: 7개 bit-width 설정을 모두 실행했으나 RF-DETR TensorRT에 배포할 W2/W3/W4 weight-only ONNX/engine kernel 경로가 없어 2차 진입에서 제외함.
-      static_study: artifacts/experiments/sensitivity/front-weight-bitwidth.json

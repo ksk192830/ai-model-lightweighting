@@ -11,7 +11,6 @@ This directory contains the model conversion pipeline.
   Q/DQ ONNX export, 보호 block 및 적용 quantizer 근거 기록
 - `sensitivity_sweep.py`, `kld_sensitivity.py`: valid 분할에서 Q05~Q07
   FP16 보호 block을 선정
-- `weight_bitwidth_study.py`: W01 W8/W4/W3/W2 7개 정적 연구
 
 These are low-level implementation scripts. Normal experiment work uses the
 registry entry points:

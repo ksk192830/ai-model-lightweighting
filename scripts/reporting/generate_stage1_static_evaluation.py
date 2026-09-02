@@ -127,130 +127,133 @@ def audit_candidate(
     deployment_artifact = own_onnx if own_onnx.is_file() else source_onnx
     artifact_kind = "onnx"
 
-    if experiment_id == "W01":
-        artifact_kind = "weight-only-study"
-        study_path = root / ARTIFACT_ROOT / "sensitivity/front-weight-bitwidth.json"
-        present = study_path.is_file()
-        checks.append(check("study-report-present", present, portable(root, study_path)))
-        configs: dict[str, Any] = {}
-        expected = list(experiment.get("quantization", {}).get("configs", []))
-        if present:
-            study = load_json(study_path)
-            configs = study.get("configs", {}) if isinstance(study.get("configs"), dict) else {}
-        attempted = all(name in configs for name in expected)
+    static_present = static_path.is_file()
+    checks.append(
+        check("static-report-present", static_present, portable(root, static_path))
+    )
+    static = load_json(static_path) if static_present else {}
+    onnx = static.get("onnx", {}) if isinstance(static.get("onnx"), dict) else {}
+    onnx_valid = onnx.get("onnx_checker_valid") is True
+    checks.append(check("onnx-checker", onnx_valid, "onnx.checker.check_model"))
+    metrics.update(
+        {
+            "onnx_size_bytes": onnx.get("onnx_size_bytes"),
+            "onnx_nodes": onnx.get("onnx_nodes"),
+            "estimated_macs": onnx.get("estimated_macs"),
+            "estimated_flops": onnx.get("estimated_flops"),
+            "qdq_nodes": onnx.get("qdq_nodes", 0),
+        }
+    )
+
+    if experiment_id.startswith("Q"):
+        artifact_kind = "qdq-onnx"
+        quant_path = directory / "quantization.json"
+        quant_present = quant_path.is_file()
         checks.append(
             check(
-                "all-bitwidth-configs-attempted",
-                attempted,
-                f"{len(configs)}/{len(expected)} configs recorded",
+                "quantization-report-present",
+                quant_present,
+                portable(root, quant_path),
             )
         )
-        metrics["config_results"] = {
-            name: configs.get(name, {}).get("status", "missing") for name in expected
-        }
-        # W01 intentionally has no deployable TensorRT/ONNX artifact.  It is a
-        # completed static research branch, not a Stage-2 notebook candidate.
-        passed = False
-        evaluated = present and attempted
-        reason = (
-            "7개 bit-width 정적 연구는 완료됐지만 W2/W3/W4 weight-only를 "
-            "실행할 RF-DETR TensorRT/ONNX 배포 산출물이 없어 2차 진입 불가"
-            if evaluated
-            else "weight-only 7개 설정의 정적 연구 보고서가 아직 완성되지 않음"
-        )
-    else:
-        static_present = static_path.is_file()
+        qdq_nodes = int(onnx.get("qdq_nodes", 0) or 0)
+        if quant_present:
+            quant = load_json(quant_path)
+            qdq_nodes = int(quant.get("onnx_qdq_nodes", qdq_nodes) or 0)
+            metrics.update(
+                {
+                    "quantizers_total": quant.get("quantizers_total"),
+                    "quantizers_active": quant.get("quantizers_active"),
+                    "qdq_nodes": qdq_nodes,
+                }
+            )
         checks.append(
-            check("static-report-present", static_present, portable(root, static_path))
+            check(
+                "quantization-visible-in-graph",
+                qdq_nodes > 0,
+                f"Q/DQ nodes={qdq_nodes}",
+            )
         )
-        static = load_json(static_path) if static_present else {}
-        onnx = static.get("onnx", {}) if isinstance(static.get("onnx"), dict) else {}
-        onnx_valid = onnx.get("onnx_checker_valid") is True
-        checks.append(check("onnx-checker", onnx_valid, "onnx.checker.check_model"))
-        metrics.update(
-            {
-                "onnx_size_bytes": onnx.get("onnx_size_bytes"),
-                "onnx_nodes": onnx.get("onnx_nodes"),
-                "estimated_macs": onnx.get("estimated_macs"),
-                "estimated_flops": onnx.get("estimated_flops"),
-                "qdq_nodes": onnx.get("qdq_nodes", 0),
-            }
+        passed = all(item["passed"] for item in checks)
+        evaluated = True
+        reason = "" if passed else "유효한 Q/DQ ONNX 또는 양자화 적용 근거가 없음"
+    elif stage == "tensorrt":
+        artifact_kind = "tensorrt-build-recipe"
+        source_present = source_onnx.is_file()
+        recipe_present = build_command.is_file() and bool(
+            build_command.read_text(encoding="utf-8").strip()
         )
-
-        if experiment_id.startswith("Q"):
-            artifact_kind = "qdq-onnx"
-            quant_path = directory / "quantization.json"
-            quant_present = quant_path.is_file()
-            checks.append(check("quantization-report-present", quant_present, portable(root, quant_path)))
-            qdq_nodes = int(onnx.get("qdq_nodes", 0) or 0)
-            if quant_present:
-                quant = load_json(quant_path)
-                qdq_nodes = int(quant.get("onnx_qdq_nodes", qdq_nodes) or 0)
-                metrics.update(
-                    {
-                        "quantizers_total": quant.get("quantizers_total"),
-                        "quantizers_active": quant.get("quantizers_active"),
-                        "qdq_nodes": qdq_nodes,
-                    }
-                )
-            checks.append(check("quantization-visible-in-graph", qdq_nodes > 0, f"Q/DQ nodes={qdq_nodes}"))
-            passed = all(item["passed"] for item in checks)
-            evaluated = True
-            reason = "" if passed else "유효한 Q/DQ ONNX 또는 양자화 적용 근거가 없음"
-        elif stage == "tensorrt":
-            artifact_kind = "tensorrt-build-recipe"
-            source_present = source_onnx.is_file()
-            recipe_present = build_command.is_file() and bool(build_command.read_text(encoding="utf-8").strip())
-            checks.append(check("source-onnx-present", source_present, portable(root, source_onnx)))
-            checks.append(check("deterministic-build-recipe", recipe_present, portable(root, build_command)))
-            passed = all(item["passed"] for item in checks)
-            evaluated = True
-            reason = "" if passed else "원본 ONNX 또는 재현 가능한 TensorRT build recipe가 없음"
+        checks.append(
+            check("source-onnx-present", source_present, portable(root, source_onnx))
+        )
+        checks.append(
+            check(
+                "deterministic-build-recipe",
+                recipe_present,
+                portable(root, build_command),
+            )
+        )
+        passed = all(item["passed"] for item in checks)
+        evaluated = True
+        reason = "" if passed else "원본 ONNX 또는 재현 가능한 TensorRT build recipe가 없음"
+    else:
+        artifact_kind = "onnx-graph"
+        own_present = own_onnx.is_file()
+        checks.append(
+            check("candidate-onnx-present", own_present, portable(root, own_onnx))
+        )
+        if experiment_id == "B01":
+            transformation_visible = True
+            transform_evidence = "baseline control"
+        elif experiment_id == "M01":
+            sparse_path = directory / "onnx-2to4.json"
+            sparse = load_json(sparse_path) if sparse_path.is_file() else {}
+            transformation_visible = sparse.get("valid") is True
+            transform_evidence = (
+                f"2:4 compliant ops={sparse.get('compliant_ops', 0)}/"
+                f"{sparse.get('eligible_ops_by_shape', 0)}"
+            )
         else:
-            artifact_kind = "onnx-graph"
-            own_present = own_onnx.is_file()
-            checks.append(check("candidate-onnx-present", own_present, portable(root, own_onnx)))
-            if experiment_id == "B01":
-                transformation_visible = True
-                transform_evidence = "baseline control"
-            elif experiment_id == "M01":
-                sparse_path = directory / "onnx-2to4.json"
-                sparse = load_json(sparse_path) if sparse_path.is_file() else {}
-                transformation_visible = sparse.get("valid") is True
-                transform_evidence = (
-                    f"2:4 compliant ops={sparse.get('compliant_ops', 0)}/"
-                    f"{sparse.get('eligible_ops_by_shape', 0)}"
-                )
-            else:
-                comparison = load_json(comparison_path) if comparison_path.is_file() else {}
-                reductions = {
-                    "onnx_size": reduction(comparison, "onnx_size_bytes"),
-                    "onnx_nodes": reduction(comparison, "onnx_nodes"),
-                    "dense_macs": reduction(comparison, "estimated_macs"),
-                }
-                thresholds = {
-                    "onnx_size": float(efficiency_policy["onnx_size_min_relative_reduction"]),
-                    "onnx_nodes": float(efficiency_policy["onnx_nodes_min_relative_reduction"]),
-                    "dense_macs": float(efficiency_policy["dense_macs_min_relative_reduction"]),
-                }
-                transformation_visible = any(
-                    reductions[name] is not None and reductions[name] >= thresholds[name]
-                    for name in thresholds
-                )
-                metrics["relative_reductions"] = reductions
-                transform_evidence = ", ".join(
-                    f"{name}={100 * value:.2f}%" if value is not None else f"{name}=N/A"
-                    for name, value in reductions.items()
-                )
-            checks.append(check("static-effect-visible", transformation_visible, transform_evidence))
-            passed = all(item["passed"] for item in checks)
-            evaluated = True
-            if passed:
-                reason = ""
-            elif not static_present or not onnx_valid or not own_present:
-                reason = "후보 자체의 유효한 ONNX 산출물이 없음"
-            else:
-                reason = "ONNX 크기·node·dense MACs 중 어느 항목도 사전 고정 5% 감소 기준을 충족하지 못함"
+            comparison = load_json(comparison_path) if comparison_path.is_file() else {}
+            reductions = {
+                "onnx_size": reduction(comparison, "onnx_size_bytes"),
+                "onnx_nodes": reduction(comparison, "onnx_nodes"),
+                "dense_macs": reduction(comparison, "estimated_macs"),
+            }
+            thresholds = {
+                "onnx_size": float(
+                    efficiency_policy["onnx_size_min_relative_reduction"]
+                ),
+                "onnx_nodes": float(
+                    efficiency_policy["onnx_nodes_min_relative_reduction"]
+                ),
+                "dense_macs": float(
+                    efficiency_policy["dense_macs_min_relative_reduction"]
+                ),
+            }
+            transformation_visible = any(
+                reductions[name] is not None and reductions[name] >= thresholds[name]
+                for name in thresholds
+            )
+            metrics["relative_reductions"] = reductions
+            transform_evidence = ", ".join(
+                f"{name}={100 * value:.2f}%" if value is not None else f"{name}=N/A"
+                for name, value in reductions.items()
+            )
+        checks.append(
+            check("static-effect-visible", transformation_visible, transform_evidence)
+        )
+        passed = all(item["passed"] for item in checks)
+        evaluated = True
+        if passed:
+            reason = ""
+        elif not static_present or not onnx_valid or not own_present:
+            reason = "후보 자체의 유효한 ONNX 산출물이 없음"
+        else:
+            reason = (
+                "ONNX 크기·node·dense MACs 중 어느 항목도 사전 고정 "
+                "5% 감소 기준을 충족하지 못함"
+            )
 
     candidate_report = directory / "stage1-static-evaluation.json"
     existing_created_at = None
@@ -269,12 +272,12 @@ def audit_candidate(
         "static_metrics": metrics,
         "deployment_onnx": (
             portable(root, deployment_artifact)
-            if experiment_id != "W01" and deployment_artifact.is_file()
+            if deployment_artifact.is_file()
             else None
         ),
         "deployment_onnx_sha256": (
             sha256(deployment_artifact)
-            if experiment_id != "W01" and deployment_artifact.is_file()
+            if deployment_artifact.is_file()
             else None
         ),
         "excluded_from_stage1_gate": ["accuracy", "latency", "fps", "gpu_memory"],

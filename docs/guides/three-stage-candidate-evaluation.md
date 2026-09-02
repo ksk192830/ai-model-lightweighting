@@ -8,9 +8,9 @@
 
 ## 후보 모집단과 데이터 역할
 
-- 후보 모집단: `configs/experiments/registry.yaml`의 27개 ID
+- 후보 모집단: `configs/experiments/registry.yaml`의 26개 ID
 - train: 3,625장. 학습과 양자화 calibration 128장 선정에만 사용
-- valid: 404장. Q05/Q06/Q07 민감도 정책과 W01 연구용 screening에 사용
+- valid: 404장. Q05/Q06/Q07 민감도 정책에 사용
 - test: 437장. 1차 gate에는 사용하지 않고 2차 최종 정확도 비교에 사용
 
 기존에 test 437장으로 생성한 PTH/ONNX 정확도는 데스크탑 사전 진단으로만
@@ -31,7 +31,6 @@
    일치하는가.
 5. M01/M02는 상수 weight op의 2:4 패턴 준수와 sparse tactic 빌드 정책을
    명시했는가.
-6. W01은 7개 부 설정의 실행 결과와 이론 저장 크기를 모두 기록했는가.
 
 구조·해상도 후보에 대한 5%는 통계적 유의성 기준이 아니라, 실행 시스템에서
 추가 측정할 가치가 있는 최소 변화를 걸러내는 사전 고정 engineering gate다. Q/DQ와

@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:09:16.957959+00:00",
+  "created_at_utc": "2026-09-02T18:43:09.244019+00:00",
   "experiment_id": "Q02",
   "method_summary": "modelopt-mixed-precision; INT8_DEFAULT_CFG",
   "artifact_kind": "qdq-onnx",

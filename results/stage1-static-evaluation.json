@@ -1,18 +1,18 @@
 {
-  "created_at_utc": "2026-09-02T18:09:17.367464+00:00",
+  "created_at_utc": "2026-09-02T18:43:09.690890+00:00",
   "protocol": {
     "stage1": "static artifact/recipe validation only",
     "stage2": "notebook accuracy and runtime performance",
     "stage3": "Pareto analysis after complete Stage-2 measurements",
     "accuracy_used_as_stage1_gate": false
   },
-  "candidate_count": 27,
-  "evaluated_count": 27,
+  "candidate_count": 26,
+  "evaluated_count": 26,
   "passed_count": 22,
   "unperformed_count": 0,
   "rows": [
     {
-      "created_at_utc": "2026-09-02T18:09:15.538559+00:00",
+      "created_at_utc": "2026-09-02T18:43:07.815436+00:00",
       "experiment_id": "B01",
       "method_summary": "none",
       "artifact_kind": "onnx-graph",
@@ -58,10 +58,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/B01/front/stage1-static-evaluation.json",
-      "report_sha256": "a289d017fff96b3032db3d3e15a7d0edeacfb1a71cce5711ed70e6827ead246e"
+      "report_sha256": "a2ddf24457f35e5e0f63515ac3340d1c73b5b720d0dd7bed25b49033e53f98cb"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:15.615324+00:00",
+      "created_at_utc": "2026-09-02T18:43:07.888404+00:00",
       "experiment_id": "B02",
       "method_summary": "tensorrt-fp16",
       "artifact_kind": "tensorrt-build-recipe",
@@ -107,10 +107,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/B02/front/stage1-static-evaluation.json",
-      "report_sha256": "6973bd1c9146e4369568c58dd211d7bedf9644feab3f7fc0d8161490fe4295af"
+      "report_sha256": "99a1876454ff2bb735ce986ad4ae32597746ea3d0fcbd201aff14c9af39b93a6"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:15.692114+00:00",
+      "created_at_utc": "2026-09-02T18:43:07.962221+00:00",
       "experiment_id": "B03",
       "method_summary": "tensorrt-int8-ptq",
       "artifact_kind": "tensorrt-build-recipe",
@@ -156,10 +156,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/B03/front/stage1-static-evaluation.json",
-      "report_sha256": "68ce03e9fc67fe89a6782f3fe37c88c9544034f45fd0be9ce53e50c87e8555c1"
+      "report_sha256": "863447f555f332f63c9c742169a8d258517735c09a71c15b468750a515ea4e89"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:15.765012+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.031229+00:00",
       "experiment_id": "U01",
       "method_summary": "global-magnitude; sparsity=0.1",
       "artifact_kind": "onnx-graph",
@@ -210,10 +210,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/U01/front/stage1-static-evaluation.json",
-      "report_sha256": "dc30be82e888cbaca23a4217b96be3dd57349921d9c9ce2160c4252c103778c4"
+      "report_sha256": "b232fabc8692b11a53f0230f1e1fa9b42d659cd9d06e5e10eac33ad20a4a36f3"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:15.835665+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.100220+00:00",
       "experiment_id": "U02",
       "method_summary": "global-magnitude; sparsity=0.3",
       "artifact_kind": "onnx-graph",
@@ -264,10 +264,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/U02/front/stage1-static-evaluation.json",
-      "report_sha256": "a4cd37a852e32c1f7ae25b93ba2f72b0fd6ca0f2d6acec0f63e3bdd5a6c144fd"
+      "report_sha256": "0ac8a6e9a63d8e87178a0815c316351aab2b3d55dd46f9b13f49ca148371e071"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:15.904882+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.168649+00:00",
       "experiment_id": "U03",
       "method_summary": "global-magnitude; sparsity=0.5",
       "artifact_kind": "onnx-graph",
@@ -318,10 +318,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/U03/front/stage1-static-evaluation.json",
-      "report_sha256": "fa856825d9f11d5dd95bb66f8a4b603cd9edb7fbc19f0c37ceaa8080750210a6"
+      "report_sha256": "d74c6fb722e91245ce11b6eb862edba3553135e0b52cd25b911dde1fcce515c4"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:15.975928+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.237902+00:00",
       "experiment_id": "M01",
       "method_summary": "nvidia-2to4; pattern=2:4",
       "artifact_kind": "onnx-graph",
@@ -367,10 +367,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/M01/front/stage1-static-evaluation.json",
-      "report_sha256": "fa82218c2e1f9db2ab6fe77412de03c45336869b5868de9fb49aecefcb87b1e6"
+      "report_sha256": "7b8789201024f9d1c54dc1eaaf26245693f16b5f1f2a0109ccb698495c7c4dee"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.045535+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.306870+00:00",
       "experiment_id": "M02",
       "method_summary": "nvidia-2to4; pattern=2:4",
       "artifact_kind": "tensorrt-build-recipe",
@@ -416,10 +416,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/M02/front/stage1-static-evaluation.json",
-      "report_sha256": "2df17ada01ecc77b5cec06da48d89f49882801df68241515c887008bd6a14661"
+      "report_sha256": "d5a6511b4fc6dee10e681176453e992a3b0974178a8abde49250fbd70e3ec07e"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.114905+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.375500+00:00",
       "experiment_id": "S01",
       "method_summary": "decoder-layer; remove_layers=1",
       "artifact_kind": "onnx-graph",
@@ -470,10 +470,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/S01/front/stage1-static-evaluation.json",
-      "report_sha256": "9cc97fd5d551124133a4387f25c32c2e91e21b0a1248924824fec9f3bd586071"
+      "report_sha256": "2b0b6ad831e5f2eeb0de3007410ec1697612ca13a69263a7c57ad182e2858e50"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.181493+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.443992+00:00",
       "experiment_id": "S02",
       "method_summary": "decoder-layer; remove_layers=2",
       "artifact_kind": "onnx-graph",
@@ -524,10 +524,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/S02/front/stage1-static-evaluation.json",
-      "report_sha256": "ab32e56be6f26632f855e896dd3dc15d02bb7e5f00aa65cfadfe4fb98fefb431"
+      "report_sha256": "764ac2c8155fbd882a0e05613c654517e1079a94965927945deeff4ecae1431a"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.248351+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.506479+00:00",
       "experiment_id": "S03",
       "method_summary": "ffn-dimension; reduction=0.2",
       "artifact_kind": "onnx-graph",
@@ -578,10 +578,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/S03/front/stage1-static-evaluation.json",
-      "report_sha256": "02091e5bd608f69ee7fe2f9384f65329c5031d4c2fcf039a7f0507f36a92b3b8"
+      "report_sha256": "4b0e116b4a759647662322be6b5050e75bd6ba651a099aac170af6ee483355be"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.323347+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.580010+00:00",
       "experiment_id": "S04",
       "method_summary": "ffn-dimension; reduction=0.4",
       "artifact_kind": "onnx-graph",
@@ -632,10 +632,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/S04/front/stage1-static-evaluation.json",
-      "report_sha256": "19ace5364233145b0b1d141f67e5b6f02ecd2a2b2fc97bcc198e8ed0320e7132"
+      "report_sha256": "6967b5a0b274e026cfe1fcb306b8999b4cbbbe2dd4256ac0ac6d13947d680f1c"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.396040+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.649388+00:00",
       "experiment_id": "C01",
       "method_summary": "structured-selected",
       "artifact_kind": "tensorrt-build-recipe",
@@ -681,10 +681,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/C01/front/stage1-static-evaluation.json",
-      "report_sha256": "201764e6a7ebdb8e8711462077776423c24c5ad502f3a6d0d35441ee72771c79"
+      "report_sha256": "b0cf62cc9886673f958be5fdd35d036d4d940ec5b6a8a84c82c7fe4ec6fde98b"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.468295+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.722083+00:00",
       "experiment_id": "C02",
       "method_summary": "structured-selected",
       "artifact_kind": "tensorrt-build-recipe",
@@ -730,10 +730,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/C02/front/stage1-static-evaluation.json",
-      "report_sha256": "5027f3a03d17fe9a309e4bfdb4509f9111f79016dac7c2c4b6fd735fd12da8f5"
+      "report_sha256": "949d1117dc81f04a201de52f4edbafff56339114f207fc71df036818f1972a7a"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.541692+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.794870+00:00",
       "experiment_id": "C03",
       "method_summary": "structured-resolution; input=432x432",
       "artifact_kind": "onnx-graph",
@@ -784,10 +784,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/C03/front/stage1-static-evaluation.json",
-      "report_sha256": "a4cea74d3b659377adb441ba76d3690f838e997b1be2baa15dad30f1fa0b6858"
+      "report_sha256": "66c330859dcf3ae93799cf01e497392264012705378ba81d3074d7dbce927aa7"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.608891+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.867772+00:00",
       "experiment_id": "C04",
       "method_summary": "structured-resolution; input=480x480",
       "artifact_kind": "onnx-graph",
@@ -838,10 +838,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/C04/front/stage1-static-evaluation.json",
-      "report_sha256": "6aaad517dc73b045b59b70322cd99207f4c85be8fb115fade0e157824b87cfa4"
+      "report_sha256": "c993c7bf23a94e8f5519f78f37fb8d9da39c6daac66b77a5353d3f047ab43e82"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.675009+00:00",
+      "created_at_utc": "2026-09-02T18:43:08.940476+00:00",
       "experiment_id": "R01",
       "method_summary": "input-resolution; input=432x432",
       "artifact_kind": "onnx-graph",
@@ -892,10 +892,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/R01/front/stage1-static-evaluation.json",
-      "report_sha256": "597f4abb32ba4cb84fd4e153a325e75737c3de5a2e6b7fbee4d5dd15fd0a987b"
+      "report_sha256": "670d231143dfb6810fe3c26e100c0a7eb912529e4629d2d91007d88daf71b799"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.745356+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.016093+00:00",
       "experiment_id": "R02",
       "method_summary": "input-resolution; input=480x480",
       "artifact_kind": "onnx-graph",
@@ -946,10 +946,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/R02/front/stage1-static-evaluation.json",
-      "report_sha256": "a84956ccdb30b03a001aadb0357f0cb1cde9fa5d128743c54f4627e657ded928"
+      "report_sha256": "73ae8c5021eb69f591f4ae108a8fd2ce2ac991a6d7a43fadf14253b305412319"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.818403+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.092308+00:00",
       "experiment_id": "R03",
       "method_summary": "input-resolution; input=384x384",
       "artifact_kind": "onnx-graph",
@@ -1000,10 +1000,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/R03/front/stage1-static-evaluation.json",
-      "report_sha256": "01ef500bae021b205ca0e31fb12847eb5c9cce1e00d2961c7cdf7fe9a8481dbc"
+      "report_sha256": "324a16255afa668d7b727b12e86cda39431efe7712c37f8c5d3d404f907f63af"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.887324+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.167509+00:00",
       "experiment_id": "Q01",
       "method_summary": "modelopt-int8-smoothquant; INT8_SMOOTHQUANT_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1051,10 +1051,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q01/front/stage1-static-evaluation.json",
-      "report_sha256": "105328f45d96279f9f9eb4b43d42ad241788df55004d9f2b171a06f272b3fc6e"
+      "report_sha256": "5bf37dc4e30fd4f0174390ef0f777989a52e478d35071f6898fb408576c2143b"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:16.957959+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.244019+00:00",
       "experiment_id": "Q02",
       "method_summary": "modelopt-mixed-precision; INT8_DEFAULT_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1102,10 +1102,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q02/front/stage1-static-evaluation.json",
-      "report_sha256": "d0d53adcb2e2f9dce42809f63acd557eee19c8d985eae762a4f9db9fa912ed06"
+      "report_sha256": "5c71f452a9b6e5937a4d00e9b8dd14576e9a2ff7bf1dc5b34c13dc004bb741d0"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:17.025994+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.320640+00:00",
       "experiment_id": "Q03",
       "method_summary": "modelopt-int4-weight-only; INT4_BLOCKWISE_WEIGHT_ONLY_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1153,10 +1153,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q03/front/stage1-static-evaluation.json",
-      "report_sha256": "e63464a5f8d2d5d0b9224988ac7a66ca245c022efdc4aa47ebbeb13d8f67778b"
+      "report_sha256": "3d1cff3b9ac6462d9af87f871d373c9b9dd62cacdd34ecf9738d84ae9b592531"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:17.094669+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.397588+00:00",
       "experiment_id": "Q04",
       "method_summary": "modelopt-fp8; FP8_DEFAULT_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1204,10 +1204,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q04/front/stage1-static-evaluation.json",
-      "report_sha256": "9717667e799d0a3a01bbb7271b60053547b5575d195dd254a7bebc86d2d66d60"
+      "report_sha256": "e056f7324a9de2c25359070f900874a2b0231a93bac3412fa35ce6b3f3c8d2a4"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:17.164124+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.473483+00:00",
       "experiment_id": "Q05",
       "method_summary": "modelopt-fp8-mixed; FP8_DEFAULT_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1255,10 +1255,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q05/front/stage1-static-evaluation.json",
-      "report_sha256": "79b5631ccf1bc363e289e90e855a505dea7e835305dd082fe78cead328f74601"
+      "report_sha256": "d258506151445467a6740ac9be0410bbbef173b1715f671dc0a37c14f39f3a91"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:17.232441+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.545207+00:00",
       "experiment_id": "Q06",
       "method_summary": "modelopt-fp8-mixed-kld; FP8_DEFAULT_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1306,10 +1306,10 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q06/front/stage1-static-evaluation.json",
-      "report_sha256": "95e0a892d7f42391545a03590412bc0fba697def4efec1e2e1f1a1272bca4ecc"
+      "report_sha256": "59343586386528e82c11828ff88dee8d740e28661f9581dd910634a801bc84db"
     },
     {
-      "created_at_utc": "2026-09-02T18:09:17.300018+00:00",
+      "created_at_utc": "2026-09-02T18:43:09.620417+00:00",
       "experiment_id": "Q07",
       "method_summary": "modelopt-fp8-mixed; FP8_DEFAULT_CFG",
       "artifact_kind": "qdq-onnx",
@@ -1357,50 +1357,7 @@
         "gpu_memory"
       ],
       "report": "artifacts/experiments/Q07/front/stage1-static-evaluation.json",
-      "report_sha256": "0787e8c424fc02f3612774d401f64dcc58ec5459feb1baff7a01ca8b1d5fc8f2"
-    },
-    {
-      "created_at_utc": "2026-09-02T18:09:17.367316+00:00",
-      "experiment_id": "W01",
-      "method_summary": "modelopt-weight-only-fakequant; 7 bit-width configs",
-      "artifact_kind": "weight-only-study",
-      "stage1_evaluated": true,
-      "stage1_passed": false,
-      "stage2_notebook_eligible": false,
-      "failure_reason": "7개 bit-width 정적 연구는 완료됐지만 W2/W3/W4 weight-only를 실행할 RF-DETR TensorRT/ONNX 배포 산출물이 없어 2차 진입 불가",
-      "checks": [
-        {
-          "name": "study-report-present",
-          "passed": true,
-          "evidence": "artifacts/experiments/sensitivity/front-weight-bitwidth.json"
-        },
-        {
-          "name": "all-bitwidth-configs-attempted",
-          "passed": true,
-          "evidence": "7/7 configs recorded"
-        }
-      ],
-      "static_metrics": {
-        "config_results": {
-          "w8_rtn": "ok",
-          "w4_rtn": "ok",
-          "w4_awq": "ok",
-          "w3_rtn": "ok",
-          "w2_rtn": "ok",
-          "w4_mixed": "ok",
-          "w2_mixed": "ok"
-        }
-      },
-      "deployment_onnx": null,
-      "deployment_onnx_sha256": null,
-      "excluded_from_stage1_gate": [
-        "accuracy",
-        "latency",
-        "fps",
-        "gpu_memory"
-      ],
-      "report": "artifacts/experiments/W01/front/stage1-static-evaluation.json",
-      "report_sha256": "8250974ec10eaabd2275959c7c72e9d0ed18528af3b090bb4abcef5501e3ccc7"
+      "report_sha256": "05f0648bda72bce66ff4848ad9e33603e3468a670f07ea9ceacc11e1ef1e69de"
     }
   ]
 }

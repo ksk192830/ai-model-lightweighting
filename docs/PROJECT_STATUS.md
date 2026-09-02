@@ -12,15 +12,13 @@
    감사했다.
 3. RF-DETR Segmentation Large baseline을 다시 학습하고 437장 benchmark에서
    bbox AP 0.737791, mask AP 0.601016, semantic mIoU 0.712200을 얻었다.
-4. registry의 전체 27개 후보에 대해 1차 정적평가를 수행했다. 22개가
-   통과했고 5개가 불통했으며 미수행은 0개다.
+4. registry의 전체 26개 후보에 대해 1차 정적평가를 수행했다. 22개가
+   통과했고 4개가 불통했으며 미수행은 0개다.
 5. Q01~Q07 ModelOpt ONNX를 모두 생성하고 Q/DQ 노드 34~626개, ONNX checker,
    graph 및 빌드 recipe를 검증했다. Q05~Q07 민감도 선정은 valid만 사용했다.
-6. W01의 W8/W4/W3/W2 RTN·AWQ·혼합 7개 설정을 모두 실행해 결과를
-   기록했다. 다만 RF-DETR TensorRT 배포 kernel/산출물이 없어 1차 불통이다.
-7. 기존 데스크탑 정확도를 1차 gate에서 제거했다. 이에 따라 정적 기준을
+6. 기존 데스크탑 정확도를 1차 gate에서 제거했다. 이에 따라 정적 기준을
    충족한 R02, R03, S02, S04, M01, M02도 노트북 2차 대상으로 복구했다.
-8. 1차 통과표, 22개 engine plan, 17개 unique ONNX 패키지, 후보별 실패
+7. 1차 통과표, 22개 engine plan, 17개 unique ONNX 패키지, 후보별 실패
    로그, 2차 통합 표, 전 후보 terminal 후 Pareto 생성을 하나의 자동화로 연결했다.
 
 ## 1차 정적평가 판정
@@ -37,7 +35,6 @@
 | C03/C04 | S01 + 432/480 해상도 | node 8.04%, MAC 30.76/11.51% 감소 | 통과 |
 | R01/R02/R03 | 432/480/384 해상도 | dense MAC 30.20/10.96/46.25% 감소 | 통과 |
 | Q01~Q07 | INT8·INT4·FP8·혼합 ModelOpt | 7개 후보 ONNX 전부 valid, Q/DQ 34~626개 | 통과 |
-| W01 | W8/W4/W3/W2 7개 정적 연구 | 7/7 실행, 배포 가능 ONNX/engine kernel 없음 | **불통** |
 
 정적 MAC/FLOP는 Conv·MatMul·Gemm 중 shape를 해석한 연산만 포함하는 dense
 하한 추정치다. TensorRT fusion, 메모리 이동, 전처리와 후처리 비용을 포함하지
@@ -46,7 +43,7 @@
 ## 현재 실행 상태와 다음 작업
 
 - 현재 실행 중인 로컬 학습·평가 작업은 없다.
-- 1차는 27/27 완료됐다. 22개 통과 후보와 17개 unique ONNX 입력이
+- 1차는 26/26 완료됐다. 22개 통과 후보와 17개 unique ONNX 입력이
   노트북 패키지·engine plan 검증을 통과했다.
 - 다음 단계는 동일 노트북 GPU에서 22개를 모두 terminal 상태로 만드는
   2차 평가다. 성공 후보는 정확도·latency·FPS·memory·engine 크기를 기록하고,
@@ -61,7 +58,7 @@
 | 학습 설정 | [baseline 학습 가이드](guides/front-baseline-training.md) |
 | 경량화 방법 | [2차 경량화 계획](guides/front-lightweighting-round-2.md) |
 | 3단계 후보 평가 | [1차 정적 → 2차 노트북 → 3차 Pareto](guides/three-stage-candidate-evaluation.md) |
-| 1차 전체 후보표 | [27개 전체 정적평가](../results/stage1-static-evaluation.md) |
+| 1차 전체 후보표 | [26개 전체 정적평가](../results/stage1-static-evaluation.md) |
 | 추가 후보 설계·1차 판정 | [추가 후보 및 1차 평가](guides/additional-candidate-screening.md) |
 | 전체 후보 자동 생성표 | [Round-2 후보 요약](../results/round2-candidate-summary.md) |
 | 정적 모델 비교 | [논문용 정적 분석](reports/paper-static-analysis.md) |

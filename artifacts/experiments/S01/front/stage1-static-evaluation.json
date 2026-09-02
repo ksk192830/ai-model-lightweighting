@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:09:16.114905+00:00",
+  "created_at_utc": "2026-09-02T18:43:08.375500+00:00",
   "experiment_id": "S01",
   "method_summary": "decoder-layer; remove_layers=1",
   "artifact_kind": "onnx-graph",

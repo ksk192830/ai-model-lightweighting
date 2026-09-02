@@ -31,7 +31,6 @@
 | Q05 | fp8-mixed-measured-sensitivity | front | modelopt-fp8-mixed | mixed | onnx-exported | [ONNX](../../artifacts/experiments/Q05/front/model.onnx), [metadata](../../artifacts/experiments/Q05/front/metadata.json), [analysis](../../artifacts/experiments/Q05/front/static-analysis.json), [comparison](../../artifacts/experiments/Q05/front/comparison-B01.json) |
 | Q06 | fp8-mixed-kld-sensitivity | front | modelopt-fp8-mixed-kld | mixed | onnx-exported | [ONNX](../../artifacts/experiments/Q06/front/model.onnx), [metadata](../../artifacts/experiments/Q06/front/metadata.json), [analysis](../../artifacts/experiments/Q06/front/static-analysis.json), [comparison](../../artifacts/experiments/Q06/front/comparison-B01.json) |
 | Q07 | fp8-mixed-targeted-top2 | front | modelopt-fp8-mixed | mixed | onnx-exported | [ONNX](../../artifacts/experiments/Q07/front/model.onnx), [metadata](../../artifacts/experiments/Q07/front/metadata.json), [analysis](../../artifacts/experiments/Q07/front/static-analysis.json), [comparison](../../artifacts/experiments/Q07/front/comparison-B01.json) |
-| W01 | weight-only-bitwidth-study | front | modelopt-weight-only-fakequant | mixed | static-analysis-rejected | [metadata](../../artifacts/experiments/W01/front/metadata.json) |
 
 ## 저장 규칙
 

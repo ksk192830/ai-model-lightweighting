@@ -9,7 +9,7 @@ engine 크기의 Pareto 비지배해를 선택한다.
 - GitHub: [kips-ai-model-lightweighting](https://github.com/ksk192830/kips-ai-model-lightweighting)
 - Notion: [AI 경량화 및 최적화 프로젝트](https://app.notion.com/p/389d4a78ceed80d28d95c37d83422a60)
 - 현재 상태: [프로젝트 진행 현황](docs/PROJECT_STATUS.md)
-- 전체 후보표: [1차 정적평가 27개 결과](results/stage1-static-evaluation.md)
+- 전체 후보표: [1차 정적평가 26개 결과](results/stage1-static-evaluation.md)
 - 평가 방법: [1차 정적 → 2차 노트북 → 3차 Pareto](docs/guides/three-stage-candidate-evaluation.md)
 - 노트북 전달: [TensorRT 노트북 재현 가이드](docs/guides/tensorrt-notebook-portability.md)
 
@@ -22,17 +22,15 @@ engine 크기의 Pareto 비지배해를 선택한다.
 |---|---:|---|---|
 | 데이터 재구성 | 4,466장 | 완료 | train 3,625 / valid 404 / benchmark 437, split 간 이미지·세션 중복 0 |
 | 기준 모델 재학습 | B01 | 완료 | bbox AP 0.737791 / mask AP 0.601016 / semantic mIoU 0.712200 |
-| 1차 정적평가 | 27개 | **완료** | 평가 27/27, 통과 22, 불통 5, 미수행 0 |
+| 1차 정적평가 | 26개 | **완료** | 평가 26/26, 통과 22, 불통 4, 미수행 0 |
 | 노트북 전달 묶음 | 통과 22개 | 완료 | engine plan 22개, unique ONNX 17개, calibration 128장, benchmark 437장 |
 | 2차 TensorRT 평가 | 통과 22개 | 대기 | 동일 노트북 GPU에서 build·정확도·성능을 모두 terminal 상태로 기록 |
 | 3차 Pareto 분석 | 2차 성공 후보 | 대기 | 22개가 모두 완료 또는 명시적 실패 상태가 된 뒤 자동 생성 |
 
-현재 1차 불통 후보는 U01·U02·U03·S03·W01이다. U01~U03은 비정형
-희소화가 dense ONNX 크기·노드·MAC을 줄이지 못했고, S03은 세 정적 효율 항목
-모두 사전 고정 5% 기준에 미달했다. W01은 7개 bit-width 연구를 모두
-실행했지만 RF-DETR에 적용 가능한 weight-only TensorRT/ONNX 배포 산출물이
-없어 2차 대상이 아니다. 나머지 22개는 기존 데스크탑 정확도 판정과 무관하게
-노트북 2차 평가 대상으로 유지한다.
+현재 1차 불통 후보는 U01·U02·U03·S03이다. U01~U03은 비정형 희소화가
+dense ONNX 크기·노드·MAC을 줄이지 못했고, S03은 세 정적 효율 항목 모두
+사전 고정 5% 기준에 미달했다. 나머지 22개는 기존 데스크탑 정확도 판정과
+무관하게 노트북 2차 평가 대상으로 유지한다.
 
 진행 상태는 생성된 결과 파일에서 직접 읽는다.
 
@@ -91,7 +89,7 @@ TensorRT 실측 결과로 제한한다.
 
 ### 연구 기여로 정리할 수 있는 항목
 
-- 동일 baseline에서 파생된 27개 후보를 누락 없이 비교하는 재현 가능한 후보군
+- 동일 baseline에서 파생된 26개 후보를 누락 없이 비교하는 재현 가능한 후보군
 - 데이터 역할을 분리한 정적 선별, 장비 종속 실측, Pareto 분석의 3단계 평가 절차
 - detection과 segmentation 품질 및 실제 시스템 효율을 함께 다루는 다목적 평가
 - 미지원 kernel이나 build 실패도 누락하지 않고 terminal 실패 근거로 남기는 자동화
@@ -195,7 +193,7 @@ Roboflow Version 9 무증강 원본을 촬영 세션 단위로 다시 나눴다.
 | split | 이미지 | 역할 |
 |---|---:|---|
 | train | 3,625 | baseline/복구 학습, 양자화 calibration 후보 모집단 |
-| valid | 404 | early stopping, Q05~Q07 민감도, W01 연구용 screening |
+| valid | 404 | early stopping, Q05~Q07 민감도 선정 |
 | benchmark | 437 | 노트북 2차 정확도 비교만 수행 |
 
 현재 437장은 이전 후보 진단에도 반복 사용됐으므로 논문에서 “완전히 손대지 않은
@@ -207,7 +205,7 @@ Roboflow Version 9 무증강 원본을 촬영 세션 단위로 다시 나눴다.
 
 ### 1차: 전체 후보 정적평가 — 완료
 
-등록된 27개 후보를 모두 평가했다. 구조·해상도 후보는 유효한 ONNX와 함께 B01
+등록된 26개 후보를 모두 평가했다. 구조·해상도 후보는 유효한 ONNX와 함께 B01
 대비 ONNX 크기, graph node, dense MAC 중 적어도 하나가 5% 이상 감소해야 한다.
 precision 후보는 유효 source ONNX와 재현 가능한 TensorRT recipe 또는 후보 자체
 Q/DQ ONNX를 요구한다. 2:4 후보는 패턴 준수와 sparse tactic recipe를 확인한다.
@@ -243,7 +241,7 @@ TensorRT engine은 GPU architecture, CUDA와 TensorRT 버전에 종속된다. �
 #### 노트북 실행 전
 
 1. **완료 상태 확인**
-   `show_project_status.py`에서 1차가 `27/27`, `unperformed 0`인지 확인한다.
+   `show_project_status.py`에서 1차가 `26/26`, `unperformed 0`인지 확인한다.
 2. **정적 결과 고정**
    `generate_stage1_static_evaluation.py --check`로 registry, 후보별 정적 보고서와
    전체 표가 일치하는지 검사한다.
@@ -329,7 +327,7 @@ watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
 - 데이터 설정: [configs/dataset.yaml](configs/dataset.yaml)
 - 기준 모델 설정: [configs/baseline.yaml](configs/baseline.yaml)
 - 학습 설정: [configs/training/front_rfdetr_seg_large.yaml](configs/training/front_rfdetr_seg_large.yaml)
-- 27개 후보 registry: [configs/experiments/registry.yaml](configs/experiments/registry.yaml)
+- 26개 후보 registry: [configs/experiments/registry.yaml](configs/experiments/registry.yaml)
 - 평가·수용 기준: [configs/experiments/defaults.yaml](configs/experiments/defaults.yaml)
 - 모델·결과 인덱스: [docs/handoffs/model-artifact-index.md](docs/handoffs/model-artifact-index.md)
 

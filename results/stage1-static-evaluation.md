@@ -1,6 +1,6 @@
 # RF-DETR 1차 정적평가 전체 후보표
 
-등록된 27개 후보 중 27개의 1차 평가를 완료했다. 통과 22개, 불통 5개, 미수행 0개다.
+등록된 26개 후보 중 26개의 1차 평가를 완료했다. 통과 22개, 불통 4개, 미수행 0개다.
 
 1차는 산출물 유효성, 그래프 구조, 정적 효율, 양자화/희소성 적용 여부만 판정한다. 정확도, latency, FPS, GPU memory는 노트북 2차 평가에서만 판정한다.
 
@@ -32,7 +32,6 @@
 | Q05 | modelopt-fp8-mixed; FP8_DEFAULT_CFG | 통과 | - |
 | Q06 | modelopt-fp8-mixed-kld; FP8_DEFAULT_CFG | 통과 | - |
 | Q07 | modelopt-fp8-mixed; FP8_DEFAULT_CFG | 통과 | - |
-| W01 | modelopt-weight-only-fakequant; 7 bit-width configs | 불통 | 7개 bit-width 정적 연구는 완료됐지만 W2/W3/W4 weight-only를 실행할 RF-DETR TensorRT/ONNX 배포 산출물이 없어 2차 진입 불가 |
 
 ## 후속 절차
 

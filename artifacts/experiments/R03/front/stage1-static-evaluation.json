@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:09:16.818403+00:00",
+  "created_at_utc": "2026-09-02T18:43:09.092308+00:00",
   "experiment_id": "R03",
   "method_summary": "input-resolution; input=384x384",
   "artifact_kind": "onnx-graph",

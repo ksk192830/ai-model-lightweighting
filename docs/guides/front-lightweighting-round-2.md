@@ -44,7 +44,6 @@ holdout을 별도로 확보해야 한다.
 | 민감도 기반 혼합 INT8/FP16 | Q02 | head·sampling 등 민감 block을 FP16으로 보호 | 환경 의존 | 선택 후보 |
 | 균일 FP8 | Q04 | ModelOpt FP8 Q/DQ export | 지원 GPU에서 높음 | 노트북 GPU 지원 시 수행 |
 | 혼합 FP8/FP16 | Q05~Q07 | 민감도 측정 후 손상이 큰 block만 FP16 유지 | 지원 GPU에서 높음 | FP8 핵심 후보 |
-| W8/W4/W3/W2 weight-only | W01 | RTN·AWQ·혼합 bit-width 정적 분석 | RF-DETR engine 지원이 제한적 | 연구용, 후순위 |
 | INT4 weight-only | Q03 | FFN 중심 4-bit weight-only | 기존 build 실패 | 기본 실험에서 제외 |
 
 비정형 pruning은 weight의 0 비율은 늘리지만 dense ONNX의 tensor shape와 연산량을

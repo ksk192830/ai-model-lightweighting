@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:09:16.887324+00:00",
+  "created_at_utc": "2026-09-02T18:43:09.167509+00:00",
   "experiment_id": "Q01",
   "method_summary": "modelopt-int8-smoothquant; INT8_SMOOTHQUANT_CFG",
   "artifact_kind": "qdq-onnx",

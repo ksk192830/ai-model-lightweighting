@@ -70,7 +70,7 @@ RF-DETR export는 현재 모델의 patch/window 구조상 입력의 가로·세�
 
 ## 이번 단계에서 분리한 후보
 
-TensorRT FP16/INT8(B02/B03/C01/C02/M02)과 ModelOpt 기반 Q01-Q07/W01은 현재 FP32 ONNX 후보의 1차 선별과 다른 실행 환경 및 런타임 근거가 필요하다. 특히 ModelOpt 후보는 현재 환경에 의존성이 설치되어 있지 않아, 이번 1차 표에 결과를 섞지 않고 TensorRT 엔진 생성 단계에서 별도의 2차 실험군으로 평가한다.
+TensorRT FP16/INT8(B02/B03/C01/C02/M02)과 ModelOpt 기반 Q01~Q07은 FP32 ONNX 후보의 정적 효율 기준과 다른 런타임 근거가 필요하다. Q01~Q07은 자체 Q/DQ ONNX 유효성을 1차에서 확인하고, TensorRT engine 생성과 정확도·속도는 노트북 2차에서 평가한다.
 
 ## 결과 해석 원칙
 

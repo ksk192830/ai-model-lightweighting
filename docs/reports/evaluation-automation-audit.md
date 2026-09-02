@@ -77,7 +77,7 @@
 | static-analysis | static-analysis-Q05 | PASS | artifacts/experiments/Q05/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.6789473684210526; estimated/all-node fraction=0.037240184757505776 |
 | static-analysis | static-analysis-Q06 | PASS | artifacts/experiments/Q06/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.25263157894736843; estimated/all-node fraction=0.010282776349614395 |
 | static-analysis | static-analysis-Q07 | PASS | artifacts/experiments/Q07/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.18421052631578946; estimated/all-node fraction=0.007219471947194719 |
-| static-analysis | stage1-all-candidate-coverage | PASS | registered=27; rows=27; unperformed=0; missing=none; extra=none; static-only=True |
+| static-analysis | stage1-all-candidate-coverage | PASS | registered=26; rows=26; unperformed=0; missing=none; extra=none; static-only=True |
 | automation | desktop-pipeline-protocol-binding | PASS | pipeline status=failed; running queue records the canonical protocol |
 | automation | post-recovery-protocol-binding | PASS | M01 post-recovery status=failed; canonical protocol match=True |
 | latency | latency-results | PENDING | retained candidates await separate TensorRT engine benchmarking |

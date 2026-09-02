@@ -164,10 +164,8 @@ def audit(root: Path) -> dict[str, Any]:
     baseline_path = resolve(root, BASELINE_RESULT)
     baseline = load_json(baseline_path)
     evaluation_paths: dict[str, Path] = {"B01": baseline_path}
-    # Every registered deployable candidate is required to reach Stage 1.
-    # W01 is a multi-configuration research study and is audited through the
-    # consolidated Stage-1 report below rather than an ONNX graph report.
-    static_candidate_ids = set(registry) - {"W01"}
+    # Every registered candidate is required to reach Stage 1.
+    static_candidate_ids = set(registry)
     for experiment_id, experiment in registry.items():
         if experiment_id not in static_candidate_ids:
             continue
