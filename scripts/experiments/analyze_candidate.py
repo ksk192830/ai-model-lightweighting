@@ -342,7 +342,7 @@ def main() -> int:
     )
     source_paths = artifact_paths(source_experiment_id, args.camera)
     checkpoint = source_paths.checkpoint
-    if not checkpoint.is_file() and experiment["family"] == "baseline":
+    if not checkpoint.is_file() and experiment["family"] in {"baseline", "input"}:
         with (REPOSITORY_ROOT / "configs" / "baseline.yaml").open(
             encoding="utf-8"
         ) as stream:
@@ -351,10 +351,10 @@ def main() -> int:
             ]["checkpoint"]
     if checkpoint.is_file():
         analysis["checkpoint"] = checkpoint_analysis(checkpoint)
-    source_onnx = source_paths.onnx
+    source_onnx = paths.onnx if paths.onnx.is_file() else source_paths.onnx
     if source_onnx.is_file():
         analysis["onnx"] = onnx_analysis(source_onnx)
-        if source_experiment_id != args.experiment_id:
+        if source_onnx == source_paths.onnx and source_experiment_id != args.experiment_id:
             analysis["onnx"]["source_experiment_id"] = source_experiment_id
         if experiment["family"] == "semi-structured":
             onnx_2to4 = onnx_two_to_four_analysis(source_onnx)

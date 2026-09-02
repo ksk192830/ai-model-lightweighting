@@ -1,8 +1,8 @@
 {
-  "created_at_utc": "2026-09-02T14:30:36.869408+00:00",
+  "created_at_utc": "2026-09-02T18:05:23.960858+00:00",
   "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
   "python": "3.10.12",
-  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
   "experiment_id": "U02",
   "name": "unstructured-magnitude-30",
   "camera": "front",
@@ -41,6 +41,7 @@
     "onnx-build_json": "artifacts/experiments/U02/front/onnx-build.json",
     "comparison_B01": "artifacts/experiments/U02/front/comparison-B01.json",
     "onnx_equivalence": "artifacts/experiments/U02/front/onnx-equivalence.json",
+    "stage1_static_evaluation": "artifacts/experiments/U02/front/stage1-static-evaluation.json",
     "coco_evaluation": "results/coco-evaluation/U02-front-pth.json"
   },
   "build_details": {

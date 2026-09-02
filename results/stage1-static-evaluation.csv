@@ -1,0 +1,28 @@
+experiment_id,method_summary,artifact_kind,stage1_evaluated,stage1_passed,stage2_notebook_eligible,failure_reason,report,report_sha256
+B01,none,onnx-graph,True,True,True,,artifacts/experiments/B01/front/stage1-static-evaluation.json,a289d017fff96b3032db3d3e15a7d0edeacfb1a71cce5711ed70e6827ead246e
+B02,tensorrt-fp16,tensorrt-build-recipe,True,True,True,,artifacts/experiments/B02/front/stage1-static-evaluation.json,6973bd1c9146e4369568c58dd211d7bedf9644feab3f7fc0d8161490fe4295af
+B03,tensorrt-int8-ptq,tensorrt-build-recipe,True,True,True,,artifacts/experiments/B03/front/stage1-static-evaluation.json,68ce03e9fc67fe89a6782f3fe37c88c9544034f45fd0be9ce53e50c87e8555c1
+U01,global-magnitude; sparsity=0.1,onnx-graph,True,False,False,ONNX 크기·node·dense MACs 중 어느 항목도 사전 고정 5% 감소 기준을 충족하지 못함,artifacts/experiments/U01/front/stage1-static-evaluation.json,dc30be82e888cbaca23a4217b96be3dd57349921d9c9ce2160c4252c103778c4
+U02,global-magnitude; sparsity=0.3,onnx-graph,True,False,False,ONNX 크기·node·dense MACs 중 어느 항목도 사전 고정 5% 감소 기준을 충족하지 못함,artifacts/experiments/U02/front/stage1-static-evaluation.json,a4cd37a852e32c1f7ae25b93ba2f72b0fd6ca0f2d6acec0f63e3bdd5a6c144fd
+U03,global-magnitude; sparsity=0.5,onnx-graph,True,False,False,ONNX 크기·node·dense MACs 중 어느 항목도 사전 고정 5% 감소 기준을 충족하지 못함,artifacts/experiments/U03/front/stage1-static-evaluation.json,fa856825d9f11d5dd95bb66f8a4b603cd9edb7fbc19f0c37ceaa8080750210a6
+M01,nvidia-2to4; pattern=2:4,onnx-graph,True,True,True,,artifacts/experiments/M01/front/stage1-static-evaluation.json,fa82218c2e1f9db2ab6fe77412de03c45336869b5868de9fb49aecefcb87b1e6
+M02,nvidia-2to4; pattern=2:4,tensorrt-build-recipe,True,True,True,,artifacts/experiments/M02/front/stage1-static-evaluation.json,2df17ada01ecc77b5cec06da48d89f49882801df68241515c887008bd6a14661
+S01,decoder-layer; remove_layers=1,onnx-graph,True,True,True,,artifacts/experiments/S01/front/stage1-static-evaluation.json,9cc97fd5d551124133a4387f25c32c2e91e21b0a1248924824fec9f3bd586071
+S02,decoder-layer; remove_layers=2,onnx-graph,True,True,True,,artifacts/experiments/S02/front/stage1-static-evaluation.json,ab32e56be6f26632f855e896dd3dc15d02bb7e5f00aa65cfadfe4fb98fefb431
+S03,ffn-dimension; reduction=0.2,onnx-graph,True,False,False,ONNX 크기·node·dense MACs 중 어느 항목도 사전 고정 5% 감소 기준을 충족하지 못함,artifacts/experiments/S03/front/stage1-static-evaluation.json,02091e5bd608f69ee7fe2f9384f65329c5031d4c2fcf039a7f0507f36a92b3b8
+S04,ffn-dimension; reduction=0.4,onnx-graph,True,True,True,,artifacts/experiments/S04/front/stage1-static-evaluation.json,19ace5364233145b0b1d141f67e5b6f02ecd2a2b2fc97bcc198e8ed0320e7132
+C01,structured-selected,tensorrt-build-recipe,True,True,True,,artifacts/experiments/C01/front/stage1-static-evaluation.json,201764e6a7ebdb8e8711462077776423c24c5ad502f3a6d0d35441ee72771c79
+C02,structured-selected,tensorrt-build-recipe,True,True,True,,artifacts/experiments/C02/front/stage1-static-evaluation.json,5027f3a03d17fe9a309e4bfdb4509f9111f79016dac7c2c4b6fd735fd12da8f5
+C03,structured-resolution; input=432x432,onnx-graph,True,True,True,,artifacts/experiments/C03/front/stage1-static-evaluation.json,a4cea74d3b659377adb441ba76d3690f838e997b1be2baa15dad30f1fa0b6858
+C04,structured-resolution; input=480x480,onnx-graph,True,True,True,,artifacts/experiments/C04/front/stage1-static-evaluation.json,6aaad517dc73b045b59b70322cd99207f4c85be8fb115fade0e157824b87cfa4
+R01,input-resolution; input=432x432,onnx-graph,True,True,True,,artifacts/experiments/R01/front/stage1-static-evaluation.json,597f4abb32ba4cb84fd4e153a325e75737c3de5a2e6b7fbee4d5dd15fd0a987b
+R02,input-resolution; input=480x480,onnx-graph,True,True,True,,artifacts/experiments/R02/front/stage1-static-evaluation.json,a84956ccdb30b03a001aadb0357f0cb1cde9fa5d128743c54f4627e657ded928
+R03,input-resolution; input=384x384,onnx-graph,True,True,True,,artifacts/experiments/R03/front/stage1-static-evaluation.json,01ef500bae021b205ca0e31fb12847eb5c9cce1e00d2961c7cdf7fe9a8481dbc
+Q01,modelopt-int8-smoothquant; INT8_SMOOTHQUANT_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q01/front/stage1-static-evaluation.json,105328f45d96279f9f9eb4b43d42ad241788df55004d9f2b171a06f272b3fc6e
+Q02,modelopt-mixed-precision; INT8_DEFAULT_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q02/front/stage1-static-evaluation.json,d0d53adcb2e2f9dce42809f63acd557eee19c8d985eae762a4f9db9fa912ed06
+Q03,modelopt-int4-weight-only; INT4_BLOCKWISE_WEIGHT_ONLY_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q03/front/stage1-static-evaluation.json,e63464a5f8d2d5d0b9224988ac7a66ca245c022efdc4aa47ebbeb13d8f67778b
+Q04,modelopt-fp8; FP8_DEFAULT_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q04/front/stage1-static-evaluation.json,9717667e799d0a3a01bbb7271b60053547b5575d195dd254a7bebc86d2d66d60
+Q05,modelopt-fp8-mixed; FP8_DEFAULT_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q05/front/stage1-static-evaluation.json,79b5631ccf1bc363e289e90e855a505dea7e835305dd082fe78cead328f74601
+Q06,modelopt-fp8-mixed-kld; FP8_DEFAULT_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q06/front/stage1-static-evaluation.json,95e0a892d7f42391545a03590412bc0fba697def4efec1e2e1f1a1272bca4ecc
+Q07,modelopt-fp8-mixed; FP8_DEFAULT_CFG,qdq-onnx,True,True,True,,artifacts/experiments/Q07/front/stage1-static-evaluation.json,0787e8c424fc02f3612774d401f64dcc58ec5459feb1baff7a01ca8b1d5fc8f2
+W01,modelopt-weight-only-fakequant; 7 bit-width configs,weight-only-study,True,False,False,7개 bit-width 정적 연구는 완료됐지만 W2/W3/W4 weight-only를 실행할 RF-DETR TensorRT/ONNX 배포 산출물이 없어 2차 진입 불가,artifacts/experiments/W01/front/stage1-static-evaluation.json,8250974ec10eaabd2275959c7c72e9d0ed18528af3b090bb4abcef5501e3ccc7

@@ -1,0 +1,41 @@
+{
+  "created_at_utc": "2026-09-02T18:09:17.367316+00:00",
+  "experiment_id": "W01",
+  "method_summary": "modelopt-weight-only-fakequant; 7 bit-width configs",
+  "artifact_kind": "weight-only-study",
+  "stage1_evaluated": true,
+  "stage1_passed": false,
+  "stage2_notebook_eligible": false,
+  "failure_reason": "7개 bit-width 정적 연구는 완료됐지만 W2/W3/W4 weight-only를 실행할 RF-DETR TensorRT/ONNX 배포 산출물이 없어 2차 진입 불가",
+  "checks": [
+    {
+      "name": "study-report-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/sensitivity/front-weight-bitwidth.json"
+    },
+    {
+      "name": "all-bitwidth-configs-attempted",
+      "passed": true,
+      "evidence": "7/7 configs recorded"
+    }
+  ],
+  "static_metrics": {
+    "config_results": {
+      "w8_rtn": "ok",
+      "w4_rtn": "ok",
+      "w4_awq": "ok",
+      "w3_rtn": "ok",
+      "w2_rtn": "ok",
+      "w4_mixed": "ok",
+      "w2_mixed": "ok"
+    }
+  },
+  "deployment_onnx": null,
+  "deployment_onnx_sha256": null,
+  "excluded_from_stage1_gate": [
+    "accuracy",
+    "latency",
+    "fps",
+    "gpu_memory"
+  ]
+}

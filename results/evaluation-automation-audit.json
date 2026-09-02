@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T15:05:20.602810+00:00",
+  "created_at_utc": "2026-09-02T18:09:58.950263+00:00",
   "overall_status": "IN_PROGRESS",
   "protocol_source": "configs/experiments/defaults.yaml",
   "protocol": {
@@ -42,6 +42,12 @@
     }
   },
   "selection_gates": {
+    "first_stage_efficiency": {
+      "rule": "any",
+      "onnx_size_min_relative_reduction": 0.05,
+      "onnx_nodes_min_relative_reduction": 0.05,
+      "dense_macs_min_relative_reduction": 0.05
+    },
     "accuracy_vs_baseline": {
       "bbox_ap_max_absolute_drop": 0.01,
       "mask_ap_max_absolute_drop": 0.01,
@@ -74,9 +80,9 @@
     }
   },
   "summary": {
-    "checks": 43,
+    "checks": 77,
     "required_failures": 0,
-    "pending": 5,
+    "pending": 2,
     "advisories": 9
   },
   "checks": [
@@ -116,6 +122,27 @@
       "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
     },
     {
+      "id": "evaluation-C03",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/C03-front-432-pth.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-C04",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/C04-front-480-pth.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-M01",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/M01-front-after-recovery.json; protocol and metrics valid"
+    },
+    {
       "id": "evaluation-R01",
       "category": "accuracy",
       "status": "PASS",
@@ -128,6 +155,20 @@
       "status": "WARN",
       "severity": "advisory",
       "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
+    },
+    {
+      "id": "evaluation-R02",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/R02-front-480-pth.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-R03",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/R03-front-384-pth.json; protocol and metrics valid"
     },
     {
       "id": "evaluation-S01",
@@ -158,6 +199,20 @@
       "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
     },
     {
+      "id": "evaluation-S04",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/S04-front-pth.json; protocol and metrics valid"
+    },
+    {
+      "id": "evaluation-U01",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/U01-front-pth.json; protocol and metrics valid"
+    },
+    {
       "id": "evaluation-U02",
       "category": "accuracy",
       "status": "PASS",
@@ -172,6 +227,13 @@
       "evidence": "legacy result lacks embedded annotation SHA-256; current annotation independently hashes to 8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba"
     },
     {
+      "id": "evaluation-U03",
+      "category": "accuracy",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/U03-front-pth.json; protocol and metrics valid"
+    },
+    {
       "id": "onnx-evaluation-B01-B01-front-baseline-onnx",
       "category": "conversion",
       "status": "PASS",
@@ -179,11 +241,32 @@
       "evidence": "results/coco-evaluation/B01-front-baseline-onnx.json; query count/parity valid"
     },
     {
+      "id": "onnx-evaluation-C03-C03-front-432-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/C03-front-432-onnx.json; query count/parity valid"
+    },
+    {
+      "id": "onnx-evaluation-C04-C04-front-480-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/C04-front-480-onnx.json; query count/parity valid"
+    },
+    {
       "id": "onnx-evaluation-R01-R01-front-432-onnx",
       "category": "conversion",
       "status": "PASS",
       "severity": "required",
       "evidence": "results/coco-evaluation/R01-front-432-onnx.json; query count/parity valid"
+    },
+    {
+      "id": "onnx-evaluation-R02-R02-front-480-onnx",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "results/coco-evaluation/R02-front-480-onnx.json; candidate decision=rejected; dataset parity failure recorded"
     },
     {
       "id": "onnx-evaluation-S01-S01-front-after-recovery-onnx",
@@ -214,6 +297,27 @@
       "evidence": "legacy graph report predates strict active-membership/class/score fields; full-dataset ONNX accuracy parity is available"
     },
     {
+      "id": "graph-equivalence-C03",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/C03/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-C04",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/C04/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
+    },
+    {
+      "id": "graph-equivalence-M01",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/M01/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=False; protocol match=True"
+    },
+    {
       "id": "graph-equivalence-R01",
       "category": "conversion",
       "status": "PASS",
@@ -228,6 +332,13 @@
       "evidence": "legacy graph report predates strict active-membership/class/score fields; full-dataset ONNX accuracy parity is available"
     },
     {
+      "id": "graph-equivalence-R02",
+      "category": "conversion",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/R02/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=True; protocol match=True"
+    },
+    {
       "id": "graph-equivalence-S01",
       "category": "conversion",
       "status": "PASS",
@@ -239,14 +350,7 @@
       "category": "conversion",
       "status": "PASS",
       "severity": "required",
-      "evidence": "artifacts/experiments/S02/front/onnx-equivalence.json; passed=True; samples=10; seed=42; mode=real-images; protocol match=True"
-    },
-    {
-      "id": "graph-equivalence-U02",
-      "category": "conversion",
-      "status": "PASS",
-      "severity": "required",
-      "evidence": "artifacts/experiments/U02/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=True; protocol match=True"
+      "evidence": "artifacts/experiments/S02/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=True; protocol match=True"
     },
     {
       "id": "graph-equivalence-S03",
@@ -256,11 +360,11 @@
       "evidence": "artifacts/experiments/S03/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=False; protocol match=True"
     },
     {
-      "id": "graph-equivalence-M01",
+      "id": "graph-equivalence-U02",
       "category": "conversion",
-      "status": "PENDING",
+      "status": "PASS",
       "severity": "required",
-      "evidence": "artifacts/experiments/M01/front/onnx-equivalence.json; prototype report is superseded when recovery completes"
+      "evidence": "artifacts/experiments/U02/front/onnx-equivalence.json; candidate decision=rejected; equivalence passed=True; protocol match=True"
     },
     {
       "id": "static-analysis-B01",
@@ -270,6 +374,27 @@
       "evidence": "artifacts/experiments/B01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
     },
     {
+      "id": "static-analysis-B02",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/B02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-B03",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/B03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-U01",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/U01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
       "id": "static-analysis-U02",
       "category": "static-analysis",
       "status": "PASS",
@@ -277,18 +402,25 @@
       "evidence": "artifacts/experiments/U02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
     },
     {
+      "id": "static-analysis-U03",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/U03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
       "id": "static-analysis-M01",
       "category": "static-analysis",
-      "status": "PENDING",
+      "status": "PASS",
       "severity": "required",
-      "evidence": "artifacts/experiments/M01/front/static-analysis.json; status=partial; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=awaiting refresh"
+      "evidence": "artifacts/experiments/M01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
     },
     {
       "id": "static-analysis-M02",
       "category": "static-analysis",
-      "status": "PENDING",
+      "status": "PASS",
       "severity": "required",
-      "evidence": "missing artifacts/experiments/M02/front/static-analysis.json"
+      "evidence": "artifacts/experiments/M02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
     },
     {
       "id": "static-analysis-S01",
@@ -312,6 +444,41 @@
       "evidence": "artifacts/experiments/S03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
     },
     {
+      "id": "static-analysis-S04",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/S04/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-C01",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/C01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9659090909090909; estimated/all-node fraction=0.0869120654396728"
+    },
+    {
+      "id": "static-analysis-C02",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/C02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9659090909090909; estimated/all-node fraction=0.0869120654396728"
+    },
+    {
+      "id": "static-analysis-C03",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/C03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9659090909090909; estimated/all-node fraction=0.0869120654396728"
+    },
+    {
+      "id": "static-analysis-C04",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/C04/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9659090909090909; estimated/all-node fraction=0.0869120654396728"
+    },
+    {
       "id": "static-analysis-R01",
       "category": "static-analysis",
       "status": "PASS",
@@ -319,32 +486,102 @@
       "evidence": "artifacts/experiments/R01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
     },
     {
+      "id": "static-analysis-R02",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/R02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-R03",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/R03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.08603667136812412"
+    },
+    {
+      "id": "static-analysis-Q01",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q01/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=1.0; estimated/all-node fraction=0.05157437567861021"
+    },
+    {
+      "id": "static-analysis-Q02",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q02/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.0553371635923798"
+    },
+    {
+      "id": "static-analysis-Q03",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q03/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.9631578947368421; estimated/all-node fraction=0.07966913365259033"
+    },
+    {
+      "id": "static-analysis-Q04",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q04/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.1368421052631579; estimated/all-node fraction=0.005195843325339729"
+    },
+    {
+      "id": "static-analysis-Q05",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q05/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.6789473684210526; estimated/all-node fraction=0.037240184757505776"
+    },
+    {
+      "id": "static-analysis-Q06",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q06/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.25263157894736843; estimated/all-node fraction=0.010282776349614395"
+    },
+    {
+      "id": "static-analysis-Q07",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "artifacts/experiments/Q07/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.18421052631578946; estimated/all-node fraction=0.007219471947194719"
+    },
+    {
+      "id": "stage1-all-candidate-coverage",
+      "category": "static-analysis",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "registered=27; rows=27; unperformed=0; missing=none; extra=none; static-only=True"
+    },
+    {
       "id": "desktop-pipeline-protocol-binding",
       "category": "automation",
       "status": "PASS",
       "severity": "required",
-      "evidence": "pipeline status=waiting-for-recovery; running queue records the canonical protocol"
+      "evidence": "pipeline status=failed; running queue records the canonical protocol"
     },
     {
       "id": "post-recovery-protocol-binding",
       "category": "automation",
       "status": "PASS",
       "severity": "required",
-      "evidence": "M01 post-recovery status=waiting-for-training; canonical protocol match=True"
+      "evidence": "M01 post-recovery status=failed; canonical protocol match=True"
     },
     {
       "id": "latency-results",
       "category": "latency",
       "status": "PENDING",
       "severity": "required",
-      "evidence": "TensorRT engines/benchmarks are waiting for M01 recovery"
+      "evidence": "retained candidates await separate TensorRT engine benchmarking"
     },
     {
       "id": "engine-summary",
       "category": "automation",
       "status": "PENDING",
       "severity": "required",
-      "evidence": "desktop engine summary will be generated after recovery/build/evaluation"
+      "evidence": "desktop engine summary will be generated during the second-stage engine evaluation"
     },
     {
       "id": "pipeline-stage-wiring",
@@ -352,6 +589,13 @@
       "status": "PASS",
       "severity": "required",
       "evidence": "engine inspection, paper table/figure, static report, and final audit are wired"
+    },
+    {
+      "id": "all-candidate-notebook-pareto-wiring",
+      "category": "automation",
+      "status": "PASS",
+      "severity": "required",
+      "evidence": "Stage-1 eligible set -> per-candidate terminal Stage 2 -> Pareto gate is wired"
     },
     {
       "id": "paper-report-source",
@@ -384,8 +628,245 @@
   ],
   "candidate_gate_outcomes": [
     {
+      "experiment_id": "C03",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": true,
+        "onnx_nodes": true,
+        "dense_macs": true
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.052977226461693595,
+        "onnx_nodes": 0.08039492242595205,
+        "dense_macs": 0.30758078899348884
+      }
+    },
+    {
+      "experiment_id": "C04",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": true,
+        "dense_macs": true
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.04938511040229932,
+        "onnx_nodes": 0.08039492242595205,
+        "dense_macs": 0.11511327593784183
+      }
+    },
+    {
       "experiment_id": "R01",
-      "comparison": "accuracy_vs_B01",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": true
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.00552995022132634,
+        "onnx_nodes": -0.0,
+        "dense_macs": 0.3020206217586311
+      }
+    },
+    {
+      "experiment_id": "R02",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": true
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.0019378341619320655,
+        "onnx_nodes": -0.0,
+        "dense_macs": 0.10955310870298411
+      }
+    },
+    {
+      "experiment_id": "R03",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": true
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.008743960883531224,
+        "onnx_nodes": -0.0,
+        "dense_macs": 0.46254831784688083
+      }
+    },
+    {
+      "experiment_id": "S01",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": true,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.04744727624036726,
+        "onnx_nodes": 0.08039492242595205,
+        "dense_macs": 0.005560167234857713
+      }
+    },
+    {
+      "experiment_id": "S02",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": true,
+        "onnx_nodes": true,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.09489651914916353,
+        "onnx_nodes": 0.1617301363422661,
+        "dense_macs": 0.011120334469715425
+      }
+    },
+    {
+      "experiment_id": "S03",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "REJECT",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.03266206960599726,
+        "onnx_nodes": -0.0,
+        "dense_macs": 0.0039381944123657526
+      }
+    },
+    {
+      "experiment_id": "S04",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "PASS",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": true,
+        "onnx_nodes": false,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 0.06532376424408394,
+        "onnx_nodes": -0.0,
+        "dense_macs": 0.007876388824731505
+      }
+    },
+    {
+      "experiment_id": "U01",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "REJECT",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 2.2191978381890875e-07,
+        "onnx_nodes": -0.0,
+        "dense_macs": -0.0
+      }
+    },
+    {
+      "experiment_id": "U02",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "REJECT",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 2.2191978381890875e-07,
+        "onnx_nodes": -0.0,
+        "dense_macs": -0.0
+      }
+    },
+    {
+      "experiment_id": "U03",
+      "comparison": "efficiency_vs_B01",
+      "outcome": "REJECT",
+      "rule": "any",
+      "metric_gates": {
+        "onnx_size": false,
+        "onnx_nodes": false,
+        "dense_macs": false
+      },
+      "observed_relative_reduction": {
+        "onnx_size": 2.2191978381890875e-07,
+        "onnx_nodes": -0.0,
+        "dense_macs": -0.0
+      }
+    },
+    {
+      "experiment_id": "C03",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "PASS",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": true,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.007053649778925086,
+        "mask_ap": -0.007218767168044038,
+        "semantic_miou": 0.027037103572201904
+      }
+    },
+    {
+      "experiment_id": "C04",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "PASS",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": true,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.004736028415995741,
+        "mask_ap": -0.0015682452025491678,
+        "semantic_miou": 0.01674846548006048
+      }
+    },
+    {
+      "experiment_id": "M01",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "REJECT",
+      "metric_gates": {
+        "bbox_ap": false,
+        "mask_ap": false,
+        "semantic_miou": false
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.10538997201608535,
+        "mask_ap": -0.085735602458471,
+        "semantic_miou": -0.02938234021768238
+      }
+    },
+    {
+      "experiment_id": "R01",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
       "outcome": "PASS",
       "metric_gates": {
         "bbox_ap": true,
@@ -399,8 +880,38 @@
       }
     },
     {
+      "experiment_id": "R02",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "PASS",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": true,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.006526057640203309,
+        "mask_ap": -0.0006232078634537119,
+        "semantic_miou": -0.008549619384441876
+      }
+    },
+    {
+      "experiment_id": "R03",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "REJECT",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": false,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.009131722014550925,
+        "mask_ap": -0.014340737833120176,
+        "semantic_miou": 0.01684200778756928
+      }
+    },
+    {
       "experiment_id": "S01",
-      "comparison": "accuracy_vs_B01",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
       "outcome": "PASS",
       "metric_gates": {
         "bbox_ap": true,
@@ -415,7 +926,7 @@
     },
     {
       "experiment_id": "S02",
-      "comparison": "accuracy_vs_B01",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
       "outcome": "REJECT",
       "metric_gates": {
         "bbox_ap": false,
@@ -429,8 +940,38 @@
       }
     },
     {
+      "experiment_id": "S04",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "REJECT",
+      "metric_gates": {
+        "bbox_ap": false,
+        "mask_ap": false,
+        "semantic_miou": false
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.21633920963688724,
+        "mask_ap": -0.07649022598088095,
+        "semantic_miou": -0.05494113450259408
+      }
+    },
+    {
+      "experiment_id": "U01",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "PASS",
+      "metric_gates": {
+        "bbox_ap": true,
+        "mask_ap": true,
+        "semantic_miou": true
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.00025972658664474846,
+        "mask_ap": 0.008709563651208896,
+        "semantic_miou": 0.0069630035549647085
+      }
+    },
+    {
       "experiment_id": "U02",
-      "comparison": "accuracy_vs_B01",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
       "outcome": "REJECT",
       "metric_gates": {
         "bbox_ap": false,
@@ -441,6 +982,21 @@
         "bbox_ap": -0.6413491337116535,
         "mask_ap": -0.5189942170557809,
         "semantic_miou": -0.6793506706630799
+      }
+    },
+    {
+      "experiment_id": "U03",
+      "comparison": "desktop_preliminary_accuracy_vs_B01",
+      "outcome": "REJECT",
+      "metric_gates": {
+        "bbox_ap": false,
+        "mask_ap": false,
+        "semantic_miou": false
+      },
+      "metric_delta_candidate_minus_reference": {
+        "bbox_ap": -0.7377767205715761,
+        "mask_ap": -0.6010160064002875,
+        "semantic_miou": -0.7121996004836423
       }
     }
   ],

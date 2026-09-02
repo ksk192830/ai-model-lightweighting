@@ -1,0 +1,117 @@
+{
+  "created_at_utc": "2026-09-02T17:44:38.587470+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "baseline_experiment_id": "B01",
+  "candidate_experiment_id": "Q04",
+  "camera": "front",
+  "engine_size_bytes": {
+    "baseline": null,
+    "candidate": null,
+    "delta": null,
+    "delta_ratio": null
+  },
+  "onnx_size_bytes": {
+    "baseline": 130677849,
+    "candidate": 131681276,
+    "delta": 1003427,
+    "delta_ratio": 0.007678631135105384
+  },
+  "onnx_initializer_parameters": {
+    "baseline": 32537747,
+    "candidate": 32537747,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "onnx_nodes": {
+    "baseline": 2127,
+    "candidate": 5004,
+    "delta": 2877,
+    "delta_ratio": 1.3526093088857545
+  },
+  "estimated_macs": {
+    "baseline": 54083668224,
+    "candidate": 2875870464,
+    "delta": -51207797760,
+    "delta_ratio": -0.9468255286958548
+  },
+  "estimated_flops": {
+    "baseline": 108167336448,
+    "candidate": 5751740928,
+    "delta": -102415595520,
+    "delta_ratio": -0.9468255286958548
+  },
+  "prunable_parameters": {
+    "baseline": 34759584,
+    "candidate": 0,
+    "delta": -34759584,
+    "delta_ratio": -1.0
+  },
+  "sparsity": {
+    "baseline": 0.0,
+    "candidate": null
+  },
+  "inputs": {
+    "baseline": {
+      "input": [
+        1,
+        3,
+        504,
+        504
+      ]
+    },
+    "candidate": {
+      "input": [
+        1,
+        3,
+        504,
+        504
+      ]
+    },
+    "equal": true
+  },
+  "outputs": {
+    "baseline": {
+      "dets": [
+        1,
+        200,
+        4
+      ],
+      "labels": [
+        1,
+        200,
+        5
+      ],
+      "masks": [
+        1,
+        200,
+        126,
+        126
+      ]
+    },
+    "candidate": {
+      "dets": [
+        "Concatdets_dim_0",
+        "Concatdets_dim_1",
+        "Concatdets_dim_2"
+      ],
+      "labels": [
+        "Addlabels_dim_0",
+        "Addlabels_dim_1",
+        "Addlabels_dim_2"
+      ],
+      "masks": [
+        "Addmasks_dim_0",
+        "Addmasks_dim_1",
+        "Addmasks_dim_2",
+        "Addmasks_dim_3"
+      ]
+    },
+    "equal": false
+  },
+  "conclusion": {
+    "dense_graph_shape_reduced": false,
+    "engine_size_materially_reduced": false
+  }
+}

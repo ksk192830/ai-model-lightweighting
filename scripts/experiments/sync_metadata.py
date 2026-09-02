@@ -82,6 +82,10 @@ def main() -> int:
             onnx_equivalence = (
                 paths.directory / "onnx-equivalence.json"
             )
+            quantization = paths.directory / "quantization.json"
+            stage1_static_evaluation = (
+                paths.directory / "stage1-static-evaluation.json"
+            )
             coco_evaluation = evaluation_path(
                 experiment_id,
                 camera,
@@ -106,6 +110,8 @@ def main() -> int:
                 and not structured_pruning.is_file()
                 and not prototype_validation.is_file()
                 and not onnx_equivalence.is_file()
+                and not quantization.is_file()
+                and not stage1_static_evaluation.is_file()
             ):
                 continue
             source = REPOSITORY_ROOT / models[camera]["checkpoint"]
@@ -155,6 +161,12 @@ def main() -> int:
             if onnx_equivalence.is_file():
                 artifacts["onnx_equivalence"] = relative(
                     onnx_equivalence
+                )
+            if quantization.is_file():
+                artifacts["quantization"] = relative(quantization)
+            if stage1_static_evaluation.is_file():
+                artifacts["stage1_static_evaluation"] = relative(
+                    stage1_static_evaluation
                 )
             if coco_evaluation.is_file():
                 artifacts["coco_evaluation"] = relative(coco_evaluation)

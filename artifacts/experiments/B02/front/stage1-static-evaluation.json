@@ -1,0 +1,47 @@
+{
+  "created_at_utc": "2026-09-02T18:09:15.615324+00:00",
+  "experiment_id": "B02",
+  "method_summary": "tensorrt-fp16",
+  "artifact_kind": "tensorrt-build-recipe",
+  "stage1_evaluated": true,
+  "stage1_passed": true,
+  "stage2_notebook_eligible": true,
+  "failure_reason": "",
+  "checks": [
+    {
+      "name": "static-report-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/B02/front/static-analysis.json"
+    },
+    {
+      "name": "onnx-checker",
+      "passed": true,
+      "evidence": "onnx.checker.check_model"
+    },
+    {
+      "name": "source-onnx-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/B01/front/model.onnx"
+    },
+    {
+      "name": "deterministic-build-recipe",
+      "passed": true,
+      "evidence": "artifacts/experiments/B02/front/build-command.txt"
+    }
+  ],
+  "static_metrics": {
+    "onnx_size_bytes": 130677849,
+    "onnx_nodes": 2127,
+    "estimated_macs": 54083668224,
+    "estimated_flops": 108167336448,
+    "qdq_nodes": 0
+  },
+  "deployment_onnx": "artifacts/experiments/B01/front/model.onnx",
+  "deployment_onnx_sha256": "78d6936a1f4736d348fd75194e2aaa43a81b42b291863437f381618aa82c02b8",
+  "excluded_from_stage1_gate": [
+    "accuracy",
+    "latency",
+    "fps",
+    "gpu_memory"
+  ]
+}

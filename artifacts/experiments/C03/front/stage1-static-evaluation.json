@@ -1,0 +1,52 @@
+{
+  "created_at_utc": "2026-09-02T18:09:16.541692+00:00",
+  "experiment_id": "C03",
+  "method_summary": "structured-resolution; input=432x432",
+  "artifact_kind": "onnx-graph",
+  "stage1_evaluated": true,
+  "stage1_passed": true,
+  "stage2_notebook_eligible": true,
+  "failure_reason": "",
+  "checks": [
+    {
+      "name": "static-report-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/C03/front/static-analysis.json"
+    },
+    {
+      "name": "onnx-checker",
+      "passed": true,
+      "evidence": "onnx.checker.check_model"
+    },
+    {
+      "name": "candidate-onnx-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/C03/front/model.onnx"
+    },
+    {
+      "name": "static-effect-visible",
+      "passed": true,
+      "evidence": "onnx_size=5.30%, onnx_nodes=8.04%, dense_macs=30.76%"
+    }
+  ],
+  "static_metrics": {
+    "onnx_size_bytes": 123754899,
+    "onnx_nodes": 1956,
+    "estimated_macs": 37448570880,
+    "estimated_flops": 74897141760,
+    "qdq_nodes": 0,
+    "relative_reductions": {
+      "onnx_size": 0.052977226461693595,
+      "onnx_nodes": 0.08039492242595205,
+      "dense_macs": 0.30758078899348884
+    }
+  },
+  "deployment_onnx": "artifacts/experiments/C03/front/model.onnx",
+  "deployment_onnx_sha256": "2f3a3bc973404af0be8ae3dd5fe1cc882b8c93976cf41314f76d50dec7575f4a",
+  "excluded_from_stage1_gate": [
+    "accuracy",
+    "latency",
+    "fps",
+    "gpu_memory"
+  ]
+}

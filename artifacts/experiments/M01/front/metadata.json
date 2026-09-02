@@ -1,14 +1,14 @@
 {
-  "created_at_utc": "2026-09-02T13:45:42.957815+00:00",
+  "created_at_utc": "2026-09-02T18:05:24.272681+00:00",
   "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
   "python": "3.10.12",
-  "git_commit": "5efd7886faa4818a558843aa9236c537b79521ec",
+  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
   "experiment_id": "M01",
   "name": "sparse-2to4-dense-control",
   "camera": "front",
   "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
   "source_checkpoint_sha256": "769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620",
-  "artifact_checkpoint_sha256": "19f4c6f4e4f6f2e553a3af0c0db5d999ba2cf0bebb086f251c0468859f661707",
+  "artifact_checkpoint_sha256": "a05bdfbcc7c2056ca5c34f9fe6729702a1d016111d5dbfaeb2ce9883bd4a9cb4",
   "method": "nvidia-2to4",
   "family": "semi-structured",
   "pruning": {
@@ -17,9 +17,13 @@
   "precision": "fp16",
   "fine_tuning": {
     "required": true,
-    "completed": false,
-    "status": "ready",
-    "profile": "recovery_2to4"
+    "completed": true,
+    "status": "completed",
+    "profile": "recovery_2to4",
+    "epochs_completed": 10,
+    "stopped_early": true,
+    "training_report": "artifacts/experiments/M01/front/recovery/recovery-training.json",
+    "training_report_sha256": "5d9d0ae3baa2d8d8d03564af503648716a8d60bf690ea6da811097d40a48765d"
   },
   "input_shape": [
     1,
@@ -48,11 +52,14 @@
     "onnx_2to4": "artifacts/experiments/M01/front/onnx-2to4.json",
     "fine_tuning_preflight": "artifacts/experiments/M01/front/fine-tuning-preflight.json",
     "onnx_equivalence": "artifacts/experiments/M01/front/onnx-equivalence.json",
-    "recovery_training": "artifacts/experiments/M01/front/recovery/recovery-training.json"
+    "stage1_static_evaluation": "artifacts/experiments/M01/front/stage1-static-evaluation.json",
+    "coco_evaluation": "results/coco-evaluation/M01-front-after-recovery.json",
+    "recovery_training": "artifacts/experiments/M01/front/recovery/recovery-training.json",
+    "prototype_before_recovery": "artifacts/experiments/M01/front/prototype-before-recovery"
   },
   "build_details": {
     "onnx-build": {
-      "created_at_utc": "2026-09-02T11:45:29.579121+00:00",
+      "created_at_utc": "2026-09-02T15:20:59.696330+00:00",
       "camera": "front",
       "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/M01/front/model.pth",
       "onnx_path": "artifacts/experiments/M01/front/model.onnx",
@@ -80,6 +87,23 @@
         "parking_space"
       ],
       "validated_by_onnx_checker": true
+    }
+  },
+  "result": {
+    "decision": "rejected",
+    "reason": "10 epoch 복구 학습 후에도 bbox AP 0.105390, mask AP 0.085736, semantic mIoU 0.029382가 하락했고 production-image ONNX 동등성도 통과하지 못함.",
+    "evaluation": "results/coco-evaluation/M01-front-after-recovery.json",
+    "evaluation_sha256": "186a62629015f545f0c2355ef70cb1c04133c777354a62da27de448382e19ae1",
+    "model": "artifacts/experiments/M01/front/model.pth",
+    "model_sha256": "a05bdfbcc7c2056ca5c34f9fe6729702a1d016111d5dbfaeb2ce9883bd4a9cb4",
+    "onnx": "artifacts/experiments/M01/front/model.onnx",
+    "onnx_sha256": "d930a1c4190b3f427f3e56067f877236eaaafdeac1dbf5247902e21659e4d5f9",
+    "onnx_equivalence": "artifacts/experiments/M01/front/onnx-equivalence.json",
+    "onnx_equivalence_sha256": "09507cbbfc77323b12f6a029d9450562b9f64d1698ccd9b81a2bad7d6b447cdd",
+    "metrics": {
+      "bbox_ap": 0.6324012020977176,
+      "mask_ap": 0.5152804039418165,
+      "semantic_miou": 0.6828172602659599
     }
   },
   "status": "onnx-exported"

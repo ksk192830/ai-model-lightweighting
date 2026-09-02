@@ -1,0 +1,47 @@
+{
+  "created_at_utc": "2026-09-02T18:09:15.975928+00:00",
+  "experiment_id": "M01",
+  "method_summary": "nvidia-2to4; pattern=2:4",
+  "artifact_kind": "onnx-graph",
+  "stage1_evaluated": true,
+  "stage1_passed": true,
+  "stage2_notebook_eligible": true,
+  "failure_reason": "",
+  "checks": [
+    {
+      "name": "static-report-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/M01/front/static-analysis.json"
+    },
+    {
+      "name": "onnx-checker",
+      "passed": true,
+      "evidence": "onnx.checker.check_model"
+    },
+    {
+      "name": "candidate-onnx-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/M01/front/model.onnx"
+    },
+    {
+      "name": "static-effect-visible",
+      "passed": true,
+      "evidence": "2:4 compliant ops=150/150"
+    }
+  ],
+  "static_metrics": {
+    "onnx_size_bytes": 130677820,
+    "onnx_nodes": 2127,
+    "estimated_macs": 54083668224,
+    "estimated_flops": 108167336448,
+    "qdq_nodes": 0
+  },
+  "deployment_onnx": "artifacts/experiments/M01/front/model.onnx",
+  "deployment_onnx_sha256": "d930a1c4190b3f427f3e56067f877236eaaafdeac1dbf5247902e21659e4d5f9",
+  "excluded_from_stage1_gate": [
+    "accuracy",
+    "latency",
+    "fps",
+    "gpu_memory"
+  ]
+}

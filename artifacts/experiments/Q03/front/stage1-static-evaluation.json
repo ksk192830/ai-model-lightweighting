@@ -1,0 +1,49 @@
+{
+  "created_at_utc": "2026-09-02T18:09:17.025994+00:00",
+  "experiment_id": "Q03",
+  "method_summary": "modelopt-int4-weight-only; INT4_BLOCKWISE_WEIGHT_ONLY_CFG",
+  "artifact_kind": "qdq-onnx",
+  "stage1_evaluated": true,
+  "stage1_passed": true,
+  "stage2_notebook_eligible": true,
+  "failure_reason": "",
+  "checks": [
+    {
+      "name": "static-report-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/Q03/front/static-analysis.json"
+    },
+    {
+      "name": "onnx-checker",
+      "passed": true,
+      "evidence": "onnx.checker.check_model"
+    },
+    {
+      "name": "quantization-report-present",
+      "passed": true,
+      "evidence": "artifacts/experiments/Q03/front/quantization.json"
+    },
+    {
+      "name": "quantization-visible-in-graph",
+      "passed": true,
+      "evidence": "Q/DQ nodes=34"
+    }
+  ],
+  "static_metrics": {
+    "onnx_size_bytes": 131339537,
+    "onnx_nodes": 2297,
+    "estimated_macs": 54083668224,
+    "estimated_flops": 108167336448,
+    "qdq_nodes": 34,
+    "quantizers_total": 729,
+    "quantizers_active": 34
+  },
+  "deployment_onnx": "artifacts/experiments/Q03/front/model.onnx",
+  "deployment_onnx_sha256": "e62c17f72d65f54670bfa946b52b6989df42bc89b2ea6daf437a899cad6a19ee",
+  "excluded_from_stage1_gate": [
+    "accuracy",
+    "latency",
+    "fps",
+    "gpu_memory"
+  ]
+}

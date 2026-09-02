@@ -54,10 +54,31 @@ evaluation_protocol:
     scope: end_to_end_in_memory_image
     disk_image_decode_included: false
 
+workflow:
+  stage_1_static:
+    scope: [artifact-validity, graph-structure, artifact-size, dense-macs-flops, precision-evidence, sparsity-evidence, deterministic-build-recipe]
+    excluded_metrics: [accuracy, latency, fps, gpu-memory]
+    output: results/stage1-static-evaluation.json
+  stage_2_notebook:
+    scope: [tensorrt-build, bbox-ap, mask-ap, semantic-miou, latency, fps, gpu-memory, engine-size]
+    input_rule: stage1-static-evaluation.stage2_notebook_eligible
+  stage_3_pareto:
+    starts_after: all-stage2-eligible-candidates-have-terminal-results
+    objectives: [maximize-accuracy, minimize-latency, minimize-gpu-memory, minimize-engine-size]
+
 # These are project-specific engineering acceptance gates, not universal
 # statistical significance thresholds. They were fixed before TensorRT accuracy
 # evaluation and are consumed directly by the desktop queue and audit scripts.
 selection:
+  # Stage 1 is static only. Accuracy and runtime gates below are Stage-2 gates.
+  # A graph-transform candidate must produce a meaningful deployment-side
+  # reduction in at least one dense artifact metric. Precision candidates use
+  # Q/DQ/precision evidence or a deterministic TensorRT build recipe instead.
+  first_stage_efficiency:
+    rule: any
+    onnx_size_min_relative_reduction: 0.05
+    onnx_nodes_min_relative_reduction: 0.05
+    dense_macs_min_relative_reduction: 0.05
   accuracy_vs_baseline:
     bbox_ap_max_absolute_drop: 0.01
     mask_ap_max_absolute_drop: 0.01

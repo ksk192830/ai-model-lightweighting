@@ -78,6 +78,16 @@ def metric(payload: dict[str, Any], name: str) -> float:
     return float(value)
 
 
+def candidate_rejected(experiment: dict[str, Any] | None) -> bool:
+    """Return whether a measured failure is an expected candidate outcome."""
+    if not isinstance(experiment, dict):
+        return False
+    result = experiment.get("result")
+    return "rejected" in str(experiment.get("status", "")) or (
+        isinstance(result, dict) and result.get("decision") == "rejected"
+    )
+
+
 def audit(root: Path) -> dict[str, Any]:
     defaults = load_yaml(resolve(root, DEFAULTS))
     protocol = defaults["evaluation_protocol"]
@@ -154,7 +164,10 @@ def audit(root: Path) -> dict[str, Any]:
     baseline_path = resolve(root, BASELINE_RESULT)
     baseline = load_json(baseline_path)
     evaluation_paths: dict[str, Path] = {"B01": baseline_path}
-    static_candidate_ids = {"B01", "U02", "R01", "S01", "S02", "S03", "M01", "M02"}
+    # Every registered deployable candidate is required to reach Stage 1.
+    # W01 is a multi-configuration research study and is audited through the
+    # consolidated Stage-1 report below rather than an ONNX graph report.
+    static_candidate_ids = set(registry) - {"W01"}
     for experiment_id, experiment in registry.items():
         if experiment_id not in static_candidate_ids:
             continue
@@ -229,26 +242,52 @@ def audit(root: Path) -> dict[str, Any]:
             continue
         result = load_json(path)
         experiment_id = str(result.get("experiment_id") or path.name.split("-")[0])
+        rejected_candidate = candidate_rejected(registry.get(experiment_id))
         failures = []
         if result.get("postprocess_num_select") != 200:
             failures.append("postprocess_num_select != 200")
         parity = result.get("pytorch_parity")
-        if isinstance(parity, dict) and parity.get("passed") is not True:
+        parity_failed = isinstance(parity, dict) and parity.get("passed") is not True
+        if parity_failed and not rejected_candidate:
             failures.append("PyTorch dataset parity failed")
         if path.name.endswith("after-recovery-onnx.json") and not isinstance(parity, dict):
             failures.append("missing PyTorch dataset parity")
         check(
             f"onnx-evaluation-{experiment_id}-{path.stem}",
             "FAIL" if failures else "PASS",
-            f"{portable(root, path)}; " + (", ".join(failures) if failures else "query count/parity valid"),
+            f"{portable(root, path)}; "
+            + (
+                ", ".join(failures)
+                if failures
+                else (
+                    "candidate decision=rejected; dataset parity failure recorded"
+                    if parity_failed and rejected_candidate
+                    else "query count/parity valid"
+                )
+            ),
             category="conversion",
         )
 
     equivalence_protocol = protocol["graph_equivalence"]
-    for experiment_id in ("B01", "R01", "S01", "S02", "U02", "S03", "M01"):
+    equivalence_ids = {
+        "B01",
+        "R01",
+        "S01",
+        "S02",
+        "U02",
+        "S03",
+        "M01",
+    }
+    equivalence_ids.update(
+        path.parents[1].name
+        for path in (root / "artifacts/experiments").glob(
+            "*/front/onnx-equivalence.json"
+        )
+    )
+    for experiment_id in sorted(equivalence_ids):
         path = root / f"artifacts/experiments/{experiment_id}/front/onnx-equivalence.json"
         experiment = registry[experiment_id]
-        rejected_candidate = "rejected" in str(experiment.get("status", ""))
+        rejected_candidate = candidate_rejected(experiment)
         active_recovery = (
             experiment_id == "M01"
             and not experiment.get("fine_tuning", {}).get("completed")
@@ -318,16 +357,28 @@ def audit(root: Path) -> dict[str, Any]:
             continue
         if "front" not in experiment.get("cameras", []):
             continue
-        onnx_path = root / f"artifacts/experiments/{experiment.get('artifact_source', experiment_id)}/front/model.onnx"
+        own_onnx_path = root / f"artifacts/experiments/{experiment_id}/front/model.onnx"
+        source_onnx_path = root / f"artifacts/experiments/{experiment.get('artifact_source', experiment_id)}/front/model.onnx"
+        onnx_path = own_onnx_path if own_onnx_path.is_file() else source_onnx_path
         static_path = root / f"artifacts/experiments/{experiment_id}/front/static-analysis.json"
         if not onnx_path.is_file():
             continue
         if not static_path.is_file():
-            status = "PENDING" if experiment_id in {"M01", "M02"} else "FAIL"
+            blocked = experiment.get("status") == "blocked"
+            status = (
+                "PASS"
+                if blocked
+                else "PENDING" if experiment_id in {"M01", "M02"} else "FAIL"
+            )
             check(
                 f"static-analysis-{experiment_id}",
                 status,
-                f"missing {portable(root, static_path)}",
+                (
+                    f"not required because upstream candidate is blocked; "
+                    f"missing {portable(root, static_path)}"
+                    if blocked
+                    else f"missing {portable(root, static_path)}"
+                ),
                 category="static-analysis",
             )
             continue
@@ -355,6 +406,113 @@ def audit(root: Path) -> dict[str, Any]:
             category="static-analysis",
         )
 
+    stage1_path = root / "results/stage1-static-evaluation.json"
+    if not stage1_path.is_file():
+        check(
+            "stage1-all-candidate-coverage",
+            "FAIL",
+            f"missing {portable(root, stage1_path)}",
+            category="static-analysis",
+        )
+    else:
+        stage1 = load_json(stage1_path)
+        rows = stage1.get("rows", [])
+        row_ids = {
+            row.get("experiment_id")
+            for row in rows
+            if isinstance(row, dict) and row.get("experiment_id")
+        }
+        missing_ids = sorted(set(registry) - row_ids)
+        extra_ids = sorted(row_ids - set(registry))
+        unperformed = int(stage1.get("unperformed_count", -1))
+        protocol_static_only = (
+            stage1.get("protocol", {}).get("accuracy_used_as_stage1_gate") is False
+        )
+        valid = not missing_ids and not extra_ids and unperformed == 0 and protocol_static_only
+        check(
+            "stage1-all-candidate-coverage",
+            "PASS" if valid else "FAIL",
+            (
+                f"registered={len(registry)}; rows={len(row_ids)}; "
+                f"unperformed={unperformed}; missing={missing_ids or 'none'}; "
+                f"extra={extra_ids or 'none'}; static-only={protocol_static_only}"
+            ),
+            category="static-analysis",
+        )
+
+    efficiency_policy = selection.get("first_stage_efficiency", {})
+    efficiency_metrics = {
+        "onnx_size": (
+            "onnx_size_bytes",
+            "onnx_size_min_relative_reduction",
+        ),
+        "onnx_nodes": (
+            "onnx_nodes",
+            "onnx_nodes_min_relative_reduction",
+        ),
+        "dense_macs": (
+            "estimated_macs",
+            "dense_macs_min_relative_reduction",
+        ),
+    }
+    if efficiency_policy:
+        graph_efficiency_ids = {
+            experiment_id
+            for experiment_id in static_candidate_ids
+            if registry[experiment_id].get("method")
+            in {
+                "global-magnitude",
+                "decoder-layer",
+                "ffn-dimension",
+                "input-resolution",
+                "structured-resolution",
+            }
+        }
+        for experiment_id in sorted(graph_efficiency_ids):
+            comparison_path = (
+                root
+                / f"artifacts/experiments/{experiment_id}/front/comparison-B01.json"
+            )
+            if not comparison_path.is_file():
+                gate_outcomes.append(
+                    {
+                        "experiment_id": experiment_id,
+                        "comparison": "efficiency_vs_B01",
+                        "outcome": "PENDING",
+                        "reason": "static comparison is missing",
+                    }
+                )
+                continue
+            comparison = load_json(comparison_path)
+            gates: dict[str, bool] = {}
+            observed_reduction: dict[str, float | None] = {}
+            for gate_name, (metric_name, policy_name) in efficiency_metrics.items():
+                ratio = comparison.get(metric_name, {}).get("delta_ratio")
+                valid_ratio = (
+                    float(ratio)
+                    if isinstance(ratio, (int, float)) and not isinstance(ratio, bool)
+                    else None
+                )
+                observed_reduction[gate_name] = (
+                    -valid_ratio if valid_ratio is not None else None
+                )
+                gates[gate_name] = bool(
+                    valid_ratio is not None
+                    and valid_ratio <= -float(efficiency_policy[policy_name])
+                )
+            rule = efficiency_policy.get("rule", "any")
+            passed = all(gates.values()) if rule == "all" else any(gates.values())
+            gate_outcomes.append(
+                {
+                    "experiment_id": experiment_id,
+                    "comparison": "efficiency_vs_B01",
+                    "outcome": "PASS" if passed else "REJECT",
+                    "rule": rule,
+                    "metric_gates": gates,
+                    "observed_relative_reduction": observed_reduction,
+                }
+            )
+
     baseline_metrics = {
         name: metric(baseline, name)
         for name in ("bbox_ap", "mask_ap", "semantic_miou")
@@ -374,7 +532,7 @@ def audit(root: Path) -> dict[str, Any]:
         gate_outcomes.append(
             {
                 "experiment_id": record["experiment_id"],
-                "comparison": "accuracy_vs_B01",
+                "comparison": "desktop_preliminary_accuracy_vs_B01",
                 "outcome": "PASS" if all(gates.values()) else "REJECT",
                 "metric_gates": gates,
                 "metric_delta_candidate_minus_reference": {
@@ -443,7 +601,7 @@ def audit(root: Path) -> dict[str, Any]:
         check(
             "latency-results",
             "PENDING",
-            "TensorRT engines/benchmarks are waiting for M01 recovery",
+            "retained candidates await separate TensorRT engine benchmarking",
             category="latency",
         )
 
@@ -542,7 +700,7 @@ def audit(root: Path) -> dict[str, Any]:
         check(
             "engine-summary",
             "PENDING",
-            "desktop engine summary will be generated after recovery/build/evaluation",
+            "desktop engine summary will be generated during the second-stage engine evaluation",
             category="automation",
         )
 
@@ -565,6 +723,43 @@ def audit(root: Path) -> dict[str, Any]:
             "missing: " + ", ".join(missing_queue_stages)
             if missing_queue_stages
             else "engine inspection, paper table/figure, static report, and final audit are wired"
+        ),
+        category="automation",
+    )
+    notebook_source = (
+        root / "scripts/experiments/run_notebook_stage2.py"
+    ).read_text(encoding="utf-8")
+    notebook_required_tokens = (
+        "stage1-static-evaluation.json",
+        "stage2_notebook_eligible",
+        "build-failed",
+        "benchmark-failed",
+        "accuracy-failed",
+        "pending_candidates",
+        "stage3-pareto.json",
+        "dominates",
+    )
+    missing_notebook_tokens = [
+        token for token in notebook_required_tokens if token not in notebook_source
+    ]
+    package_source = (
+        root / "scripts/experiments/package_notebook_bundle.py"
+    ).read_text(encoding="utf-8")
+    suite_source = (
+        root / "scripts/experiments/build_engine_suite.py"
+    ).read_text(encoding="utf-8")
+    all_candidate_wiring = (
+        not missing_notebook_tokens
+        and '"stage1"' in package_source
+        and '"stage1"' in suite_source
+    )
+    check(
+        "all-candidate-notebook-pareto-wiring",
+        "PASS" if all_candidate_wiring else "FAIL",
+        (
+            "Stage-1 eligible set -> per-candidate terminal Stage 2 -> Pareto gate is wired"
+            if all_candidate_wiring
+            else "missing automation tokens: " + ", ".join(missing_notebook_tokens)
         ),
         category="automation",
     )

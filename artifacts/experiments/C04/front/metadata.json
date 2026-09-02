@@ -1,0 +1,95 @@
+{
+  "created_at_utc": "2026-09-02T18:05:25.729789+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "experiment_id": "C04",
+  "name": "structured-decoder1-resolution480",
+  "camera": "front",
+  "source_checkpoint": "artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
+  "source_checkpoint_sha256": "769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620",
+  "artifact_checkpoint_sha256": "57e45c7553ec8829a53167b11ccc4da6964019f741b5762c087d82b2a899b821",
+  "method": "structured-resolution",
+  "family": "combined",
+  "pruning": null,
+  "precision": "fp32",
+  "fine_tuning": {
+    "required": false
+  },
+  "input_shape": [
+    1,
+    3,
+    480,
+    480
+  ],
+  "batch_size": 1,
+  "classes": [
+    "front",
+    "out_line",
+    "parking_lot",
+    "parking_space"
+  ],
+  "onnx_opset": 17,
+  "artifacts": {
+    "onnx": "artifacts/experiments/C04/front/model.onnx",
+    "static_analysis": "artifacts/experiments/C04/front/static-analysis.json",
+    "build_command": "artifacts/experiments/C04/front/build-command.txt",
+    "build_log": "artifacts/experiments/C04/front/build.log",
+    "onnx-build_json": "artifacts/experiments/C04/front/onnx-build.json",
+    "comparison_B01": "artifacts/experiments/C04/front/comparison-B01.json",
+    "onnx_equivalence": "artifacts/experiments/C04/front/onnx-equivalence.json",
+    "stage1_static_evaluation": "artifacts/experiments/C04/front/stage1-static-evaluation.json",
+    "coco_evaluation": "results/coco-evaluation/C04-front-480-pth.json",
+    "recovery_training": "artifacts/experiments/S01/front/recovery/recovery-training.json"
+  },
+  "build_details": {
+    "onnx-build": {
+      "created_at_utc": "2026-09-02T16:44:10.600662+00:00",
+      "camera": "front",
+      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/S01/front/model.pth",
+      "onnx_path": "artifacts/experiments/C04/front/model.onnx",
+      "onnx_size_bytes": 124224309,
+      "opset": 17,
+      "batch_size": 1,
+      "resolution": 480,
+      "inputs": {
+        "input": [
+          1,
+          3,
+          480,
+          480
+        ]
+      },
+      "outputs": [
+        "dets",
+        "labels",
+        "masks"
+      ],
+      "classes": [
+        "front",
+        "out_line",
+        "parking_lot",
+        "parking_space"
+      ],
+      "validated_by_onnx_checker": true
+    }
+  },
+  "result": {
+    "decision": "retained",
+    "reason": "B01 대비 graph node 8.04%, dense MACs 11.51%를 줄이면서 세 정확도 gate와 production-image ONNX 동등성 및 전체 데이터셋 PTH-ONNX parity를 모두 통과함.",
+    "evaluation": "results/coco-evaluation/C04-front-480-pth.json",
+    "evaluation_sha256": "213fcd179c2d896ba25b2bd989f13a74d6e5acab9ce07701c9e92286b293e011",
+    "onnx_evaluation": "results/coco-evaluation/C04-front-480-onnx.json",
+    "onnx_evaluation_sha256": "618d02d105493bfa3d0f964b10345260bff8be65e1fde3b369ef80670c2ddff0",
+    "onnx": "artifacts/experiments/C04/front/model.onnx",
+    "onnx_sha256": "f49a978d117845d481706807053bc8b6a67a8eb5f3bf09c22d57544842a13c32",
+    "onnx_equivalence": "artifacts/experiments/C04/front/onnx-equivalence.json",
+    "onnx_equivalence_sha256": "684d7f72efbad3660e215de6eb8d8b057ac81fe57ace750daabdf9f813c45816",
+    "metrics": {
+      "bbox_ap": 0.7330551456978072,
+      "mask_ap": 0.5994477611977383,
+      "semantic_miou": 0.7289480659637028
+    }
+  },
+  "status": "onnx-exported"
+}

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -256,6 +257,13 @@ def onnx_analysis(path: Path) -> dict[str, Any]:
 
     model = onnx.load(str(path))
     onnx.checker.check_model(model)
+    operator_counts = Counter(node.op_type for node in model.graph.node)
+    qdq_node_types = (
+        "QuantizeLinear",
+        "DequantizeLinear",
+        "TRT_FP8QuantizeLinear",
+        "TRT_FP8DequantizeLinear",
+    )
 
     def value_shape(value) -> list[int | str]:
         return [
@@ -292,6 +300,8 @@ def onnx_analysis(path: Path) -> dict[str, Any]:
         "onnx_size_bytes": path.stat().st_size,
         "onnx_nodes": len(model.graph.node),
         "onnx_initializers": len(model.graph.initializer),
+        "operator_counts": dict(sorted(operator_counts.items())),
+        "qdq_nodes": sum(operator_counts[name] for name in qdq_node_types),
         # Kept for backward compatibility with existing comparisons. ONNX
         # initializers may include constants and are not necessarily trainable.
         "onnx_initializer_parameters": initializer_elements,

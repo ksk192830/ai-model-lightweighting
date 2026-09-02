@@ -1,0 +1,117 @@
+{
+  "created_at_utc": "2026-09-02T17:43:58.358218+00:00",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "baseline_experiment_id": "B01",
+  "candidate_experiment_id": "B03",
+  "camera": "front",
+  "engine_size_bytes": {
+    "baseline": null,
+    "candidate": null,
+    "delta": null,
+    "delta_ratio": null
+  },
+  "onnx_size_bytes": {
+    "baseline": 130677849,
+    "candidate": 130677849,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "onnx_initializer_parameters": {
+    "baseline": 32537747,
+    "candidate": 32537747,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "onnx_nodes": {
+    "baseline": 2127,
+    "candidate": 2127,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "estimated_macs": {
+    "baseline": 54083668224,
+    "candidate": 54083668224,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "estimated_flops": {
+    "baseline": 108167336448,
+    "candidate": 108167336448,
+    "delta": 0,
+    "delta_ratio": 0.0
+  },
+  "prunable_parameters": {
+    "baseline": 34759584,
+    "candidate": 0,
+    "delta": -34759584,
+    "delta_ratio": -1.0
+  },
+  "sparsity": {
+    "baseline": 0.0,
+    "candidate": null
+  },
+  "inputs": {
+    "baseline": {
+      "input": [
+        1,
+        3,
+        504,
+        504
+      ]
+    },
+    "candidate": {
+      "input": [
+        1,
+        3,
+        504,
+        504
+      ]
+    },
+    "equal": true
+  },
+  "outputs": {
+    "baseline": {
+      "dets": [
+        1,
+        200,
+        4
+      ],
+      "labels": [
+        1,
+        200,
+        5
+      ],
+      "masks": [
+        1,
+        200,
+        126,
+        126
+      ]
+    },
+    "candidate": {
+      "dets": [
+        1,
+        200,
+        4
+      ],
+      "labels": [
+        1,
+        200,
+        5
+      ],
+      "masks": [
+        1,
+        200,
+        126,
+        126
+      ]
+    },
+    "equal": true
+  },
+  "conclusion": {
+    "dense_graph_shape_reduced": false,
+    "engine_size_materially_reduced": false
+  }
+}
