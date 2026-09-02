@@ -1,6 +1,25 @@
+# Python 3.10.12
+# RF-DETR baseline training, ONNX export, TensorRT build, and evaluation.
+
+# Core model and the training dependencies used by the final baseline.
+rfdetr[train,onnx]==1.8.1
+torch==2.10.0
+torchvision==0.25.0
+pytorch-lightning==2.6.5
+albumentations==2.0.8
+
+# Export and evaluation.
+onnx==1.22.0
+pycocotools==2.0.11
+numpy==2.2.6
+Pillow==12.3.0
+matplotlib==3.10.9
+opencv-python-headless==5.0.0.93
+
+# Configuration and runtime monitoring.
 PyYAML==6.0.2
-psutil>=5.9.0
-pycocotools>=2.0.7
-rfdetr==1.8.1
-torch==2.12.1
-torchvision==0.27.1
+psutil==5.9.0
+
+# TensorRT engines are built on the target Linux x86-64 NVIDIA machine
+# (the local desktop or a compatible notebook).
+tensorrt-cu13==10.16.1.11; sys_platform == "linux" and platform_machine == "x86_64"
