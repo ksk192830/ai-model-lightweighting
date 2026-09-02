@@ -6,6 +6,8 @@
 기존 결과를 읽어 표현 형식과 비교 산출물만 만든다.
 
 ```bash
+.venv/bin/python scripts/reporting/show_project_status.py
+.venv/bin/python scripts/reporting/generate_stage1_static_evaluation.py --check
 .venv/bin/python scripts/reporting/paper_results.py
 .venv/bin/python scripts/reporting/generate_paper_static_analysis.py
 .venv/bin/python scripts/experiments/audit_evaluation_protocol.py
@@ -14,6 +16,9 @@
 입력:
 
 - `results/desktop-engine-summary.json`
+- `results/stage1-static-evaluation.json`
+- `results/stage2-notebook-state.json`
+- `results/stage3-pareto.json`
 - `artifacts/experiments/*/front/static-analysis.json`
 - `configs/experiments/defaults.yaml`
 
@@ -25,3 +30,7 @@
 - `docs/reports/paper-static-analysis.md`
 - `results/evaluation-automation-audit.json`
 - `docs/reports/evaluation-automation-audit.md`
+
+`show_project_status.py`는 1차의 평가/통과/불통/미수행 수와 2차의
+완료/실패/실행/대기 후보를 실제 상태 JSON에서 읽는다. 3차 Pareto가 생성되기
+전에는 `WAITING`, 생성된 뒤에는 비지배 후보 ID를 표시한다.

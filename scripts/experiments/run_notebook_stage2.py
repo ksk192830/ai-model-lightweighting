@@ -155,6 +155,11 @@ def main() -> int:
     ]
     protocol = defaults["evaluation_protocol"]
     latency = protocol["latency"]
+    if not args.only:
+        # Never expose a Pareto result from an older run while a new complete
+        # Stage-2 cohort is being evaluated.
+        (ROOT / PARETO_JSON).unlink(missing_ok=True)
+        (ROOT / PARETO_CSV).unlink(missing_ok=True)
     state: dict[str, Any] = {
         "created_at_utc": now(),
         "status": "running",
