@@ -181,17 +181,24 @@ def main() -> int:
                 path = paths.directory / name
                 if path.is_file():
                     build_details[name.removesuffix(".json")] = read_json(path)
+            previous_metadata = (
+                read_json(paths.metadata) if paths.metadata.is_file() else {}
+            )
             metadata = {
                 **runtime_metadata(),
                 "experiment_id": experiment_id,
                 "name": experiment["name"],
                 "camera": camera,
                 "source_checkpoint": relative(source),
-                "source_checkpoint_sha256": sha256(source),
+                "source_checkpoint_sha256": (
+                    sha256(source)
+                    if source.is_file()
+                    else previous_metadata.get("source_checkpoint_sha256")
+                ),
                 "artifact_checkpoint_sha256": (
                     sha256(artifact_source_paths.checkpoint)
                     if artifact_source_paths.checkpoint.is_file()
-                    else None
+                    else previous_metadata.get("artifact_checkpoint_sha256")
                 ),
                 "method": experiment["method"],
                 "family": experiment["family"],

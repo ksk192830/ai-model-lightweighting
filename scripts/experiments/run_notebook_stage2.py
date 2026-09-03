@@ -121,7 +121,11 @@ def package_version(name: str) -> str | None:
         return None
 
 
-def preflight(protocol: dict[str, Any], eligible: list[str]) -> dict[str, Any]:
+def preflight(
+    protocol: dict[str, Any],
+    eligible: list[str],
+    stage1_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     """Fail before a multi-hour run if the portable payload is incomplete."""
     dataset = ROOT / protocol["dataset_dir"]
     annotation = dataset / "_annotations.coco.json"
@@ -160,13 +164,71 @@ def preflight(protocol: dict[str, Any], eligible: list[str]) -> dict[str, Any]:
             verified_data_files += 1
 
     verified_onnx_files = 0
+    stage1_rows = stage1_rows or load_json(ROOT / STAGE1).get("rows", [])
+    eligible_set = set(eligible)
+    deployment_sources: dict[str, dict[str, Any]] = {}
+    consumers: dict[str, list[str]] = {}
+    for row in stage1_rows:
+        experiment_id = str(row.get("experiment_id", ""))
+        if experiment_id not in eligible_set:
+            continue
+        relative = str(row.get("deployment_onnx", ""))
+        expected_sha256 = str(row.get("deployment_onnx_sha256", ""))
+        expected_size = row.get("static_metrics", {}).get("onnx_size_bytes")
+        if not relative or not expected_sha256 or expected_size is None:
+            raise ValueError(
+                f"Stage 1 lacks deployment identity for {experiment_id}"
+            )
+        identity = {
+            "path": relative,
+            "sha256": expected_sha256,
+            "size_bytes": int(expected_size),
+        }
+        previous_identity = deployment_sources.setdefault(relative, identity)
+        if previous_identity != identity:
+            raise ValueError(
+                f"Stage 1 has conflicting deployment identities for {relative}"
+            )
+        consumers.setdefault(relative, []).append(experiment_id)
+
+    missing_or_mismatched = []
+    digest_cache: dict[tuple[int, int, int, int], str] = {}
+    for relative, identity in sorted(deployment_sources.items()):
+        target = ROOT / relative
+        if not target.is_file():
+            missing_or_mismatched.append(
+                f"{relative}: missing (used by {', '.join(consumers[relative])})"
+            )
+            continue
+        actual_size = target.stat().st_size
+        if actual_size != identity["size_bytes"]:
+            missing_or_mismatched.append(
+                f"{relative}: size {actual_size}, expected {identity['size_bytes']}"
+            )
+            continue
+        stat = target.stat()
+        key = (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns)
+        digest_cache.setdefault(key, sha256(target))
+        if digest_cache[key] != identity["sha256"]:
+            missing_or_mismatched.append(
+                f"{relative}: SHA-256 {digest_cache[key]}, "
+                f"expected {identity['sha256']}"
+            )
+            continue
+        verified_onnx_files += 1
+    if missing_or_mismatched:
+        details = "\n- ".join(missing_or_mismatched)
+        raise ValueError(
+            "Stage 2 requires the exact ONNX files recorded by Stage 1; "
+            "older or unidentified artifacts are rejected:\n- " + details
+        )
+
     verified_automation_files = 0
     manifest_path = ROOT / "manifest.json"
     if manifest_path.is_file():
         manifest = load_json(manifest_path)
         if set(manifest.get("experiments", [])) != set(eligible):
             raise ValueError("manifest.json candidate set differs from Stage 1")
-        digest_cache: dict[tuple[int, int, int, int], str] = {}
         for item in manifest.get("onnx_sources", []):
             target = ROOT / item["path"]
             if not target.is_file() or target.stat().st_size != int(item["size_bytes"]):
@@ -176,7 +238,8 @@ def preflight(protocol: dict[str, Any], eligible: list[str]) -> dict[str, Any]:
             digest_cache.setdefault(key, sha256(target))
             if digest_cache[key] != item["sha256"]:
                 raise ValueError(f"ONNX checksum mismatch: {item['path']}")
-            verified_onnx_files += 1
+            # Stage-1 identity verification above is authoritative. The bundle
+            # manifest is an additional transport-integrity check.
         for item in (manifest.get("automation") or {}).get("files", []):
             target = ROOT / item["path"]
             if not target.is_file() or target.stat().st_size != int(item["size_bytes"]):
@@ -581,7 +644,7 @@ def main() -> int:
         (ROOT / "configs/experiments/defaults.yaml").read_text(encoding="utf-8")
     )
     protocol = defaults["evaluation_protocol"]
-    preflight_result = preflight(protocol, full_eligible)
+    preflight_result = preflight(protocol, full_eligible, stage1.get("rows", []))
     repetitions = int(
         args.benchmark_repetitions
         or protocol["latency"].get("benchmark_repetitions", 3)
@@ -687,8 +750,6 @@ def main() -> int:
                 "front",
                 "--engine",
                 str(engine),
-                "--precision-label",
-                str(experiment["precision"]),
             ],
             logs / f"{experiment_id}-engine-static.log",
         )

@@ -98,6 +98,17 @@ def main() -> int:
         # prefer that graph; using artifact_source here silently rebuilt B01 or
         # S01 and erased the candidate transformation.
         source_onnx = paths.onnx
+        requires_candidate_onnx = experiment["stage"] in {
+            "quantization",
+            "quantization-study",
+        } or (
+            experiment["stage"] == "onnx"
+            and source_experiment_id != args.experiment_id
+        )
+        if not source_onnx.is_file() and requires_candidate_onnx:
+            raise FileNotFoundError(
+                f"Candidate-specific ONNX not found: {source_onnx}"
+            )
         if not source_onnx.is_file():
             source_onnx = artifact_paths(source_experiment_id, args.camera).onnx
         if not source_onnx.is_file() and experiment["family"] == "precision":
