@@ -10,6 +10,7 @@ engine 크기의 Pareto 비지배해를 선택한다.
 - Notion: [AI 경량화 및 최적화 프로젝트](https://app.notion.com/p/389d4a78ceed80d28d95c37d83422a60)
 - 현재 상태: [프로젝트 진행 현황](docs/PROJECT_STATUS.md)
 - 전체 후보표: [1차 정적평가 26개 결과](results/stage1-static-evaluation.md)
+- 노트북 최종 결과: [Stage 2 TensorRT 평가와 Stage 3 Pareto](docs/reports/notebook-stage2-results.md)
 - 평가 방법: [1차 정적 → 2차 노트북 → 3차 Pareto](docs/guides/three-stage-candidate-evaluation.md)
 - 노트북 전달: [TensorRT 노트북 재현 가이드](docs/guides/tensorrt-notebook-portability.md)
 - 논문 개조식 구성안: [한국어 논문 구성안](docs/paper/paper-outline-ko.md)
@@ -17,8 +18,8 @@ engine 크기의 Pareto 비지배해를 선택한다.
 
 ## 현재 진행 상황
 
-기준일은 **2026-09-02**다. 현재 실행 중인 학습이나 로컬 평가는 없으며,
-데스크탑에서 수행할 모델 준비와 1차 정적평가는 끝났다.
+기준일은 **2026-09-04**다. 모델 준비, 1차 정적평가와 노트북 TensorRT
+평가가 끝났으며 현재 실행 중인 학습이나 로컬 평가는 없다.
 
 | 단계 | 대상 | 상태 | 결과 및 다음 조건 |
 |---|---:|---|---|
@@ -26,13 +27,19 @@ engine 크기의 Pareto 비지배해를 선택한다.
 | 기준 모델 재학습 | B01 | 완료 | bbox AP 0.737791 / mask AP 0.601016 / semantic mIoU 0.712200 |
 | 1차 정적평가 | 26개 | **완료** | 평가 26/26, 통과 22, 불통 4, 미수행 0 |
 | 노트북 전달 묶음 | 통과 22개 | 완료 | engine plan 22개, unique ONNX 17개, calibration 128장, benchmark 437장 |
-| 2차 TensorRT 평가 | 통과 22개 | 대기 | 동일 노트북 GPU에서 build·정확도·성능을 모두 terminal 상태로 기록 |
-| 3차 Pareto 분석 | 2차 성공 후보 | 대기 | 22개가 모두 완료 또는 명시적 실패 상태가 된 뒤 자동 생성 |
+| 2차 TensorRT 평가 | 통과 22개 | **완료** | 21개 측정 완료, Q03 TensorRT INT4 parser build 실패 1개 |
+| 3차 Pareto 분석 | 2차 성공 후보 | **완료** | B02·B03·C01·C02·C03·C04·R01·R02 |
 
 현재 1차 불통 후보는 U01·U02·U03·S03이다. U01~U03은 비정형 희소화가
 dense ONNX 크기·노드·MAC을 줄이지 못했고, S03은 세 정적 효율 항목 모두
 사전 고정 5% 기준에 미달했다. 나머지 22개는 기존 데스크탑 정확도 판정과
 무관하게 노트북 2차 평가 대상으로 유지한다.
+
+2차 실측에서는 C02가 B01 대비 중앙 지연시간을 47.1%, engine 크기를 49.9%
+줄이면서 세 정확도 gate를 모두 통과했다. R01은 gate 통과 후보 중 가장 빠른
+25.82 ms였지만 반복 중앙값 CV 5.25%로 경고 기준을 소폭 넘어 재측정을 권장한다.
+전체 수치와 후속 작업은 [노트북 Stage 2 최종 평가](docs/reports/notebook-stage2-results.md)에
+정리했다.
 
 진행 상태는 생성된 결과 파일에서 직접 읽는다.
 

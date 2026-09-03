@@ -1,0 +1,1000 @@
+{
+  "events": [
+    {
+      "kind": "found",
+      "reported_count": 48,
+      "layers": [
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/mlp/fc1/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/mlp/fc2/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 19,
+      "layers": [
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/mlp/fc2/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 17,
+      "layers": [
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul"
+      ]
+    },
+    {
+      "kind": "found",
+      "reported_count": 19,
+      "layers": [
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/mlp/fc2/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/mlp/fc2/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 17,
+      "layers": [
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+        "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul"
+      ]
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 1,
+      "layers": [
+        "/segmentation_head/blocks.0/pwconv1/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 1,
+      "layers": [
+        "/segmentation_head/blocks.1/pwconv1/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 1,
+      "layers": [
+        "/segmentation_head/blocks.2/pwconv1/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 1,
+      "layers": [
+        "/segmentation_head/blocks.3/pwconv1/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 1,
+      "layers": [
+        "/segmentation_head/blocks.4/pwconv1/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 48,
+      "layers": [
+        "/transformer/enc_output.0/MatMul",
+        "/transformer/enc_out_class_embed.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.1/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.2/MatMul",
+        "/transformer/decoder/ref_point_head/layers.0/MatMul",
+        "/transformer/decoder/ref_point_head/layers.1/MatMul",
+        "/transformer/decoder/layers.0/self_attn/MatMul_1+/transformer/decoder/layers.0/self_attn/MatMul",
+        "/transformer/decoder/layers.0/self_attn/MatMul_2",
+        "/transformer/decoder/layers.0/self_attn/Gemm",
+        "/transformer/decoder/layers.0/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.0/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.0/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.0/linear1/MatMul",
+        "/transformer/decoder/layers.0/linear2/MatMul",
+        "/transformer/decoder/layers.1/self_attn/MatMul_1+/transformer/decoder/layers.1/self_attn/MatMul",
+        "/transformer/decoder/layers.1/self_attn/MatMul_2",
+        "/transformer/decoder/layers.1/self_attn/Gemm",
+        "/transformer/decoder/layers.1/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.1/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.1/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.1/linear1/MatMul",
+        "/transformer/decoder/layers.1/linear2/MatMul",
+        "/transformer/decoder/layers.2/self_attn/MatMul_1+/transformer/decoder/layers.2/self_attn/MatMul",
+        "/transformer/decoder/layers.2/self_attn/MatMul_2",
+        "/transformer/decoder/layers.2/self_attn/Gemm",
+        "/transformer/decoder/layers.2/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.2/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.2/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.2/linear1/MatMul",
+        "/transformer/decoder/layers.2/linear2/MatMul",
+        "/transformer/decoder/layers.3/self_attn/MatMul_1+/transformer/decoder/layers.3/self_attn/MatMul",
+        "/transformer/decoder/layers.3/self_attn/MatMul_2",
+        "/transformer/decoder/layers.3/self_attn/Gemm",
+        "/transformer/decoder/layers.3/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.3/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.3/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.3/linear1/MatMul",
+        "/transformer/decoder/layers.3/linear2/MatMul",
+        "/transformer/decoder/layers.4/self_attn/MatMul_1+/transformer/decoder/layers.4/self_attn/MatMul",
+        "/transformer/decoder/layers.4/self_attn/MatMul_2",
+        "/transformer/decoder/layers.4/self_attn/Gemm",
+        "/transformer/decoder/layers.4/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.4/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.4/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.4/linear1/MatMul",
+        "/transformer/decoder/layers.4/linear2/MatMul",
+        "/class_embed/MatMul",
+        "/bbox_embed/layers.0/MatMul",
+        "/bbox_embed/layers.1/MatMul",
+        "/bbox_embed/layers.2/MatMul",
+        "/segmentation_head/query_features_block/layers.0/MatMul",
+        "/segmentation_head/query_features_block/layers.2/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 46,
+      "layers": [
+        "/transformer/enc_output.0/MatMul",
+        "/transformer/enc_out_class_embed.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.1/MatMul",
+        "__mye140744+__mye140756",
+        "/transformer/decoder/ref_point_head/layers.0/MatMul",
+        "/transformer/decoder/ref_point_head/layers.1/MatMul",
+        "/transformer/decoder/layers.0/self_attn/MatMul_1+/transformer/decoder/layers.0/self_attn/MatMul",
+        "/transformer/decoder/layers.0/self_attn/MatMul_2",
+        "/transformer/decoder/layers.0/self_attn/Gemm",
+        "/transformer/decoder/layers.0/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.0/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.0/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.0/linear1/MatMul",
+        "/transformer/decoder/layers.0/linear2/MatMul",
+        "/transformer/decoder/layers.1/self_attn/MatMul_1+/transformer/decoder/layers.1/self_attn/MatMul",
+        "/transformer/decoder/layers.1/self_attn/MatMul_2",
+        "/transformer/decoder/layers.1/self_attn/Gemm",
+        "/transformer/decoder/layers.1/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.1/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.1/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.1/linear1/MatMul",
+        "/transformer/decoder/layers.1/linear2/MatMul",
+        "/transformer/decoder/layers.2/self_attn/MatMul_1+/transformer/decoder/layers.2/self_attn/MatMul",
+        "/transformer/decoder/layers.2/self_attn/MatMul_2",
+        "/transformer/decoder/layers.2/self_attn/Gemm",
+        "/transformer/decoder/layers.2/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.2/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.2/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.2/linear1/MatMul",
+        "/transformer/decoder/layers.2/linear2/MatMul",
+        "/transformer/decoder/layers.3/self_attn/MatMul_1+/transformer/decoder/layers.3/self_attn/MatMul",
+        "/transformer/decoder/layers.3/self_attn/MatMul_2",
+        "/transformer/decoder/layers.3/self_attn/Gemm",
+        "/transformer/decoder/layers.3/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.3/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.3/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.3/linear1/MatMul",
+        "/transformer/decoder/layers.3/linear2/MatMul",
+        "/transformer/decoder/layers.4/self_attn/MatMul_1+/transformer/decoder/layers.4/self_attn/MatMul",
+        "/transformer/decoder/layers.4/self_attn/MatMul_2",
+        "/transformer/decoder/layers.4/self_attn/Gemm",
+        "/transformer/decoder/layers.4/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.4/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.4/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.4/linear1/MatMul",
+        "/transformer/decoder/layers.4/linear2/MatMul",
+        "/class_embed/MatMul",
+        "/bbox_embed/layers.0/MatMul",
+        "/bbox_embed/layers.1/MatMul",
+        "__mye140796+__mye140808"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 3,
+      "layers": [
+        "/transformer/enc_output.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.1/MatMul"
+      ]
+    },
+    {
+      "kind": "found",
+      "reported_count": 46,
+      "layers": [
+        "/transformer/enc_output.0/MatMul",
+        "/transformer/enc_out_class_embed.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.1/MatMul",
+        "__mye140750+__mye140762",
+        "/transformer/decoder/ref_point_head/layers.0/MatMul",
+        "/transformer/decoder/ref_point_head/layers.1/MatMul",
+        "/transformer/decoder/layers.0/self_attn/MatMul_1+/transformer/decoder/layers.0/self_attn/MatMul",
+        "/transformer/decoder/layers.0/self_attn/MatMul_2",
+        "/transformer/decoder/layers.0/self_attn/Gemm",
+        "/transformer/decoder/layers.0/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.0/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.0/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.0/linear1/MatMul",
+        "/transformer/decoder/layers.0/linear2/MatMul",
+        "/transformer/decoder/layers.1/self_attn/MatMul_1+/transformer/decoder/layers.1/self_attn/MatMul",
+        "/transformer/decoder/layers.1/self_attn/MatMul_2",
+        "/transformer/decoder/layers.1/self_attn/Gemm",
+        "/transformer/decoder/layers.1/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.1/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.1/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.1/linear1/MatMul",
+        "/transformer/decoder/layers.1/linear2/MatMul",
+        "/transformer/decoder/layers.2/self_attn/MatMul_1+/transformer/decoder/layers.2/self_attn/MatMul",
+        "/transformer/decoder/layers.2/self_attn/MatMul_2",
+        "/transformer/decoder/layers.2/self_attn/Gemm",
+        "/transformer/decoder/layers.2/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.2/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.2/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.2/linear1/MatMul",
+        "/transformer/decoder/layers.2/linear2/MatMul",
+        "/transformer/decoder/layers.3/self_attn/MatMul_1+/transformer/decoder/layers.3/self_attn/MatMul",
+        "/transformer/decoder/layers.3/self_attn/MatMul_2",
+        "/transformer/decoder/layers.3/self_attn/Gemm",
+        "/transformer/decoder/layers.3/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.3/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.3/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.3/linear1/MatMul",
+        "/transformer/decoder/layers.3/linear2/MatMul",
+        "/transformer/decoder/layers.4/self_attn/MatMul_1+/transformer/decoder/layers.4/self_attn/MatMul",
+        "/transformer/decoder/layers.4/self_attn/MatMul_2",
+        "/transformer/decoder/layers.4/self_attn/Gemm",
+        "/transformer/decoder/layers.4/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.4/cross_attn/sampling_offsets/MatMul",
+        "/transformer/decoder/layers.4/cross_attn/output_proj/MatMul",
+        "/transformer/decoder/layers.4/linear1/MatMul",
+        "/transformer/decoder/layers.4/linear2/MatMul",
+        "/bbox_embed/layers.0/MatMul",
+        "/bbox_embed/layers.1/MatMul",
+        "__mye140802+__mye140814",
+        "/class_embed/MatMul"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 3,
+      "layers": [
+        "/transformer/enc_output.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+        "/transformer/enc_out_bbox_embed.0/layers.1/MatMul"
+      ]
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "chose",
+      "reported_count": 0,
+      "layers": []
+    },
+    {
+      "kind": "found",
+      "reported_count": 9,
+      "layers": [
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv2/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv2/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv2/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/cv2/conv/Conv",
+        "/segmentation_head/spatial_features_proj/Conv"
+      ]
+    },
+    {
+      "kind": "chose",
+      "reported_count": 9,
+      "layers": [
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv2/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv2/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv1/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv2/conv/Conv",
+        "/backbone/backbone.0/projector/stages.0/stages.0.0/cv2/conv/Conv",
+        "/segmentation_head/spatial_features_proj/Conv"
+      ]
+    }
+  ],
+  "max_eligible_in_event": 48,
+  "max_chosen_in_event": 17,
+  "unique_eligible_layer_names": [
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.1/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.1/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.10/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.10/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.11/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.11/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.2/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.2/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.3/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.3/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.4/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.4/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.5/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.5/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.6/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.6/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.7/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.7/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.8/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.8/mlp/fc2/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.9/mlp/fc1/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.9/mlp/fc2/MatMul",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/cv2/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv2/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv2/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv2/conv/Conv",
+    "/bbox_embed/layers.0/MatMul",
+    "/bbox_embed/layers.1/MatMul",
+    "/bbox_embed/layers.2/MatMul",
+    "/class_embed/MatMul",
+    "/segmentation_head/blocks.0/pwconv1/MatMul",
+    "/segmentation_head/blocks.1/pwconv1/MatMul",
+    "/segmentation_head/blocks.2/pwconv1/MatMul",
+    "/segmentation_head/blocks.3/pwconv1/MatMul",
+    "/segmentation_head/blocks.4/pwconv1/MatMul",
+    "/segmentation_head/query_features_block/layers.0/MatMul",
+    "/segmentation_head/query_features_block/layers.2/MatMul",
+    "/segmentation_head/spatial_features_proj/Conv",
+    "/transformer/decoder/layers.0/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.0/cross_attn/sampling_offsets/MatMul",
+    "/transformer/decoder/layers.0/cross_attn/output_proj/MatMul",
+    "/transformer/decoder/layers.0/linear1/MatMul",
+    "/transformer/decoder/layers.0/linear2/MatMul",
+    "/transformer/decoder/layers.0/self_attn/Gemm",
+    "/transformer/decoder/layers.0/self_attn/MatMul_1+/transformer/decoder/layers.0/self_attn/MatMul",
+    "/transformer/decoder/layers.0/self_attn/MatMul_2",
+    "/transformer/decoder/layers.1/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.1/cross_attn/sampling_offsets/MatMul",
+    "/transformer/decoder/layers.1/cross_attn/output_proj/MatMul",
+    "/transformer/decoder/layers.1/linear1/MatMul",
+    "/transformer/decoder/layers.1/linear2/MatMul",
+    "/transformer/decoder/layers.1/self_attn/Gemm",
+    "/transformer/decoder/layers.1/self_attn/MatMul_1+/transformer/decoder/layers.1/self_attn/MatMul",
+    "/transformer/decoder/layers.1/self_attn/MatMul_2",
+    "/transformer/decoder/layers.2/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.2/cross_attn/sampling_offsets/MatMul",
+    "/transformer/decoder/layers.2/cross_attn/output_proj/MatMul",
+    "/transformer/decoder/layers.2/linear1/MatMul",
+    "/transformer/decoder/layers.2/linear2/MatMul",
+    "/transformer/decoder/layers.2/self_attn/Gemm",
+    "/transformer/decoder/layers.2/self_attn/MatMul_1+/transformer/decoder/layers.2/self_attn/MatMul",
+    "/transformer/decoder/layers.2/self_attn/MatMul_2",
+    "/transformer/decoder/layers.3/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.3/cross_attn/sampling_offsets/MatMul",
+    "/transformer/decoder/layers.3/cross_attn/output_proj/MatMul",
+    "/transformer/decoder/layers.3/linear1/MatMul",
+    "/transformer/decoder/layers.3/linear2/MatMul",
+    "/transformer/decoder/layers.3/self_attn/Gemm",
+    "/transformer/decoder/layers.3/self_attn/MatMul_1+/transformer/decoder/layers.3/self_attn/MatMul",
+    "/transformer/decoder/layers.3/self_attn/MatMul_2",
+    "/transformer/decoder/layers.4/cross_attn/attention_weights/MatMul+/transformer/decoder/layers.4/cross_attn/sampling_offsets/MatMul",
+    "/transformer/decoder/layers.4/cross_attn/output_proj/MatMul",
+    "/transformer/decoder/layers.4/linear1/MatMul",
+    "/transformer/decoder/layers.4/linear2/MatMul",
+    "/transformer/decoder/layers.4/self_attn/Gemm",
+    "/transformer/decoder/layers.4/self_attn/MatMul_1+/transformer/decoder/layers.4/self_attn/MatMul",
+    "/transformer/decoder/layers.4/self_attn/MatMul_2",
+    "/transformer/decoder/ref_point_head/layers.0/MatMul",
+    "/transformer/decoder/ref_point_head/layers.1/MatMul",
+    "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+    "/transformer/enc_out_bbox_embed.0/layers.1/MatMul",
+    "/transformer/enc_out_bbox_embed.0/layers.2/MatMul",
+    "/transformer/enc_out_class_embed.0/MatMul",
+    "/transformer/enc_output.0/MatMul",
+    "__mye140744+__mye140756",
+    "__mye140750+__mye140762",
+    "__mye140796+__mye140808",
+    "__mye140802+__mye140814"
+  ],
+  "unique_chosen_layer_names": [
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.0/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.1/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.10/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.11/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.2/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.3/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.4/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.5/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.6/attention/output/dense/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.7/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.8/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/value/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/key/MatMul+/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/attention/query/MatMul",
+    "/backbone/backbone.0/encoder/encoder/encoder/layer.9/attention/output/dense/MatMul",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/cv2/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.0/cv2/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.1/cv2/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv1/conv/Conv",
+    "/backbone/backbone.0/projector/stages.0/stages.0.0/m.2/cv2/conv/Conv",
+    "/segmentation_head/spatial_features_proj/Conv",
+    "/transformer/enc_out_bbox_embed.0/layers.0/MatMul",
+    "/transformer/enc_out_bbox_embed.0/layers.1/MatMul",
+    "/transformer/enc_output.0/MatMul"
+  ],
+  "sparse_tactic_selected": true
+}

@@ -1,8 +1,8 @@
 {
-  "created_at_utc": "2026-09-02T18:05:26.313170+00:00",
-  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "created_at_utc": "2026-09-03T15:34:28.884563+00:00",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
   "python": "3.10.12",
-  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "git_commit": "a36a5f877ac1cc645e2aecb6a8d1d074220053d7",
   "experiment_id": "Q03",
   "name": "int4-weight-only-ffn",
   "camera": "front",
@@ -31,13 +31,11 @@
   ],
   "onnx_opset": 17,
   "artifacts": {
-    "onnx": "artifacts/experiments/Q03/front/model.onnx",
     "static_analysis": "artifacts/experiments/Q03/front/static-analysis.json",
-    "build_command": "artifacts/experiments/Q03/front/build-command.txt",
     "comparison_B01": "artifacts/experiments/Q03/front/comparison-B01.json",
     "quantization": "artifacts/experiments/Q03/front/quantization.json",
     "stage1_static_evaluation": "artifacts/experiments/Q03/front/stage1-static-evaluation.json"
   },
   "build_details": {},
-  "status": "onnx-exported"
+  "status": "static-analysis-passed"
 }

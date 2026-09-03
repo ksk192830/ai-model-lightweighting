@@ -1,0 +1,45 @@
+[09/04/2026-01:46:32] [TRT] [I] [MemUsageChange] Init CUDA: CPU +22, GPU +0, now: CPU 33, GPU 388 (MiB)
+[09/04/2026-01:46:33] [TRT] [I] ----------------------------------------------------------------
+[09/04/2026-01:46:33] [TRT] [I] ONNX IR version:  0.0.8
+[09/04/2026-01:46:33] [TRT] [I] Opset version:    17
+[09/04/2026-01:46:33] [TRT] [I] Producer name:    pytorch
+[09/04/2026-01:46:33] [TRT] [I] Producer version: 2.10.0
+[09/04/2026-01:46:33] [TRT] [I] Domain:
+[09/04/2026-01:46:33] [TRT] [I] Model version:    0
+[09/04/2026-01:46:33] [TRT] [I] Doc string:
+[09/04/2026-01:46:33] [TRT] [I] ----------------------------------------------------------------
+[09/04/2026-01:46:33] [TRT] [E] INetworkDefinition::addDequantize(ITensor&, ITensor&, DataType): Error Code 3: API Usage Error (Parameter check failed, condition: !isAnyBlockScaleOp(params.mode) || isBlockQuantized(input.getType()). Block quantization is not supported for DataType Float In DequantizeLayer at /_src/optimizer/api/layers/dequantizeLayer.cpp:50)
+[09/04/2026-01:46:33] [TRT] [E] ModelImporter.cpp:138: While parsing node number 89 [DequantizeLinear -> "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/DequantizeLinear_output_0"]:
+[09/04/2026-01:46:33] [TRT] [E] ModelImporter.cpp:140: --- Begin node ---
+input: "trt::DequantizeLinear_4939"
+input: "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/Constant_output_0"
+output: "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/DequantizeLinear_output_0"
+name: "/backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/DequantizeLinear"
+op_type: "DequantizeLinear"
+attribute {
+  name: "axis"
+  i: 0
+  type: INT
+}
+attribute {
+  name: "block_size"
+  i: 128
+  type: INT
+}
+domain: "trt"
+
+[09/04/2026-01:46:33] [TRT] [E] ModelImporter.cpp:141: --- End node ---
+[09/04/2026-01:46:33] [TRT] [E] ModelImporter.cpp:149: ERROR: ModelImporter.cpp:490 In function parseNode:
+[6] Invalid Node - /backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/DequantizeLinear
+INetworkDefinition::addDequantize(ITensor&, ITensor&, DataType): Error Code 3: API Usage Error (Parameter check failed, condition: !isAnyBlockScaleOp(params.mode) || isBlockQuantized(input.getType()). Block quantization is not supported for DataType Float In DequantizeLayer at /_src/optimizer/api/layers/dequantizeLayer.cpp:50)
+TensorRT Python FP16 build: /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q03/front/model.onnx -> /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q03/front/model.engine
+Traceback (most recent call last):
+  File "/home/sg/kips-ai-model-lightweighting/scripts/lightweighting/build_tensorrt_fp16.py", line 256, in <module>
+    raise SystemExit(main())
+  File "/home/sg/kips-ai-model-lightweighting/scripts/lightweighting/build_tensorrt_fp16.py", line 195, in main
+    tensorrt_version = build_with_python(
+  File "/home/sg/kips-ai-model-lightweighting/scripts/lightweighting/build_tensorrt_fp16.py", line 112, in build_with_python
+    raise RuntimeError(f"TensorRT could not parse {onnx_path}:\n{errors}")
+RuntimeError: TensorRT could not parse /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q03/front/model.onnx:
+In node 89 with name: /backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/DequantizeLinear and operator: DequantizeLinear (parseNode): INVALID_NODE: Invalid Node - /backbone/backbone.0/encoder/encoder/encoder/layer.0/mlp/fc1/weight_quantizer/DequantizeLinear
+INetworkDefinition::addDequantize(ITensor&, ITensor&, DataType): Error Code 3: API Usage Error (Parameter check failed, condition: !isAnyBlockScaleOp(params.mode) || isBlockQuantized(input.getType()). Block quantization is not supported for DataType Float In DequantizeLayer at /_src/optimizer/api/layers/dequantizeLayer.cpp:50)

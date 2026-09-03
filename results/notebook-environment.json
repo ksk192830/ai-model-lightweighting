@@ -1,0 +1,15 @@
+{
+  "recorded_at_utc": "2026-09-03T23:37:14.188577+00:00",
+  "recording_phase": "after Stage-2 completion",
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+  "logical_cpus": 16,
+  "ram_total_gib_approx": 14,
+  "os": "Ubuntu 22.04 kernel 6.8.0-136-generic",
+  "kernel": "6.8.0-136-generic",
+  "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "gpu_vram_mib": 6141,
+  "nvidia_driver": "580.173.02",
+  "ac_connected_at_recording": true,
+  "gpu_temperature_c_at_recording": 47,
+  "measurement_condition_limitation": "GPU power/TGP mode, temperature, clock and background load were not sampled during the original latency measurements."
+}

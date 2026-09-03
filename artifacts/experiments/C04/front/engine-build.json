@@ -1,0 +1,22 @@
+{
+  "created_at_utc": "2026-09-03T16:22:51.441286+00:00",
+  "camera": "front",
+  "precision": "fp32",
+  "source_onnx": "artifacts/experiments/C04/front/model.onnx",
+  "source_onnx_sha256": "f49a978d117845d481706807053bc8b6a67a8eb5f3bf09c22d57544842a13c32",
+  "engine_path": "artifacts/experiments/C04/front/model.engine",
+  "engine_size_bytes": 128969140,
+  "engine_sha256": "14de81813ff71cac78d0d349431099c5119905068ce3f85da70404280a86a551",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+  "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "compute_capability": [
+    8,
+    9
+  ],
+  "torch_version": "2.10.0+cu128",
+  "cuda_version": "12.8",
+  "build_backend": "tensorrt-python",
+  "tensorrt_version": "10.16.1.11",
+  "workspace_mib": 4096,
+  "profiling_verbosity": "DETAILED"
+}

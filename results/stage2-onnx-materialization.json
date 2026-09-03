@@ -1,0 +1,92 @@
+{
+  "created_at_utc": "2026-09-03T16:03:37.943446+00:00",
+  "repository_commit": "0aebbb3093922516fd88bbbc939ab64afca352e9",
+  "policy": "Only Stage-1 identity-matched shared Git LFS ONNX files were materialized.",
+  "files": [
+    {
+      "path": "artifacts/experiments/B01/front/model.onnx",
+      "source": "shared-models/B01-front-baseline.onnx",
+      "action": "kept-verified"
+    },
+    {
+      "path": "artifacts/experiments/M01/front/model.onnx",
+      "source": "shared-models/M01-front-2to4-recovery.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/S01/front/model.onnx",
+      "source": "shared-models/S01-front-structured-recovery.onnx",
+      "action": "kept-verified"
+    },
+    {
+      "path": "artifacts/experiments/S02/front/model.onnx",
+      "source": "shared-models/S02-front-structured-recovery.onnx",
+      "action": "kept-verified"
+    },
+    {
+      "path": "artifacts/experiments/S04/front/model.onnx",
+      "source": "shared-models/S04-front-ffn40.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/C03/front/model.onnx",
+      "source": "shared-models/C03-front-structured-432.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/C04/front/model.onnx",
+      "source": "shared-models/C04-front-structured-480.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/R01/front/model.onnx",
+      "source": "shared-models/R01-front-432.onnx",
+      "action": "kept-verified"
+    },
+    {
+      "path": "artifacts/experiments/R02/front/model.onnx",
+      "source": "shared-models/R02-front-480.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/R03/front/model.onnx",
+      "source": "shared-models/R03-front-384.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q01/front/model.onnx",
+      "source": "shared-models/Q01-front-int8-smoothquant.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q02/front/model.onnx",
+      "source": "shared-models/Q02-front-int8-mixed-fp16.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q03/front/model.onnx",
+      "source": "shared-models/Q03-front-int4-weight-only.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q04/front/model.onnx",
+      "source": "shared-models/Q04-front-fp8-uniform.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q05/front/model.onnx",
+      "source": "shared-models/Q05-front-fp8-mixed-map.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q06/front/model.onnx",
+      "source": "shared-models/Q06-front-fp8-mixed-kld.onnx",
+      "action": "hardlinked"
+    },
+    {
+      "path": "artifacts/experiments/Q07/front/model.onnx",
+      "source": "shared-models/Q07-front-fp8-mixed-top2.onnx",
+      "action": "hardlinked"
+    }
+  ]
+}

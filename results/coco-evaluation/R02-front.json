@@ -1,0 +1,115 @@
+{
+  "created_at_utc": "2026-09-03T16:30:58.420353+00:00",
+  "experiment_id": "R02",
+  "camera": "front",
+  "engine": "artifacts/experiments/R02/front/model.engine",
+  "engine_size_bytes": 135359412,
+  "engine_sha256": "ff5c45209c42a5a49a130e6694eed0af947c9d7c2a667ebf5d4b0a2b56cd2a31",
+  "dataset": "data/training/front_session_split_v1/test",
+  "annotation_sha256": "037949731e462ecb42feb6e61b61fbca555dfe2a3d381464ad36a17b0a7ff9b9",
+  "image_count": 437,
+  "category_ids": [
+    1,
+    2,
+    3
+  ],
+  "categories": {
+    "0": "front",
+    "1": "out_line",
+    "2": "parking_lot",
+    "3": "parking_space"
+  },
+  "threshold": 0.001,
+  "miou_threshold": 0.25,
+  "postprocess_num_select": 200,
+  "evaluation_protocol": {
+    "source": "configs/experiments/defaults.yaml",
+    "bbox": "COCOeval bbox AP@[IoU=0.50:0.05:0.95], maxDets=100",
+    "segmentation": "COCOeval segm AP@[IoU=0.50:0.05:0.95], maxDets=100",
+    "semantic_miou": "dataset-level per-class intersection/union after unioning instance masks with confidence >= miou_threshold",
+    "nms": "not applied; DETR query predictions are ranked directly"
+  },
+  "warmup": 0,
+  "hardware": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "tensorrt": "10.16.1.11",
+  "prediction_count": 86477,
+  "prediction_count_at_operating_threshold": 623,
+  "metrics": {
+    "bbox": {
+      "ap": 0.7329731311010346,
+      "ap50": 0.9252375929791357,
+      "ap75": 0.7789656919797115,
+      "ap_small": 0.2754308333438719,
+      "ap_medium": 0.5163820240099521,
+      "ap_large": 0.8447947057057178,
+      "ar1": 0.7239013205348834,
+      "ar10": 0.8397732619303501,
+      "ar100": 0.8781966363835834,
+      "ar_small": 0.6987341772151898,
+      "ar_medium": 0.7936854190585533,
+      "ar_large": 0.9350534454130344
+    },
+    "bbox_by_category": {
+      "1": {
+        "ap": 0.4756240388677918,
+        "ap50": 0.8249113421206503,
+        "ap75": 0.4572972361233227,
+        "ar100": 0.775875486381323
+      },
+      "2": {
+        "ap": 0.8575149829491794,
+        "ap50": 0.957333290316478,
+        "ap75": 0.8989141988511302,
+        "ar100": 0.9480225988700566
+      },
+      "3": {
+        "ap": 0.8657803714861322,
+        "ap50": 0.9934681465002789,
+        "ap75": 0.9806856409646819,
+        "ar100": 0.9106918238993711
+      }
+    },
+    "segm": {
+      "ap": 0.5997268915175692,
+      "ap50": 0.8412961717754037,
+      "ap75": 0.6382843982603958,
+      "ap_small": 0.050045713857184905,
+      "ap_medium": 0.38986450222589647,
+      "ap_large": 0.7085936147015047,
+      "ar1": 0.6080097185704305,
+      "ar10": 0.6941932191499471,
+      "ar100": 0.7271833912158736,
+      "ar_small": 0.33164556962025316,
+      "ar_medium": 0.6552047455032529,
+      "ar_large": 0.7976157119136571
+    },
+    "segm_by_category": {
+      "1": {
+        "ap": 0.18918447231546504,
+        "ap50": 0.5662905237601205,
+        "ap75": 0.09506803186378746,
+        "ar100": 0.44435797665369653
+      },
+      "2": {
+        "ap": 0.812963585671814,
+        "ap50": 0.9635958909679483,
+        "ap75": 0.8951659561348813,
+        "ar100": 0.888135593220339
+      },
+      "3": {
+        "ap": 0.7970326165654287,
+        "ap50": 0.9940021005981422,
+        "ap75": 0.9246192067825186,
+        "ar100": 0.8490566037735847
+      }
+    },
+    "semantic_miou": 0.7107549105524779,
+    "semantic_iou_by_category": {
+      "1": 0.45988293303080735,
+      "2": 0.7862250213985119,
+      "3": 0.8861567772281145
+    }
+  }
+}

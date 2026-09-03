@@ -1,8 +1,8 @@
 {
-  "created_at_utc": "2026-09-02T18:05:25.898836+00:00",
-  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "created_at_utc": "2026-09-03T13:16:05.055396+00:00",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
   "python": "3.10.12",
-  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "git_commit": "a36a5f877ac1cc645e2aecb6a8d1d074220053d7",
   "experiment_id": "R01",
   "name": "reduced-resolution-fp16",
   "camera": "front",
@@ -32,45 +32,50 @@
   "onnx_opset": 17,
   "artifacts": {
     "onnx": "artifacts/experiments/R01/front/model.onnx",
+    "engine": "artifacts/experiments/R01/front/model.engine",
     "static_analysis": "artifacts/experiments/R01/front/static-analysis.json",
     "build_command": "artifacts/experiments/R01/front/build-command.txt",
     "build_log": "artifacts/experiments/R01/front/build.log",
-    "onnx-build_json": "artifacts/experiments/R01/front/onnx-build.json",
+    "engine-build_json": "artifacts/experiments/R01/front/engine-build.json",
     "comparison_B01": "artifacts/experiments/R01/front/comparison-B01.json",
     "onnx_equivalence": "artifacts/experiments/R01/front/onnx-equivalence.json",
     "stage1_static_evaluation": "artifacts/experiments/R01/front/stage1-static-evaluation.json",
     "coco_evaluation": "results/coco-evaluation/R01-front-432-pth.json"
   },
   "build_details": {
-    "onnx-build": {
-      "created_at_utc": "2026-09-02T11:44:08.991720+00:00",
+    "engine-build": {
+      "created_at_utc": "2026-09-03T13:16:04.026259+00:00",
       "camera": "front",
-      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth",
-      "onnx_path": "artifacts/experiments/R01/front/model.onnx",
-      "onnx_size_bytes": 129955207,
-      "opset": 17,
-      "batch_size": 1,
-      "resolution": 432,
-      "inputs": {
-        "input": [
-          1,
-          3,
-          432,
-          432
-        ]
-      },
-      "outputs": [
-        "dets",
-        "labels",
-        "masks"
+      "precision": "fp16",
+      "source_onnx": "artifacts/experiments/R01/front/model.onnx",
+      "source_onnx_sha256": "e5a8c934b000d46e32d098c48dfd947dfd609451a54d2dbc4657d802ee87514a",
+      "engine_path": "artifacts/experiments/R01/front/model.engine",
+      "engine_size_bytes": 71359388,
+      "engine_sha256": "9c4cef49331dc94581f92ff10a141a5619caaf3c71aa708c24bfc0a39311efda",
+      "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+      "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "compute_capability": [
+        8,
+        9
       ],
-      "classes": [
-        "front",
-        "out_line",
-        "parking_lot",
-        "parking_space"
-      ],
-      "validated_by_onnx_checker": true
+      "torch_version": "2.10.0+cu128",
+      "cuda_version": "12.8",
+      "build_backend": "tensorrt-python",
+      "tensorrt_version": "10.16.1.11",
+      "trtexec_version": "",
+      "workspace_mib": 4096,
+      "sparse_weights_enabled": false,
+      "verbose_logging": false,
+      "profiling_verbosity": "DETAILED",
+      "build_command": [
+        "trtexec",
+        "--onnx=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/R01/front/model.onnx",
+        "--saveEngine=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/R01/front/model.engine",
+        "--fp16",
+        "--memPoolSize=workspace:4096",
+        "--useCudaGraph",
+        "--useSpinWait"
+      ]
     }
   },
   "result": {
@@ -111,5 +116,5 @@
       }
     }
   },
-  "status": "onnx-exported"
+  "status": "engine-built"
 }

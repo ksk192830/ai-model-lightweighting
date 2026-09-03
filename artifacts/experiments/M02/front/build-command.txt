@@ -1,1 +1,1 @@
-.venv/bin/python scripts/lightweighting/build_tensorrt_fp16.py --camera front --onnx artifacts/experiments/M01/front/model.onnx --output-dir artifacts/experiments/M02 --output-name model --workspace-mib 4096 --dry-run --sparse-weights --verbose
+.venv/bin/python scripts/lightweighting/build_tensorrt_fp16.py --camera front --onnx artifacts/experiments/M01/front/model.onnx --output-dir artifacts/experiments/M02 --output-name model --workspace-mib 4096 --sparse-weights --verbose

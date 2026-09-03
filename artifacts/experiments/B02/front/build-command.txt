@@ -1,1 +1,1 @@
-.venv/bin/python scripts/lightweighting/build_tensorrt_fp16.py --camera front --onnx artifacts/experiments/B01/front/model.onnx --output-dir artifacts/experiments/B02 --output-name model --workspace-mib 4096 --dry-run
+.venv/bin/python scripts/lightweighting/build_tensorrt_fp16.py --camera front --onnx artifacts/experiments/B01/front/model.onnx --output-dir artifacts/experiments/B02 --output-name model --workspace-mib 4096 --force

@@ -1,7 +1,7 @@
 # 프로젝트 진행 현황
 
 이 문서는 논문 초안 작성자와 다음 실험 담당자가 가장 먼저 읽는 인수인계
-페이지다. 정량값은 2026-09-02에 생성된 저장소 결과를 기준으로 하며, 실행
+페이지다. 정량값은 2026-09-04에 생성된 저장소 결과를 기준으로 하며, 실행
 중인 단계는 결과를 추정하지 않고 `진행 중`으로 표시한다.
 
 ## 완료된 작업
@@ -23,6 +23,9 @@
 8. 노트북 원클릭 실행기를 추가해 환경 설치·checksum·engine 생성·정적검사·3회
    latency 반복·437장 정확도·정확도 gate·Pareto·Excel 보고서까지 한 번에 실행하고,
    중단 뒤 완료 후보를 재사용하도록 구성했다.
+9. RTX 4050 Laptop GPU에서 22개 후보를 terminal 상태로 만들었다. 21개는 전체
+   평가를 완료했고 Q03은 TensorRT INT4 block quantization parser 오류를 기록했다.
+   정확도 gate 이후 Pareto 후보는 B02, B03, C01, C02, C03, C04, R01, R02다.
 
 ## 1차 정적평가 판정
 
@@ -46,14 +49,15 @@
 ## 현재 실행 상태와 다음 작업
 
 - 현재 실행 중인 로컬 학습·평가 작업은 없다.
-- 1차는 26/26 완료됐다. 22개 통과 후보와 17개 unique ONNX 입력이
-  노트북 패키지·engine plan 검증을 통과했다.
-- 다음 단계는 동일 노트북 GPU에서 `bash run_notebook_pipeline.sh`를 실행해 22개를
-  모두 terminal 상태로 만드는 2차 평가다. 성공 후보는 상세 정확도·3회 반복
-  latency·FPS·memory·engine 크기를 기록하고,
-  build 불가 후보는 실패 이유와 로그를 남긴다.
-- 전 22개의 2차 상태가 terminal일 때만 정확도 보존 gate와 3차 Pareto를 수행하고
-  `results/stage2-evaluation-report.xlsx`를 생성한다.
+- 1차는 26/26, 2차는 terminal 22/22, 3차 Pareto 분석까지 완료됐다.
+- 21개 후보는 상세 정확도·3회 반복 latency·FPS·memory·engine 크기를 기록했다.
+- Q03은 TensorRT 10.16.1.11이 block size 128 INT4 `DequantizeLinear` 입력을
+  파싱하지 못해 build-failed로 종료됐다. 같은 환경에서 변경 없이 재실행할 이유는 없다.
+- C02를 주 배포 후보로 우선 검토하고 B03과 R01을 비교 후보로 유지한다.
+- R01은 반복 중앙값 CV 5.25%가 경고 기준 5%를 소폭 넘어 전력·온도 조건을
+  고정한 추가 측정을 권장한다.
+- 전체 결과는 [노트북 Stage 2 최종 평가](reports/notebook-stage2-results.md)와
+  `results/stage2-evaluation-report.xlsx`에 있다.
 
 ## 논문 초안에 바로 사용할 근거
 
@@ -70,6 +74,7 @@
 | 후보 정확도 비교 | [후보 정량 비교](reports/front-lightweighting-candidate-comparison.md) |
 | 평가 지표 정의 | [평가 지표와 해석](concepts/evaluation-metrics.md) |
 | 평가 타당성·한계 | [평가 자동화 감사](reports/evaluation-automation-audit.md) |
+| 노트북 TensorRT 최종 결과 | [Stage 2/3 최종 평가](reports/notebook-stage2-results.md) |
 | 재현용 모델 위치 | [모델 artifact 인덱스](handoffs/model-artifact-index.md) |
 
 논문에는 다음 한계를 명시한다.
@@ -78,13 +83,13 @@
 - 복구 학습은 seed 42의 단일 실행이므로 학습 분산을 추정하지 않는다.
 - PTH 평가는 일부 후보에서 GPU, 일부에서 CPU로 수행했으나 같은 evaluator와
   데이터셋을 사용했다. 속도 비교에는 이 측정 시간을 사용하지 않는다.
-- 최종 TensorRT latency/FPS/memory와 반복 측정 분산은 아직 대기 상태다.
+- TensorRT 결과는 RTX 4050 Laptop GPU와 기록된 CUDA/TensorRT 환경에 한정된다.
+- R01의 반복 latency 변동성과 Q03 INT4 parser 호환성은 후속 확인 대상이다.
 
-## 남은 완료 조건
+## 후속 작업
 
-- 1차 통과 22개 후보의 노트북 engine 생성 또는 build-failed terminal 기록
-- 생성된 모든 engine의 동일 장비 latency 200회 × 3반복·437장 정확도 측정
-- 전 22개 terminal 후 정확도 gate 및 7개 목표 기반 Pareto 분석
-- 통합 Excel 보고서와 원시 JSON/로그 일치 여부 확인
-- `paper_results.py`, 정적 분석 생성기, 평가 감사 재실행
-- 외부 일반화 주장이 필요하면 별도 촬영 세션 holdout 확보
+- R01을 고정된 전력·온도·백그라운드 조건에서 추가 측정해 속도 순위를 확인
+- 22개 전부의 수치가 필요하면 Q03을 호환 형식으로 재export한 뒤 Q03만 재평가
+- `paper_results.py`가 최신 노트북 summary를 읽도록 바꾸고 논문 표·그림 갱신
+- 과거 데스크탑/PTH 경로와 파일 mtime에 의존하는 평가 감사 도구를 최신 해시 기반으로 보완
+- 논문에 외부 일반화 주장이 필요하면 별도 촬영 세션 holdout 확보

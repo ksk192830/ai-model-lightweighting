@@ -1,8 +1,8 @@
 {
-  "created_at_utc": "2026-09-02T18:05:24.272681+00:00",
-  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "created_at_utc": "2026-09-03T16:05:49.928595+00:00",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
   "python": "3.10.12",
-  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "git_commit": "0aebbb3093922516fd88bbbc939ab64afca352e9",
   "experiment_id": "M01",
   "name": "sparse-2to4-dense-control",
   "camera": "front",
@@ -40,53 +40,54 @@
   ],
   "onnx_opset": 17,
   "artifacts": {
-    "checkpoint": "artifacts/experiments/M01/front/model.pth",
     "onnx": "artifacts/experiments/M01/front/model.onnx",
+    "engine": "artifacts/experiments/M01/front/model.engine",
     "sparsity": "artifacts/experiments/M01/front/sparsity.json",
     "static_analysis": "artifacts/experiments/M01/front/static-analysis.json",
     "build_command": "artifacts/experiments/M01/front/build-command.txt",
     "build_log": "artifacts/experiments/M01/front/build.log",
-    "onnx-build_json": "artifacts/experiments/M01/front/onnx-build.json",
+    "engine-build_json": "artifacts/experiments/M01/front/engine-build.json",
     "comparison_B01": "artifacts/experiments/M01/front/comparison-B01.json",
     "2to4_eligibility": "artifacts/experiments/M01/front/2to4-eligibility.json",
     "onnx_2to4": "artifacts/experiments/M01/front/onnx-2to4.json",
     "fine_tuning_preflight": "artifacts/experiments/M01/front/fine-tuning-preflight.json",
     "onnx_equivalence": "artifacts/experiments/M01/front/onnx-equivalence.json",
-    "stage1_static_evaluation": "artifacts/experiments/M01/front/stage1-static-evaluation.json",
-    "coco_evaluation": "results/coco-evaluation/M01-front-after-recovery.json",
-    "recovery_training": "artifacts/experiments/M01/front/recovery/recovery-training.json",
-    "prototype_before_recovery": "artifacts/experiments/M01/front/prototype-before-recovery"
+    "stage1_static_evaluation": "artifacts/experiments/M01/front/stage1-static-evaluation.json"
   },
   "build_details": {
-    "onnx-build": {
-      "created_at_utc": "2026-09-02T15:20:59.696330+00:00",
+    "engine-build": {
+      "created_at_utc": "2026-09-03T16:05:48.512153+00:00",
       "camera": "front",
-      "source_checkpoint": "/home/scope/ai 경량화 및 최적화 논문/artifacts/experiments/M01/front/model.pth",
-      "onnx_path": "artifacts/experiments/M01/front/model.onnx",
-      "onnx_size_bytes": 130677820,
-      "opset": 17,
-      "batch_size": 1,
-      "resolution": 504,
-      "inputs": {
-        "input": [
-          1,
-          3,
-          504,
-          504
-        ]
-      },
-      "outputs": [
-        "dets",
-        "labels",
-        "masks"
+      "precision": "fp16",
+      "source_onnx": "artifacts/experiments/M01/front/model.onnx",
+      "source_onnx_sha256": "d930a1c4190b3f427f3e56067f877236eaaafdeac1dbf5247902e21659e4d5f9",
+      "engine_path": "artifacts/experiments/M01/front/model.engine",
+      "engine_size_bytes": 71198284,
+      "engine_sha256": "34429486ea34f461cebfd4ed7b2e2df537160c9326589d120e74a962ac39efb7",
+      "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+      "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "compute_capability": [
+        8,
+        9
       ],
-      "classes": [
-        "front",
-        "out_line",
-        "parking_lot",
-        "parking_space"
-      ],
-      "validated_by_onnx_checker": true
+      "torch_version": "2.10.0+cu128",
+      "cuda_version": "12.8",
+      "build_backend": "tensorrt-python",
+      "tensorrt_version": "10.16.1.11",
+      "trtexec_version": "",
+      "workspace_mib": 4096,
+      "sparse_weights_enabled": false,
+      "verbose_logging": false,
+      "profiling_verbosity": "DETAILED",
+      "build_command": [
+        "trtexec",
+        "--onnx=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/M01/front/model.onnx",
+        "--saveEngine=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/M01/front/model.engine",
+        "--fp16",
+        "--memPoolSize=workspace:4096",
+        "--useCudaGraph",
+        "--useSpinWait"
+      ]
     }
   },
   "result": {
@@ -106,5 +107,5 @@
       "semantic_miou": 0.6828172602659599
     }
   },
-  "status": "onnx-exported"
+  "status": "engine-built"
 }

@@ -1,8 +1,8 @@
 {
-  "created_at_utc": "2026-09-02T18:05:26.392260+00:00",
-  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "created_at_utc": "2026-09-03T16:47:00.975231+00:00",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
   "python": "3.10.12",
-  "git_commit": "a0c6826ba0cfeb740a2e94b1185e429e4f5afd4a",
+  "git_commit": "0aebbb3093922516fd88bbbc939ab64afca352e9",
   "experiment_id": "Q04",
   "name": "fp8-uniform-ptq",
   "camera": "front",
@@ -32,12 +32,50 @@
   "onnx_opset": 17,
   "artifacts": {
     "onnx": "artifacts/experiments/Q04/front/model.onnx",
+    "engine": "artifacts/experiments/Q04/front/model.engine",
     "static_analysis": "artifacts/experiments/Q04/front/static-analysis.json",
     "build_command": "artifacts/experiments/Q04/front/build-command.txt",
+    "build_log": "artifacts/experiments/Q04/front/build.log",
+    "engine-build_json": "artifacts/experiments/Q04/front/engine-build.json",
     "comparison_B01": "artifacts/experiments/Q04/front/comparison-B01.json",
     "quantization": "artifacts/experiments/Q04/front/quantization.json",
     "stage1_static_evaluation": "artifacts/experiments/Q04/front/stage1-static-evaluation.json"
   },
-  "build_details": {},
-  "status": "onnx-exported"
+  "build_details": {
+    "engine-build": {
+      "created_at_utc": "2026-09-03T16:47:00.084782+00:00",
+      "camera": "front",
+      "precision": "fp8-qdq",
+      "source_onnx": "artifacts/experiments/Q04/front/model.onnx",
+      "source_onnx_sha256": "a54a75c851b39ccbda27c64260be654e13ac2ce62338fb57fa79526126d491c5",
+      "engine_path": "artifacts/experiments/Q04/front/model.engine",
+      "engine_size_bytes": 50411748,
+      "engine_sha256": "9528ac5c63f4b5e59c78bb4222c8ce50e1cbd92cfcd7ad904327cf4a0335d2d2",
+      "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+      "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "torch_version": "2.10.0+cu128",
+      "cuda_version": "12.8",
+      "build_backend": "tensorrt-python",
+      "tensorrt_version": "10.16.1.11",
+      "trtexec_version": "",
+      "workspace_mib": 4096,
+      "sparse_weights_enabled": false,
+      "verbose_logging": false,
+      "profiling_verbosity": "DETAILED",
+      "build_command": [
+        "trtexec",
+        "--onnx=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q04/front/model.onnx",
+        "--saveEngine=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q04/front/model.engine",
+        "--memPoolSize=workspace:4096",
+        "--useCudaGraph",
+        "--useSpinWait",
+        "--stronglyTyped"
+      ]
+    }
+  },
+  "status": "engine-built"
 }

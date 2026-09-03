@@ -1,0 +1,35 @@
+{
+  "created_at_utc": "2026-09-03T16:37:42.999711+00:00",
+  "camera": "front",
+  "precision": "int8-qdq",
+  "source_onnx": "artifacts/experiments/Q01/front/model.onnx",
+  "source_onnx_sha256": "6d062c9b5ce0c732f87afe1a02dc6930b6275f3ab93382a7f535d7b3a8d90509",
+  "engine_path": "artifacts/experiments/Q01/front/model.engine",
+  "engine_size_bytes": 50137380,
+  "engine_sha256": "482305be94d757175ea25f97c6f9c6823e4f524165d774c9e4fba8ca0a1157c2",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+  "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "compute_capability": [
+    8,
+    9
+  ],
+  "torch_version": "2.10.0+cu128",
+  "cuda_version": "12.8",
+  "build_backend": "tensorrt-python",
+  "tensorrt_version": "10.16.1.11",
+  "trtexec_version": "",
+  "workspace_mib": 4096,
+  "sparse_weights_enabled": false,
+  "verbose_logging": false,
+  "profiling_verbosity": "DETAILED",
+  "build_command": [
+    "trtexec",
+    "--onnx=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q01/front/model.onnx",
+    "--saveEngine=/home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q01/front/model.engine",
+    "--fp16",
+    "--memPoolSize=workspace:4096",
+    "--useCudaGraph",
+    "--useSpinWait",
+    "--int8"
+  ]
+}
