@@ -106,8 +106,11 @@ def suite_blockers(
         experiment = registry.get(experiment_id)
         source_id = artifact_source_id(experiment_id, experiment)
         selected_id = experiment.get("selected_experiment")
-        has_own_onnx = artifact_paths(experiment_id, "front").onnx.is_file()
-        if selected_id is not None and not has_own_onnx and str(selected_id) != source_id:
+        if (
+            selected_id is not None
+            and "engine_source" not in experiment
+            and str(selected_id) != source_id
+        ):
             blockers.append(
                 f"{experiment_id}: selected_experiment={selected_id} does not "
                 f"match artifact_source={source_id}"

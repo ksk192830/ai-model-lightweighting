@@ -85,6 +85,16 @@ class NotebookPipelineTest(unittest.TestCase):
         self.assertEqual(artifact_source_id("B02", registry.get("B02")), "B01")
         self.assertEqual(artifact_source_id("M02", registry.get("M02")), "M01")
 
+        blockers = suite_blockers(
+            registry,
+            suite_experiments(registry, "stage1"),
+            require_artifact_onnx=False,
+            require_completed_recovery=False,
+        )
+        self.assertFalse(
+            any("does not match artifact_source" in item for item in blockers)
+        )
+
     def test_int8_command_uses_registered_train_split(self) -> None:
         calibration = REPOSITORY_ROOT / "data/training/front_session_split_v1/train"
         command = build_command(
