@@ -12,6 +12,8 @@ engine 크기의 Pareto 비지배해를 선택한다.
 - 전체 후보표: [1차 정적평가 26개 결과](results/stage1-static-evaluation.md)
 - 평가 방법: [1차 정적 → 2차 노트북 → 3차 Pareto](docs/guides/three-stage-candidate-evaluation.md)
 - 노트북 전달: [TensorRT 노트북 재현 가이드](docs/guides/tensorrt-notebook-portability.md)
+- 논문 개조식 구성안: [한국어 논문 구성안](docs/paper/paper-outline-ko.md)
+- 논문 줄글 초안: [결과 확정 전 원고](docs/paper/manuscript-draft-ko.md)
 
 ## 현재 진행 상황
 
@@ -175,11 +177,12 @@ FP16·INT8 또는 해상도 축소를 결합해 서로 다른 경량화 축이 �
 bbox AP와 mask AP는 IoU 0.50~0.95 구간을 0.05 간격으로 평균해 위치 및 mask
 품질을 평가한다. semantic mIoU는 instance mask를 클래스별 영역으로 합성한 뒤
 교집합/합집합 비율을 평균해 픽셀 수준 품질을 보완한다. 실행 성능은 batch 1,
-고정된 32장, warm-up 20회 후 200회 반복으로 측정하며 median latency를 1차
-대표값, p95와 변동계수를 안정성 지표로 사용한다.
+고정된 32장에 대해 warm-up 20회 후 200회 측정을 3번 반복하며 pooled median
+latency를 1차 대표값, p95/p99와 반복 median의 CV·95% 구간을 안정성 지표로 사용한다.
 
-최종 선택에서는 bbox AP·mask AP·semantic mIoU를 극대화하고 median latency·
-peak allocated GPU memory·engine 크기를 최소화한다. 후보 A가 후보 B보다 모든
+최종 선택에서는 B01 대비 정확도 보존 gate를 먼저 적용한 뒤 bbox AP·mask AP·
+semantic mIoU를 극대화하고 median/p95 latency·peak allocated GPU memory·engine
+크기를 최소화한다. 후보 A가 후보 B보다 모든
 목표에서 같거나 우수하고 적어도 하나에서 엄격히 우수하면 A가 B를 지배한다.
 어느 후보에도 지배되지 않는 집합을 Pareto front로 보고, 하나의 임의 가중치로
 정확도와 효율을 합산하지 않는다.
@@ -217,18 +220,19 @@ Q/DQ ONNX를 요구한다. 2:4 후보는 패턴 준수와 sparse tactic recipe�
 benchmark, 정확도 평가 중 실패하면 이유와 로그를 남겨 terminal 실패로 처리한다.
 성공한 후보는 동일 장비에서 다음 항목을 측정한다.
 
-- 정확도: benchmark 437장, bbox AP, mask AP, semantic mIoU
-- 성능: batch 1, 고정 32장, warm-up 20회, 측정 200회
-- 통계: median·mean·p95·IQR latency, 변동계수, FPS
+- 정확도: 고정 benchmark 437장, bbox/mask AP·AP50·AP75·크기별 AP·AR100,
+  semantic mIoU와 클래스별 AP/IoU
+- 성능: batch 1, 고정 32장, 반복마다 warm-up 20회 후 200회 측정을 3회 수행
+- 통계: pooled median·mean·p95·p99·IQR·FPS, 반복 median의 CV와 95% t 구간
 - 자원: peak allocated/reserved GPU memory, engine 크기
 - 환경: GPU, compute capability, driver, CUDA, TensorRT 버전
 - 재현성: ONNX·engine SHA-256, layer precision, M02 sparse tactic 근거
 
 ### 3차: Pareto 분석 — 2차 전체 terminal 후 자동 실행
 
-22개 모두가 성공 또는 명시적 실패 상태가 되어야 시작한다. 정상 성능 측정을 끝낸
-배포 가능 engine만 비지배 판정에 사용하며, 실패 후보는 제외 이유와 로그를 별도로
-보존한다.
+22개 모두가 성공 또는 명시적 실패 상태가 되어야 시작한다. 측정이 유효하고 B01
+대비 bbox/mask AP와 mIoU 보존 gate를 통과한 engine만 비지배 판정에 사용한다.
+실패·gate 탈락 후보의 수치와 사유도 삭제하지 않고 Excel과 원시 결과에 보존한다.
 
 ## 데스크탑과 노트북 작업 분리
 
@@ -267,8 +271,8 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q
 
 #### 노트북 결과 회수 후
 
-1. `stage2-notebook-state.json`, summary, Pareto, 후보별 평가 JSON과 전체 로그를
-   동일한 상대경로로 데스크탑 저장소에 복사한다.
+1. `stage2-evaluation-report.xlsx`, `stage2-notebook-state.json`, summary, Pareto,
+   후보별 평가 JSON과 전체 로그를 동일한 상대경로로 데스크탑 저장소에 복사한다.
 2. `audit_evaluation_protocol.py`를 다시 실행해 후보 누락, 데이터·threshold 차이,
    반복 횟수와 장비 메타데이터 누락을 검사한다.
 3. 자동 생성 표·그림을 갱신하고 Pareto 후보의 정량 근거를 논문 결과 장에 반영한다.
@@ -282,38 +286,30 @@ calibration 또는 후보 민감도 선정에 재사용하면 안 된다.
 ### 노트북에서 할 일
 
 1. **전달 파일 배치**
-   `notebook-front-stage1` 폴더를 노트북 저장소 루트로 사용한다.
-2. **환경 기록**
-   GPU 모델, compute capability, driver, CUDA, TensorRT 및 Python 버전을 확인한다.
-3. **무결성 검사**
-   manifest의 ONNX SHA-256과 `data-checksums.sha256`을 검증한다.
-4. **환경 설치**
-   새 가상환경에 `requirements.txt`를 설치한다. 기존 노트북 환경을 재사용해 패키지
-   버전이 섞이지 않게 한다.
-5. **22개 후보 일괄 실행**
-   `run_notebook_stage2.py --force-build`를 한 번 실행한다. 각 후보는 build → engine
-   정적검사 → latency benchmark → 437장 정확도 평가 순서로 처리된다.
-6. **진행 모니터링**
+   `notebook-front-stage1` 폴더를 노트북의 로컬 SSD에 복사하고 그 폴더를 연다.
+2. **원클릭 실행**
+   `bash run_notebook_pipeline.sh` 한 줄을 실행한다. Python 3.10 가상환경 설치,
+   ONNX·데이터 무결성 검사, 환경 기록, 22개 engine 생성, 반복 benchmark, 437장
+   정확도 평가, 정확도 gate, Pareto 및 Excel 보고서 생성이 순차 실행된다.
+3. **재시작**
+   중단 후 같은 명령을 실행하면 완료 후보를 재사용한다. engine까지 전부 다시 만들
+   때만 `--force-rebuild`를 사용한다.
+4. **진행 모니터링**
    별도 터미널에서 `show_project_status.py`를 주기적으로 실행한다. 실패가 발생해도
    다음 후보가 계속 진행되며 실패 로그가 남는다.
-7. **완료 조건 확인**
+5. **완료 조건 확인**
    Stage 2가 `terminal 22/22`인지 확인한다. 성공 수와 실패 수의 합이 22여야 한다.
-8. **Pareto 결과 확인**
+6. **Pareto 결과 확인**
    전체 terminal 후 `stage3-pareto.json|csv`가 생성됐는지 확인한다. 부분 실행용
    `--only` 옵션은 공식 Pareto 파일을 생성하지 않는다.
-9. **결과 회수**
-   `results/`, 후보별 engine metadata와 build log를 데스크탑으로 복사한다. engine
+7. **결과 회수**
+   최종 `results/stage2-evaluation-report.xlsx`와 `results/`, 후보별 engine metadata와
+   build log를 데스크탑으로 복사한다. engine
    자체는 논문 근거 보존이 필요할 때만 별도 저장하며 다른 GPU 성능 측정에 재사용하지
    않는다.
 
 ```bash
-nvidia-smi
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-sha256sum -c data-checksums.sha256
-python scripts/experiments/run_notebook_stage2.py --force-build
+bash run_notebook_pipeline.sh
 ```
 
 별도 터미널:
