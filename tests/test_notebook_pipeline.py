@@ -112,34 +112,15 @@ class NotebookPipelineTest(unittest.TestCase):
                 )
         self.assertCountEqual(blockers, expected_recovery_blockers)
 
-    def test_shared_sources_contain_only_validated_ready_models(self) -> None:
+    def test_shared_sources_cover_every_stage1_notebook_candidate(self) -> None:
         registry = ExperimentRegistry.load()
         sources = load_package_module().shared_onnx_sources()
-        for experiment_id in SUITES["ready4"]:
-            self.assertIn(experiment_id, sources)
-
-        final_source_ids = {
+        stage1_source_ids = {
             artifact_source_id(experiment_id, registry.get(experiment_id))
-            for experiment_id in suite_experiments(registry, "final8")
+            for experiment_id in suite_experiments(registry, "stage1")
         }
-        for source_id in final_source_ids:
-            source = registry.get(source_id)
-            fine_tuning = source.get("fine_tuning", {})
-            if not fine_tuning.get("required"):
-                continue
-            decision = source.get("result", {}).get("decision")
-            if fine_tuning.get("completed") and decision != "rejected":
-                self.assertIn(source_id, sources)
-            else:
-                self.assertNotIn(source_id, sources)
-
-        for experiment_id in sources:
-            experiment = registry.get(experiment_id)
-            source_id = artifact_source_id(experiment_id, experiment)
-            fine_tuning = registry.get(source_id).get("fine_tuning", {})
-            self.assertFalse(
-                fine_tuning.get("required") and not fine_tuning.get("completed")
-            )
+        self.assertEqual(len(stage1_source_ids), 17)
+        self.assertTrue(stage1_source_ids.issubset(sources))
 
 
 if __name__ == "__main__":

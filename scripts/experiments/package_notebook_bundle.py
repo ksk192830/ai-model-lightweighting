@@ -17,8 +17,6 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from kips_lightweighting.metadata import sha256  # noqa: E402
 from kips_lightweighting.registry import ExperimentRegistry  # noqa: E402
-from kips_lightweighting.artifacts import artifact_paths  # noqa: E402
-
 from build_engine_suite import (  # noqa: E402
     SUITES,
     artifact_source_id,
@@ -86,14 +84,10 @@ def main() -> int:
         artifact_source_id(experiment_id, registry.get(experiment_id))
         for experiment_id in experiments
     }
-    if args.suite == "stage1":
-        sources = {
-            source_id: artifact_paths(source_id, "front").onnx
-            for source_id in source_ids
-            if artifact_paths(source_id, "front").onnx.is_file()
-        }
-    else:
-        sources = shared_onnx_sources()
+    # Reconstruct every distributable suite exclusively from Git LFS payloads.
+    # Depending on ignored local artifacts made a desktop checkout appear ready
+    # while a fresh notebook clone could not reproduce the same bundle.
+    sources = shared_onnx_sources()
     for source_id in sorted(source_ids):
         if source_id not in sources:
             blockers.append(

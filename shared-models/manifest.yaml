@@ -1,29 +1,108 @@
-version: 2
+version: 3
 format: onnx
+purpose: stage1-complete-notebook-tensorrt-inputs
 source_checkpoint: artifacts/training/front-rfdetr-seg-large-v1/checkpoint_best_total.pth
 source_checkpoint_sha256: 769ee97e38a2c6665bd664a9e035f5649d9f0a45c2bfe20172fe92ee545e5620
 models:
   - file: B01-front-baseline.onnx
     experiment_ids: [B01, B02, B03]
     camera: front
-    description: 신규 leakage-safe baseline의 FP32 ONNX. FP32, FP16, INT8 engine의 공통 입력.
+    description: Baseline FP32 graph shared by the FP32, FP16, and INT8 TensorRT recipes.
     size_bytes: 130677849
     sha256: 78d6936a1f4736d348fd75194e2aaa43a81b42b291863437f381618aa82c02b8
-  - file: R01-front-432.onnx
-    experiment_ids: [R01]
+  - file: M01-front-2to4-recovery.onnx
+    experiment_ids: [M01, M02]
     camera: front
-    description: 검증된 432×432 입력 ONNX. R01 FP16 engine의 입력.
-    size_bytes: 129955207
-    sha256: e5a8c934b000d46e32d098c48dfd947dfd609451a54d2dbc4657d802ee87514a
+    description: Recovered NVIDIA 2:4 graph shared by dense-control and sparse-tactic recipes.
+    size_bytes: 130677820
+    sha256: d930a1c4190b3f427f3e56067f877236eaaafdeac1dbf5247902e21659e4d5f9
   - file: S01-front-structured-recovery.onnx
     experiment_ids: [S01, C01, C02]
     camera: front
-    description: Decoder 1개를 제거하고 6 epoch 복구 학습한 검증 ONNX. S01 FP32와 C01 FP16, C02 INT8 engine의 공통 입력.
+    description: One-decoder-layer reduction graph shared by FP32, FP16, and INT8 recipes.
     size_bytes: 124477541
     sha256: b8e436175ef25eb6885a3e8c48813e7c0ab1ea3d7c2339ab496c701338dba6e1
   - file: S02-front-structured-recovery.onnx
     experiment_ids: [S02]
     camera: front
-    description: Decoder 2개를 제거하고 8 epoch 복구 학습한 검증 ONNX. 최종 선정에서는 탈락했으나 구조 축소 TensorRT 대조군으로 유지.
+    description: Two-decoder-layer reduction control graph.
     size_bytes: 118276976
     sha256: 70da0768fb50980ffe5186202528c24f12f5a64d0d8f9cb21c68edac9c0b2b00
+  - file: S04-front-ffn40.onnx
+    experiment_ids: [S04]
+    camera: front
+    description: Structured FFN 40 percent reduction control graph.
+    size_bytes: 122141480
+    sha256: 6ec95204a89bc553795d59f77dc8c3ab89a86b7e079a884988abb3bcb649cdce
+  - file: C03-front-structured-432.onnx
+    experiment_ids: [C03]
+    camera: front
+    description: One-decoder-layer reduction combined with 432 by 432 input.
+    size_bytes: 123754899
+    sha256: 2f3a3bc973404af0be8ae3dd5fe1cc882b8c93976cf41314f76d50dec7575f4a
+  - file: C04-front-structured-480.onnx
+    experiment_ids: [C04]
+    camera: front
+    description: One-decoder-layer reduction combined with 480 by 480 input.
+    size_bytes: 124224309
+    sha256: f49a978d117845d481706807053bc8b6a67a8eb5f3bf09c22d57544842a13c32
+  - file: R01-front-432.onnx
+    experiment_ids: [R01]
+    camera: front
+    description: Baseline graph exported for 432 by 432 input.
+    size_bytes: 129955207
+    sha256: e5a8c934b000d46e32d098c48dfd947dfd609451a54d2dbc4657d802ee87514a
+  - file: R02-front-480.onnx
+    experiment_ids: [R02]
+    camera: front
+    description: Baseline graph exported for 480 by 480 input.
+    size_bytes: 130424617
+    sha256: bcc3c88dcaa0c2707979fab4a48c3e2f4517d9ac215cb1beab9dd9a251713cbe
+  - file: R03-front-384.onnx
+    experiment_ids: [R03]
+    camera: front
+    description: Baseline graph exported for 384 by 384 input.
+    size_bytes: 129535207
+    sha256: e01525bafe21349f4d59b9d8a56330ca76522d0f17fc520862ba2d6c56fd8a61
+  - file: Q01-front-int8-smoothquant.onnx
+    experiment_ids: [Q01]
+    camera: front
+    description: INT8 SmoothQuant QDQ graph.
+    size_bytes: 131761621
+    sha256: 6d062c9b5ce0c732f87afe1a02dc6930b6275f3ab93382a7f535d7b3a8d90509
+  - file: Q02-front-int8-mixed-fp16.onnx
+    experiment_ids: [Q02]
+    camera: front
+    description: INT8 mixed-precision QDQ graph with sensitive blocks protected in FP16.
+    size_bytes: 131405815
+    sha256: b21e6b3bd5bc5fd6b4e07dd398ece395e09cdb4820e9c97f44e323f5a77b52ae
+  - file: Q03-front-int4-weight-only.onnx
+    experiment_ids: [Q03]
+    camera: front
+    description: INT4 blockwise weight-only research graph.
+    size_bytes: 131339537
+    sha256: e62c17f72d65f54670bfa946b52b6989df42bc89b2ea6daf437a899cad6a19ee
+  - file: Q04-front-fp8-uniform.onnx
+    experiment_ids: [Q04]
+    camera: front
+    description: Uniform FP8 QDQ graph.
+    size_bytes: 131681276
+    sha256: a54a75c851b39ccbda27c64260be654e13ac2ce62338fb57fa79526126d491c5
+  - file: Q05-front-fp8-mixed-map.onnx
+    experiment_ids: [Q05]
+    camera: front
+    description: Mixed FP8 graph selected by measured AP sensitivity.
+    size_bytes: 131019644
+    sha256: 2cbb6e090c42bce5b1aa358f14544f8f5e6453da628926d9c681cb428796216c
+  - file: Q06-front-fp8-mixed-kld.onnx
+    experiment_ids: [Q06]
+    camera: front
+    description: Mixed FP8 graph selected by KLD sensitivity.
+    size_bytes: 131521031
+    sha256: 31e3174bb7dbcb69ba442dc1e4dae52cf3a08a06a97357a7efe580e9e8b3ce87
+  - file: Q07-front-fp8-mixed-top2.onnx
+    experiment_ids: [Q07]
+    camera: front
+    description: Mixed FP8 graph protecting the two most sensitive blocks.
+    size_bytes: 131614791
+    sha256: f35737706f2f5e0dd99162e4705915b969fa34669b9a893c3e76e7a8e5e6b8b6

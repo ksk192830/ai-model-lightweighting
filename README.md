@@ -256,8 +256,9 @@ TensorRT engine은 GPU architecture, CUDA와 TensorRT 버전에 종속된다. �
    `delivery/notebook-front-stage1/`에 22개 engine plan과 17개 unique ONNX,
    calibration 128장 및 benchmark 437장이 있는지 manifest와 SHA-256으로 확인한다.
 5. **전달**
-   노트북으로 옮기기 직전에 전달 폴더를 보관 파일로 만들거나 외장 저장장치·로컬
-   네트워크로 복사한다. GitHub에는 데이터셋, ONNX, PTH, engine을 올리지 않는다.
+   22개 recipe의 중복 제거 ONNX 17개는 `shared-models/`에서 Git LFS로 받는다.
+   데이터셋은 GitHub에 올리지 않으므로 calibration/test 데이터를 별도로 복사한다.
+   PTH와 장비 종속 TensorRT engine도 원격 저장소에 올리지 않는다.
 
 현재 1~4번은 완료됐다. 실제 노트북이 준비되면 5번만 수행하면 된다.
 
