@@ -49,9 +49,18 @@ SUITES = {
 
 
 def artifact_source_id(experiment_id: str, experiment: dict) -> str:
-    if artifact_paths(experiment_id, "front").onnx.is_file():
-        return experiment_id
-    return str(experiment.get("artifact_source", experiment_id))
+    """Resolve the ONNX graph source without depending on local ignored files.
+
+    ``artifact_source`` records model/checkpoint lineage.  Resolution-specific
+    and quantized candidates derive weights from another experiment but carry
+    their own transformed ONNX graph, declared by ``engine_source``.
+    """
+    return str(
+        experiment.get(
+            "engine_source",
+            experiment.get("artifact_source", experiment_id),
+        )
+    )
 
 
 def suite_experiments(

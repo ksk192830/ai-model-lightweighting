@@ -65,6 +65,26 @@ class NotebookPipelineTest(unittest.TestCase):
         self.assertEqual(suite_experiments(registry, "stage1"), expected)
         self.assertEqual(len(expected), 22)
 
+    def test_engine_sources_do_not_depend_on_ignored_local_artifacts(self) -> None:
+        registry = ExperimentRegistry.load()
+        for experiment_id in (
+            "C03",
+            "C04",
+            "Q01",
+            "Q02",
+            "Q03",
+            "Q04",
+            "Q05",
+            "Q06",
+            "Q07",
+        ):
+            self.assertEqual(
+                artifact_source_id(experiment_id, registry.get(experiment_id)),
+                experiment_id,
+            )
+        self.assertEqual(artifact_source_id("B02", registry.get("B02")), "B01")
+        self.assertEqual(artifact_source_id("M02", registry.get("M02")), "M01")
+
     def test_int8_command_uses_registered_train_split(self) -> None:
         calibration = REPOSITORY_ROOT / "data/training/front_session_split_v1/train"
         command = build_command(
