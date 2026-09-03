@@ -45,10 +45,12 @@ TensorRT precision recipe는 portable ONNX 파일 크기가 실제 engine 크기
 1차 `stage2_notebook_eligible=true`인 후보를 평가한다. engine은 평가 GPU,
 CUDA, TensorRT 버전에 종속되므로 노트북에서 새로 생성한다.
 
-- 정확도: test 437장, bbox AP@[.50:.95], mask AP@[.50:.95], semantic mIoU
+- 정확도: test 437장, bbox/mask AP@[.50:.95]·AP50·AP75·크기별 AP·AR100,
+  semantic mIoU 및 클래스별 AP/IoU
 - 임계값: AP 후보 0.001, semantic mIoU mask 0.25
-- 지연시간: batch 1, 이미지 32장 고정 추출, warm-up 20회, 본 측정 200회
-- 보고: median, mean, p95, IQR, CV, FPS
+- 지연시간: batch 1, 이미지 32장 고정 추출, 반복마다 warm-up 20회와 본 측정
+  200회를 수행해 총 3회 반복
+- 보고: pooled median/mean/p95/p99/IQR/FPS, 반복 median CV와 95% t 구간
 - 자원: peak allocated/reserved GPU memory, engine byte 크기
 - 근거: ONNX/engine SHA-256, GPU·compute capability·CUDA·TensorRT, layer precision,
   M02 sparse tactic 선택 로그
@@ -59,9 +61,10 @@ terminal 결과로 저장한다. 따라서 지원되지 않는 후보가 다시 
 
 ## 3차: Pareto 분석
 
-1차 통과 대상의 2차 상태가 모두 terminal일 때만 생성한다. 정상 실행을
-완료한 engine을 대상으로 bbox AP, mask AP, semantic mIoU는 극대화하고 median
-latency, peak allocated GPU memory, engine size는 극소화한다. 다른 후보가 모든
+1차 통과 대상의 2차 상태가 모두 terminal일 때만 생성한다. 측정이 유효하고 B01
+대비 정확도 보존 gate를 통과한 engine을 대상으로 bbox AP, mask AP, semantic
+mIoU는 극대화하고 median/p95 latency, peak allocated GPU memory, engine size는
+극소화한다. 다른 후보가 모든
 목표에서 이상이고 적어도 하나에서 엄격히 우세하면 해당 후보를 dominated로
 판정한다.
 
@@ -73,6 +76,8 @@ latency, peak allocated GPU memory, engine size는 극소화한다. 다른 후�
 
 # 1차 통과 22개 engine plan과 17개 unique ONNX 확인
 .venv/bin/python scripts/experiments/build_engine_suite.py --suite stage1 --dry-run
+
+# 전달 묶음 사전 확인
 .venv/bin/python scripts/experiments/package_notebook_bundle.py --suite stage1 \
   --output-dir delivery/notebook-front-stage1 --dry-run
 
@@ -82,10 +87,11 @@ latency, peak allocated GPU memory, engine size는 극소화한다. 다른 후�
 .venv/bin/python scripts/data_preparation/package_notebook_data.py \
   --output-dir delivery/notebook-front-stage1
 
-# 노트북에서 2차 전체 실행, 완료 후 3차 Pareto 자동 생성
-python scripts/experiments/run_notebook_stage2.py --force-build
+# 전달 폴더를 노트북 로컬 SSD에 복사한 뒤 전체 2·3차와 Excel 보고서 실행
+bash run_notebook_pipeline.sh
 ```
 
 2차 자동화는 후보별 로그를 `results/stage2-notebook-logs/`, 상태를
 `results/stage2-notebook-state.json`, 통합 결과를 `results/stage2-notebook-summary.*`, Pareto
-결과를 `results/stage3-pareto.*`에 저장한다.
+결과를 `results/stage3-pareto.*`, 최종 통합 파일을
+`results/stage2-evaluation-report.xlsx`에 저장한다.

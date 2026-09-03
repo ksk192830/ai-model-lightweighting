@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:43:09.320640+00:00",
+  "created_at_utc": "2026-09-03T11:41:42.166110+00:00",
   "experiment_id": "Q03",
   "method_summary": "modelopt-int4-weight-only; INT4_BLOCKWISE_WEIGHT_ONLY_CFG",
   "artifact_kind": "qdq-onnx",

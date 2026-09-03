@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
-"""Build and evaluate every Stage-1-passing candidate on the notebook GPU.
+"""Run the complete notebook deployment evaluation from ONNX to Excel.
 
-Every candidate reaches a terminal Stage-2 state (completed or failed with a
-captured log).  Pareto analysis is emitted only after no eligible candidate is
-left pending.
+For every Stage-1-passing candidate this command builds and inspects a
+TensorRT engine, repeats the latency benchmark, evaluates all 437 held-out
+test images, records terminal failures, computes the gated Pareto set, and
+creates one Excel workbook. Completed candidates are reused on restart unless
+``--restart`` or ``--force-build`` is requested.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
+import math
+import platform
+import shutil
+import statistics
 import subprocess
 import sys
 from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +35,16 @@ SUMMARY_JSON = Path("results/stage2-notebook-summary.json")
 SUMMARY_CSV = Path("results/stage2-notebook-summary.csv")
 PARETO_JSON = Path("results/stage3-pareto.json")
 PARETO_CSV = Path("results/stage3-pareto.csv")
+REPORT_XLSX = Path("results/stage2-evaluation-report.xlsx")
+IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".webp"}
+TERMINAL_STATUSES = {
+    "completed",
+    "build-failed",
+    "engine-analysis-failed",
+    "benchmark-failed",
+    "accuracy-failed",
+}
+T_CRITICAL_95 = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776}
 
 
 def now() -> str:
@@ -42,7 +60,12 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def write_json(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps(value, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def run(command: list[str], log: Path) -> tuple[bool, str]:
@@ -57,16 +80,31 @@ def run(command: list[str], log: Path) -> tuple[bool, str]:
             text=True,
             check=False,
         )
-    return result.returncode == 0, f"returncode={result.returncode}; log={log.relative_to(ROOT)}"
+    return result.returncode == 0, (
+        f"returncode={result.returncode}; log={log.relative_to(ROOT)}"
+    )
 
 
-def metric(payload: dict[str, Any], name: str) -> float:
-    metrics = payload["metrics"]
-    if name == "bbox_ap":
-        return float(metrics["bbox"]["ap"])
-    if name == "mask_ap":
-        return float(metrics["segm"]["ap"])
-    return float(metrics["semantic_miou"])
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(4 * 1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def percentile(values: list[float], quantile: float) -> float:
+    """Linear percentile matching NumPy's default for a portable runner."""
+    ordered = sorted(float(value) for value in values)
+    if not ordered:
+        raise ValueError("Cannot calculate a percentile of an empty sequence")
+    position = (len(ordered) - 1) * quantile
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    fraction = position - lower
+    return ordered[lower] * (1.0 - fraction) + ordered[upper] * fraction
 
 
 def newest_json(directory: Path) -> Path:
@@ -76,6 +114,320 @@ def newest_json(directory: Path) -> Path:
     return paths[-1]
 
 
+def package_version(name: str) -> str | None:
+    try:
+        return version(name)
+    except PackageNotFoundError:
+        return None
+
+
+def preflight(protocol: dict[str, Any], eligible: list[str]) -> dict[str, Any]:
+    """Fail before a multi-hour run if the portable payload is incomplete."""
+    dataset = ROOT / protocol["dataset_dir"]
+    annotation = dataset / "_annotations.coco.json"
+    if not annotation.is_file():
+        raise FileNotFoundError(annotation)
+    coco = load_json(annotation)
+    images = coco.get("images", [])
+    expected_images = int(protocol["expected_images"])
+    if len(images) != expected_images:
+        raise ValueError(
+            f"Expected {expected_images} final-test images, found {len(images)}"
+        )
+    referenced = {str(item["file_name"]) for item in images}
+    actual = {
+        path.name
+        for path in dataset.rglob("*")
+        if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    }
+    if actual != referenced:
+        raise ValueError(
+            "Final-test COCO/image mismatch: "
+            f"missing={sorted(referenced - actual)[:3]}, "
+            f"extra={sorted(actual - referenced)[:3]}"
+        )
+
+    verified_data_files = 0
+    checksums = ROOT / "data-checksums.sha256"
+    if checksums.is_file():
+        for line in checksums.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            expected, relative = line.split(maxsplit=1)
+            target = ROOT / relative.strip()
+            if not target.is_file() or sha256(target) != expected:
+                raise ValueError(f"Data checksum mismatch: {relative.strip()}")
+            verified_data_files += 1
+
+    verified_onnx_files = 0
+    verified_automation_files = 0
+    manifest_path = ROOT / "manifest.json"
+    if manifest_path.is_file():
+        manifest = load_json(manifest_path)
+        if set(manifest.get("experiments", [])) != set(eligible):
+            raise ValueError("manifest.json candidate set differs from Stage 1")
+        digest_cache: dict[tuple[int, int, int, int], str] = {}
+        for item in manifest.get("onnx_sources", []):
+            target = ROOT / item["path"]
+            if not target.is_file() or target.stat().st_size != int(item["size_bytes"]):
+                raise ValueError(f"ONNX size/missing error: {item['path']}")
+            stat = target.stat()
+            key = (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns)
+            digest_cache.setdefault(key, sha256(target))
+            if digest_cache[key] != item["sha256"]:
+                raise ValueError(f"ONNX checksum mismatch: {item['path']}")
+            verified_onnx_files += 1
+        for item in (manifest.get("automation") or {}).get("files", []):
+            target = ROOT / item["path"]
+            if not target.is_file() or target.stat().st_size != int(item["size_bytes"]):
+                raise ValueError(f"Automation file size/missing error: {item['path']}")
+            if sha256(target) != item["sha256"]:
+                raise ValueError(f"Automation checksum mismatch: {item['path']}")
+            verified_automation_files += 1
+
+    data_manifest_path = ROOT / "data-manifest.json"
+    if data_manifest_path.is_file():
+        data_manifest = load_json(data_manifest_path)
+        if data_manifest.get("test", {}).get("summary", {}).get("images") != expected_images:
+            raise ValueError("data-manifest.json final-test image count mismatch")
+        if data_manifest.get("leakage_verification", {}).get("passed") is not True:
+            raise ValueError("data-manifest.json does not confirm leakage verification")
+        registered_defaults = yaml.safe_load(
+            (ROOT / "configs/experiments/defaults.yaml").read_text(encoding="utf-8")
+        )
+        expected_calibration = int(
+            registered_defaults["reproducibility"]["calibration_image_count"]
+        )
+        calibration = data_manifest.get("calibration", {})
+        calibration_dir = ROOT / calibration.get("path", "")
+        calibration_images = {
+            path.name
+            for path in calibration_dir.rglob("*")
+            if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+        }
+        if (
+            calibration.get("source_split") != "train"
+            or calibration.get("selected_images") != expected_calibration
+            or len(calibration_images) != expected_calibration
+        ):
+            raise ValueError(
+                "INT8 calibration must contain the registered train-only image set: "
+                f"expected={expected_calibration}, actual={len(calibration_images)}"
+            )
+    registered_defaults = yaml.safe_load(
+        (ROOT / "configs/experiments/defaults.yaml").read_text(encoding="utf-8")
+    )
+    free_disk_bytes = shutil.disk_usage(ROOT).free
+    minimum_free_disk_gib = float(
+        registered_defaults["reproducibility"].get("notebook_min_free_disk_gib", 10)
+    )
+    if free_disk_bytes < minimum_free_disk_gib * 1024**3:
+        raise RuntimeError(
+            f"At least {minimum_free_disk_gib:g} GiB free disk is required; "
+            f"found {free_disk_bytes / 1024**3:.1f} GiB"
+        )
+
+    driver = None
+    try:
+        result = subprocess.run(
+            [
+                "nvidia-smi",
+                "--query-gpu=driver_version,pci.bus_id",
+                "--format=csv,noheader",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        driver = result.stdout.strip()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        pass
+
+    return {
+        "checked_at_utc": now(),
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+        "nvidia_driver_and_bus": driver,
+        "dataset": str(dataset.relative_to(ROOT)),
+        "annotation_sha256": sha256(annotation),
+        "test_images": len(images),
+        "annotations": len(coco.get("annotations", [])),
+        "free_disk_bytes": free_disk_bytes,
+        "minimum_free_disk_gib": minimum_free_disk_gib,
+        "verified_data_files": verified_data_files,
+        "verified_onnx_manifest_entries": verified_onnx_files,
+        "verified_automation_manifest_entries": verified_automation_files,
+        "package_versions": {
+            name: package_version(name)
+            for name in (
+                "rfdetr",
+                "torch",
+                "torchvision",
+                "tensorrt-cu13",
+                "pycocotools",
+                "numpy",
+                "XlsxWriter",
+            )
+        },
+    }
+
+
+def aggregate_benchmarks(payloads: list[dict[str, Any]]) -> dict[str, Any]:
+    if not payloads:
+        raise ValueError("At least one benchmark repetition is required")
+    timings = [
+        float(value)
+        for payload in payloads
+        for value in payload.get("timings_ms", [])
+    ]
+    if not timings:
+        raise ValueError("Benchmark details contain no timings_ms")
+    replicate_medians = [float(payload["median_ms"]) for payload in payloads]
+    replicate_means = [float(payload["mean_ms"]) for payload in payloads]
+    mean_ms = statistics.fmean(timings)
+    standard_deviation_ms = statistics.stdev(timings) if len(timings) > 1 else 0.0
+    replicate_median_mean = statistics.fmean(replicate_medians)
+    replicate_median_std = (
+        statistics.stdev(replicate_medians) if len(replicate_medians) > 1 else 0.0
+    )
+    critical = T_CRITICAL_95.get(len(replicate_medians), 1.96)
+    margin = critical * replicate_median_std / math.sqrt(len(replicate_medians))
+    return {
+        "benchmark_repetitions": len(payloads),
+        "measured_runs_per_repetition": int(payloads[0]["measured_runs"]),
+        "total_measured_runs": len(timings),
+        "replicate_median_ms": replicate_medians,
+        "replicate_mean_ms": replicate_means,
+        "replicate_median_mean_ms": replicate_median_mean,
+        "replicate_median_std_ms": replicate_median_std,
+        "replicate_median_cv": (
+            replicate_median_std / replicate_median_mean
+            if replicate_median_mean
+            else float("nan")
+        ),
+        "replicate_median_ci95_low_ms": replicate_median_mean - margin,
+        "replicate_median_ci95_high_ms": replicate_median_mean + margin,
+        "mean_ms": mean_ms,
+        "median_ms": statistics.median(timings),
+        "standard_deviation_ms": standard_deviation_ms,
+        "coefficient_of_variation": standard_deviation_ms / mean_ms,
+        "min_ms": min(timings),
+        "max_ms": max(timings),
+        "p05_ms": percentile(timings, 0.05),
+        "p25_ms": percentile(timings, 0.25),
+        "p75_ms": percentile(timings, 0.75),
+        "p95_ms": percentile(timings, 0.95),
+        "p99_ms": percentile(timings, 0.99),
+        "iqr_ms": percentile(timings, 0.75) - percentile(timings, 0.25),
+        "fps": 1000.0 / mean_ms,
+        "gpu_peak_allocated_bytes": max(
+            int(payload.get("gpu_peak_allocated_bytes") or 0) for payload in payloads
+        ),
+        "gpu_peak_reserved_bytes": max(
+            int(payload.get("gpu_peak_reserved_bytes") or 0) for payload in payloads
+        ),
+    }
+
+
+def accuracy_columns(payload: dict[str, Any]) -> dict[str, float]:
+    metrics = payload["metrics"]
+    bbox = metrics["bbox"]
+    mask = metrics["segm"]
+    return {
+        "bbox_ap": float(bbox["ap"]),
+        "bbox_ap50": float(bbox["ap50"]),
+        "bbox_ap75": float(bbox["ap75"]),
+        "bbox_ap_small": float(bbox["ap_small"]),
+        "bbox_ap_medium": float(bbox["ap_medium"]),
+        "bbox_ap_large": float(bbox["ap_large"]),
+        "bbox_ar100": float(bbox["ar100"]),
+        "mask_ap": float(mask["ap"]),
+        "mask_ap50": float(mask["ap50"]),
+        "mask_ap75": float(mask["ap75"]),
+        "mask_ap_small": float(mask["ap_small"]),
+        "mask_ap_medium": float(mask["ap_medium"]),
+        "mask_ap_large": float(mask["ap_large"]),
+        "mask_ar100": float(mask["ar100"]),
+        "semantic_miou": float(metrics["semantic_miou"]),
+    }
+
+
+def add_baseline_comparisons(
+    rows: list[dict[str, Any]], defaults: dict[str, Any]
+) -> list[dict[str, Any]]:
+    output = [dict(row) for row in rows]
+    baseline = next(
+        (row for row in output if row.get("experiment_id") == "B01"), None
+    )
+    if baseline is None:
+        for row in output:
+            row.update(
+                measurement_valid=False,
+                accuracy_gate_pass=False,
+                stage3_pareto_eligible=False,
+                exclusion_reason="B01 baseline measurement is unavailable",
+            )
+        return output
+
+    limits = defaults["selection"]["accuracy_vs_baseline"]
+    stability_warning = float(
+        defaults["evaluation_protocol"]["latency"].get(
+            "replicate_median_cv_warning_threshold", 0.05
+        )
+    )
+    for row in output:
+        row["bbox_ap_delta_vs_B01"] = row["bbox_ap"] - baseline["bbox_ap"]
+        row["mask_ap_delta_vs_B01"] = row["mask_ap"] - baseline["mask_ap"]
+        row["semantic_miou_delta_vs_B01"] = (
+            row["semantic_miou"] - baseline["semantic_miou"]
+        )
+        row["median_latency_reduction_vs_B01_pct"] = 100.0 * (
+            baseline["median_ms"] - row["median_ms"]
+        ) / baseline["median_ms"]
+        row["speedup_vs_B01"] = baseline["median_ms"] / row["median_ms"]
+        row["engine_size_reduction_vs_B01_pct"] = 100.0 * (
+            baseline["engine_size_bytes"] - row["engine_size_bytes"]
+        ) / baseline["engine_size_bytes"]
+        baseline_memory = int(baseline["gpu_peak_allocated_bytes"])
+        row["gpu_memory_reduction_vs_B01_pct"] = (
+            100.0
+            * (baseline_memory - int(row["gpu_peak_allocated_bytes"]))
+            / baseline_memory
+            if baseline_memory
+            else None
+        )
+        row["measurement_valid"] = all(
+            math.isfinite(float(row[name]))
+            for name in (
+                "bbox_ap",
+                "mask_ap",
+                "semantic_miou",
+                "median_ms",
+                "p95_ms",
+            )
+        ) and int(row["total_measured_runs"]) > 0
+        row["latency_stability_warning"] = (
+            float(row["replicate_median_cv"]) > stability_warning
+        )
+        row["accuracy_gate_pass"] = (
+            row["bbox_ap_delta_vs_B01"] >= -float(limits["bbox_ap_max_absolute_drop"])
+            and row["mask_ap_delta_vs_B01"]
+            >= -float(limits["mask_ap_max_absolute_drop"])
+            and row["semantic_miou_delta_vs_B01"]
+            >= -float(limits["semantic_miou_max_absolute_drop"])
+        )
+        row["stage3_pareto_eligible"] = (
+            row["measurement_valid"] and row["accuracy_gate_pass"]
+        )
+        reasons = []
+        if not row["measurement_valid"]:
+            reasons.append("invalid or incomplete measurement")
+        if not row["accuracy_gate_pass"]:
+            reasons.append("accuracy retention gate failed")
+        row["exclusion_reason"] = "; ".join(reasons)
+    return output
+
+
 def dominates(left: dict[str, Any], right: dict[str, Any]) -> bool:
     # Lower is better after negating accuracy metrics.
     left_values = (
@@ -83,6 +435,7 @@ def dominates(left: dict[str, Any], right: dict[str, Any]) -> bool:
         -left["mask_ap"],
         -left["semantic_miou"],
         left["median_ms"],
+        left["p95_ms"],
         left["gpu_peak_allocated_bytes"],
         left["engine_size_bytes"],
     )
@@ -91,6 +444,7 @@ def dominates(left: dict[str, Any], right: dict[str, Any]) -> bool:
         -right["mask_ap"],
         -right["semantic_miou"],
         right["median_ms"],
+        right["p95_ms"],
         right["gpu_peak_allocated_bytes"],
         right["engine_size_bytes"],
     )
@@ -110,17 +464,104 @@ def write_table(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
+def summary_payload(
+    state: dict[str, Any],
+    eligible: list[str],
+    rows: list[dict[str, Any]],
+    defaults: dict[str, Any],
+) -> dict[str, Any]:
+    candidates = state.get("candidates", {})
+    pending = [
+        item
+        for item in eligible
+        if candidates.get(item, {}).get("status") not in TERMINAL_STATUSES
+    ]
+    failures = [
+        {
+            "experiment_id": item,
+            "status": candidates.get(item, {}).get("status", "pending"),
+            "reason": candidates.get(item, {}).get("reason", ""),
+        }
+        for item in eligible
+        if candidates.get(item, {}).get("status") in TERMINAL_STATUSES
+        and candidates.get(item, {}).get("status") != "completed"
+    ]
+    compared = add_baseline_comparisons(rows, defaults)
+    return {
+        "created_at_utc": now(),
+        "eligible_count": len(eligible),
+        "completed_count": len(compared),
+        "terminal_failure_count": len(failures),
+        "pending_count": len(pending),
+        "hardware": {
+            key: state.get(key)
+            for key in (
+                "gpu",
+                "compute_capability",
+                "cuda",
+                "tensorrt",
+                "nvidia_driver_and_bus",
+            )
+        },
+        "preflight": state.get("preflight", {}),
+        "protocol": defaults["evaluation_protocol"],
+        "selection": defaults["selection"],
+        "rows": compared,
+        "failures": failures,
+        "pending_candidates": pending,
+    }
+
+
+def persist_summary(
+    state: dict[str, Any],
+    eligible: list[str],
+    rows: list[dict[str, Any]],
+    defaults: dict[str, Any],
+) -> dict[str, Any]:
+    summary = summary_payload(state, eligible, rows, defaults)
+    write_json(ROOT / SUMMARY_JSON, summary)
+    write_table(ROOT / SUMMARY_CSV, summary["rows"])
+    return summary
+
+
+def create_excel_report(log: Path) -> tuple[bool, str]:
+    return run(
+        [
+            sys.executable,
+            "scripts/reporting/generate_stage2_excel.py",
+            "--output",
+            str(REPORT_XLSX),
+        ],
+        log,
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--only", nargs="*", help="Optional subset for debugging")
     parser.add_argument("--force-build", action="store_true")
     parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--restart", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument("--report-only", action="store_true")
+    parser.add_argument(
+        "--benchmark-repetitions",
+        type=int,
+        help="Override the registered latency repetition count.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if args.report_only:
+        ok, evidence = create_excel_report(ROOT / "results/stage2-notebook-logs/report.log")
+        if not ok:
+            raise RuntimeError(f"Excel report generation failed: {evidence}")
+        print(f"Excel report: {REPORT_XLSX}")
+        return 0
+
     stage1 = load_json(ROOT / STAGE1)
     if stage1.get("unperformed_count") != 0:
         raise RuntimeError("Stage 1 is incomplete; refusing Stage 2")
@@ -136,11 +577,25 @@ def main() -> int:
             raise ValueError(f"Not Stage-1 eligible: {unknown}")
         eligible = [item for item in eligible if item in set(args.only)]
 
-    if args.dry_run:
+    defaults = yaml.safe_load(
+        (ROOT / "configs/experiments/defaults.yaml").read_text(encoding="utf-8")
+    )
+    protocol = defaults["evaluation_protocol"]
+    preflight_result = preflight(protocol, full_eligible)
+    repetitions = int(
+        args.benchmark_repetitions
+        or protocol["latency"].get("benchmark_repetitions", 3)
+    )
+    if repetitions < 2:
+        raise ValueError("At least two benchmark repetitions are required")
+
+    if args.dry_run or args.preflight_only:
+        print(f"Preflight PASS: {preflight_result}")
         print(f"Stage-1 eligible candidates: {len(eligible)}")
         print(" ".join(eligible))
-        print("Stage 2 will build, inspect, benchmark, and evaluate every candidate.")
-        print("Stage 3 Pareto remains gated on all candidates reaching a terminal state.")
+        print(f"Latency: {repetitions} repetitions per candidate")
+        print("Stage 2: build -> inspect -> repeated benchmark -> 437-image accuracy")
+        print("Stage 3: accuracy-gated Pareto -> one Excel workbook")
         return 0
 
     import torch
@@ -149,15 +604,14 @@ def main() -> int:
         raise RuntimeError("Stage 2 requires a CUDA notebook GPU")
     import tensorrt as trt
 
-    defaults = yaml.safe_load((ROOT / "configs/experiments/defaults.yaml").read_text(encoding="utf-8"))
-    registry = yaml.safe_load((ROOT / "configs/experiments/registry.yaml").read_text(encoding="utf-8"))[
-        "experiments"
-    ]
-    protocol = defaults["evaluation_protocol"]
+    registry = yaml.safe_load(
+        (ROOT / "configs/experiments/registry.yaml").read_text(encoding="utf-8")
+    )["experiments"]
     latency = protocol["latency"]
+    previous = {}
+    if (ROOT / STATE).is_file() and not args.restart and not args.force_build:
+        previous = load_json(ROOT / STATE).get("candidates", {})
     if not args.only:
-        # Never expose a Pareto result from an older run while a new complete
-        # Stage-2 cohort is being evaluated.
         (ROOT / PARETO_JSON).unlink(missing_ok=True)
         (ROOT / PARETO_CSV).unlink(missing_ok=True)
     state: dict[str, Any] = {
@@ -167,14 +621,29 @@ def main() -> int:
         "compute_capability": list(torch.cuda.get_device_capability(0)),
         "cuda": torch.version.cuda,
         "tensorrt": trt.__version__,
+        "nvidia_driver_and_bus": preflight_result["nvidia_driver_and_bus"],
+        "preflight": preflight_result,
         "eligible_candidates": eligible,
+        "benchmark_repetitions": repetitions,
         "candidates": {},
     }
-    write_json(ROOT / STATE, state)
     logs = ROOT / "results/stage2-notebook-logs"
     completed_rows: list[dict[str, Any]] = []
-
     for experiment_id in eligible:
+        old = previous.get(experiment_id, {})
+        if old.get("status") == "completed" and isinstance(old.get("result"), dict):
+            result = old["result"]
+            required_paths = [ROOT / result[name] for name in ("engine", "evaluation")]
+            required_paths.extend(ROOT / path for path in result.get("benchmarks", []))
+            if all(path.is_file() for path in required_paths):
+                record = dict(old)
+                record["reused_at_utc"] = now()
+                state["candidates"][experiment_id] = record
+                completed_rows.append(dict(result))
+                write_json(ROOT / STATE, state)
+                print(f"{experiment_id}: reusing completed Stage 2 result", flush=True)
+                continue
+
         experiment = registry[experiment_id]
         record: dict[str, Any] = {"status": "running", "started_at_utc": now()}
         state["candidates"][experiment_id] = record
@@ -196,10 +665,16 @@ def main() -> int:
             if not ok:
                 record.update(status="build-failed", reason=evidence, finished_at_utc=now())
                 write_json(ROOT / STATE, state)
+                persist_summary(state, eligible, completed_rows, defaults)
                 continue
         if not engine.is_file():
-            record.update(status="build-failed", reason="engine file missing", finished_at_utc=now())
+            record.update(
+                status="build-failed",
+                reason="engine file missing",
+                finished_at_utc=now(),
+            )
             write_json(ROOT / STATE, state)
+            persist_summary(state, eligible, completed_rows, defaults)
             continue
 
         ok, evidence = run(
@@ -218,44 +693,69 @@ def main() -> int:
             logs / f"{experiment_id}-engine-static.log",
         )
         if not ok:
-            record.update(status="engine-analysis-failed", reason=evidence, finished_at_utc=now())
+            record.update(
+                status="engine-analysis-failed",
+                reason=evidence,
+                finished_at_utc=now(),
+            )
             write_json(ROOT / STATE, state)
+            persist_summary(state, eligible, completed_rows, defaults)
             continue
 
-        benchmark_dir = ROOT / f"results/benchmarks/notebook/{experiment_id}"
-        ok, evidence = run(
-            [
-                sys.executable,
-                "scripts/evaluation/benchmark_baseline.py",
-                "--camera",
-                "front",
-                "--backend",
-                "tensorrt",
-                "--engine",
-                str(engine),
-                "--image-dir",
-                str(ROOT / protocol["dataset_dir"]),
-                "--sample-count",
-                str(latency["sampled_images"]),
-                "--seed",
-                str(latency["sample_seed"]),
-                "--threshold",
-                str(latency["postprocess_confidence_threshold"]),
-                "--warmup",
-                str(latency["warmup_runs"]),
-                "--runs",
-                str(latency["measured_runs"]),
-                "--output-dir",
-                str(benchmark_dir),
-            ],
-            logs / f"{experiment_id}-benchmark.log",
-        )
-        if not ok:
-            record.update(status="benchmark-failed", reason=evidence, finished_at_utc=now())
-            write_json(ROOT / STATE, state)
+        benchmark_payloads: list[dict[str, Any]] = []
+        benchmark_paths: list[Path] = []
+        benchmark_failed = False
+        for repetition in range(1, repetitions + 1):
+            benchmark_dir = (
+                ROOT
+                / f"results/benchmarks/notebook/{experiment_id}/repeat-{repetition:02d}"
+            )
+            ok, evidence = run(
+                [
+                    sys.executable,
+                    "scripts/evaluation/benchmark_baseline.py",
+                    "--camera",
+                    "front",
+                    "--backend",
+                    "tensorrt",
+                    "--precision-label",
+                    str(experiment["precision"]),
+                    "--engine",
+                    str(engine),
+                    "--image-dir",
+                    str(ROOT / protocol["dataset_dir"]),
+                    "--sample-count",
+                    str(latency["sampled_images"]),
+                    "--seed",
+                    str(latency["sample_seed"]),
+                    "--threshold",
+                    str(latency["postprocess_confidence_threshold"]),
+                    "--warmup",
+                    str(latency["warmup_runs"]),
+                    "--runs",
+                    str(latency["measured_runs"]),
+                    "--output-dir",
+                    str(benchmark_dir),
+                ],
+                logs / f"{experiment_id}-benchmark-{repetition:02d}.log",
+            )
+            if not ok:
+                record.update(
+                    status="benchmark-failed",
+                    reason=evidence,
+                    failed_repetition=repetition,
+                    finished_at_utc=now(),
+                )
+                write_json(ROOT / STATE, state)
+                persist_summary(state, eligible, completed_rows, defaults)
+                benchmark_failed = True
+                break
+            benchmark_path = newest_json(benchmark_dir)
+            benchmark_paths.append(benchmark_path)
+            benchmark_payloads.append(load_json(benchmark_path))
+        if benchmark_failed:
             continue
-        benchmark_path = newest_json(benchmark_dir)
-        benchmark = load_json(benchmark_path)
+        aggregate = aggregate_benchmarks(benchmark_payloads)
 
         ok, evidence = run(
             [
@@ -278,8 +778,11 @@ def main() -> int:
             logs / f"{experiment_id}-accuracy.log",
         )
         if not ok:
-            record.update(status="accuracy-failed", reason=evidence, finished_at_utc=now())
+            record.update(
+                status="accuracy-failed", reason=evidence, finished_at_utc=now()
+            )
             write_json(ROOT / STATE, state)
+            persist_summary(state, eligible, completed_rows, defaults)
             continue
         evaluation_path = ROOT / f"results/coco-evaluation/{experiment_id}-front.json"
         evaluation = load_json(evaluation_path)
@@ -288,70 +791,73 @@ def main() -> int:
             "family": str(experiment["family"]),
             "method": str(experiment["method"]),
             "precision": str(experiment["precision"]),
-            "bbox_ap": metric(evaluation, "bbox_ap"),
-            "mask_ap": metric(evaluation, "mask_ap"),
-            "semantic_miou": metric(evaluation, "semantic_miou"),
-            "median_ms": float(benchmark["median_ms"]),
-            "p95_ms": float(benchmark["p95_ms"]),
-            "fps": float(benchmark["fps"]),
-            "gpu_peak_allocated_bytes": int(benchmark["gpu_peak_allocated_bytes"] or 0),
-            "gpu_peak_reserved_bytes": int(benchmark["gpu_peak_reserved_bytes"] or 0),
+            "input_shape": "x".join(
+                str(item)
+                for item in experiment.get(
+                    "input_shape", defaults["export"]["input_shape"]
+                )
+            ),
+            **accuracy_columns(evaluation),
+            **aggregate,
             "engine_size_bytes": engine.stat().st_size,
+            "engine_sha256": evaluation["engine_sha256"],
+            "annotation_sha256": evaluation["annotation_sha256"],
+            "test_image_count": int(evaluation["image_count"]),
+            "prediction_count": int(evaluation["prediction_count"]),
             "engine": str(engine.relative_to(ROOT)),
-            "benchmark": str(benchmark_path.relative_to(ROOT)),
+            "benchmarks": [str(path.relative_to(ROOT)) for path in benchmark_paths],
             "evaluation": str(evaluation_path.relative_to(ROOT)),
         }
         completed_rows.append(row)
         record.update(status="completed", result=row, finished_at_utc=now())
         write_json(ROOT / STATE, state)
+        persist_summary(state, eligible, completed_rows, defaults)
         print(f"{experiment_id}: Stage 2 completed", flush=True)
 
-    terminal = {
-        "completed",
-        "build-failed",
-        "engine-analysis-failed",
-        "benchmark-failed",
-        "accuracy-failed",
-    }
     pending = [
         experiment_id
         for experiment_id in eligible
-        if state["candidates"].get(experiment_id, {}).get("status") not in terminal
+        if state["candidates"].get(experiment_id, {}).get("status")
+        not in TERMINAL_STATUSES
     ]
     state["status"] = "completed" if not pending else "incomplete"
     state["finished_at_utc"] = now()
     state["pending_candidates"] = pending
     write_json(ROOT / STATE, state)
-    summary = {
-        "created_at_utc": now(),
-        "eligible_count": len(eligible),
-        "completed_count": len(completed_rows),
-        "terminal_failure_count": len(eligible) - len(completed_rows) - len(pending),
-        "pending_count": len(pending),
-        "hardware": {key: state[key] for key in ("gpu", "compute_capability", "cuda", "tensorrt")},
-        "protocol": protocol,
-        "rows": completed_rows,
-    }
-    write_json(ROOT / SUMMARY_JSON, summary)
-    write_table(ROOT / SUMMARY_CSV, completed_rows)
+    summary = persist_summary(state, eligible, completed_rows, defaults)
 
     # A debug subset must never overwrite the canonical all-candidate Pareto result.
     if not pending and not args.only and eligible == full_eligible:
+        eligible_rows = [
+            row for row in summary["rows"] if row["stage3_pareto_eligible"]
+        ]
         pareto_ids = [
             row["experiment_id"]
-            for row in completed_rows
-            if not any(dominates(other, row) for other in completed_rows if other is not row)
+            for row in eligible_rows
+            if not any(
+                dominates(other, row)
+                for other in eligible_rows
+                if other is not row
+            )
         ]
         pareto_rows = [
             {**row, "pareto_optimal": row["experiment_id"] in pareto_ids}
-            for row in completed_rows
+            for row in summary["rows"]
         ]
         pareto = {
             "created_at_utc": now(),
             "stage2_all_candidates_terminal": True,
+            "pre_pareto_gate": (
+                "valid measurement and B01-relative accuracy-retention gate"
+            ),
             "objectives": {
                 "maximize": ["bbox_ap", "mask_ap", "semantic_miou"],
-                "minimize": ["median_ms", "gpu_peak_allocated_bytes", "engine_size_bytes"],
+                "minimize": [
+                    "median_ms",
+                    "p95_ms",
+                    "gpu_peak_allocated_bytes",
+                    "engine_size_bytes",
+                ],
             },
             "pareto_candidate_ids": pareto_ids,
             "rows": pareto_rows,
@@ -360,9 +866,21 @@ def main() -> int:
         write_table(ROOT / PARETO_CSV, pareto_rows)
         print(f"Pareto: {pareto_ids}")
     elif args.only:
-        print("Pareto skipped: --only is a debug subset, not the complete Stage-2 cohort.")
+        print("Pareto skipped: --only is a debug subset, not the complete cohort.")
+
+    report_ok, report_evidence = create_excel_report(logs / "excel-report.log")
+    state["excel_report"] = {
+        "status": "completed" if report_ok else "failed",
+        "path": str(REPORT_XLSX),
+        "evidence": report_evidence,
+    }
+    write_json(ROOT / STATE, state)
     print(f"Stage 2 terminal: {len(eligible) - len(pending)}/{len(eligible)}; pending={pending}")
-    return 0 if not pending else 1
+    if report_ok:
+        print(f"Excel report: {REPORT_XLSX}")
+    else:
+        print(f"Excel report FAILED: {report_evidence}")
+    return 0 if not pending and report_ok else 1
 
 
 if __name__ == "__main__":

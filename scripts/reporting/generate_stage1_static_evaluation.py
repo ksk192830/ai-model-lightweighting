@@ -328,8 +328,8 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
             "",
             "1. `stage2_notebook_eligible=true`인 후보를 노트북에서 TensorRT engine으로 빌드한다.",
             "2. 고정 test 437장으로 bbox AP, mask AP, semantic mIoU를 측정한다.",
-            "3. warm-up 20회 뒤 200회 반복으로 median/p95 latency, FPS, peak GPU memory를 측정한다.",
-            "4. 모든 2차 결과가 모인 뒤 정확도-지연시간-메모리-크기의 비지배해를 Pareto 분석한다.",
+            "3. 고정 32장에서 warm-up 20회와 200회 측정을 3번 반복해 median/p95/p99 latency, FPS, 변동성과 peak GPU memory를 측정한다.",
+            "4. 모든 2차 결과가 모이면 정확도 보존 gate 뒤 정확도-지연시간-메모리-크기의 비지배해를 Pareto 분석하고 Excel로 통합한다.",
             "",
         ]
     )

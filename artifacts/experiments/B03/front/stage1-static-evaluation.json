@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:43:07.962221+00:00",
+  "created_at_utc": "2026-09-03T11:41:40.778327+00:00",
   "experiment_id": "B03",
   "method_summary": "tensorrt-int8-ptq",
   "artifact_kind": "tensorrt-build-recipe",

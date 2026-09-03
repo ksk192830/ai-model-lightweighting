@@ -2,9 +2,9 @@
 
 - 감사 상태: **IN_PROGRESS**
 - 기준 원본: `configs/experiments/defaults.yaml`
-- 검사 수: 77
+- 검사 수: 79
 - 필수 실패: 0
-- 실행 대기: 2
+- 실행 대기: 5
 - 권고 사항: 9
 
 ## 감사 판정
@@ -78,12 +78,14 @@
 | static-analysis | static-analysis-Q06 | PASS | artifacts/experiments/Q06/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.25263157894736843; estimated/all-node fraction=0.010282776349614395 |
 | static-analysis | static-analysis-Q07 | PASS | artifacts/experiments/Q07/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.18421052631578946; estimated/all-node fraction=0.007219471947194719 |
 | static-analysis | stage1-all-candidate-coverage | PASS | registered=26; rows=26; unperformed=0; missing=none; extra=none; static-only=True |
-| automation | desktop-pipeline-protocol-binding | PASS | pipeline status=failed; running queue records the canonical protocol |
-| automation | post-recovery-protocol-binding | PASS | M01 post-recovery status=failed; canonical protocol match=True |
+| automation | desktop-pipeline-protocol-binding | PENDING | pipeline status=failed; running queue predates canonical protocol and must be restarted |
+| automation | post-recovery-protocol-binding | PENDING | M01 post-recovery status=failed; canonical protocol match=False |
 | latency | latency-results | PENDING | retained candidates await separate TensorRT engine benchmarking |
 | automation | engine-summary | PENDING | desktop engine summary will be generated during the second-stage engine evaluation |
 | automation | pipeline-stage-wiring | PASS | engine inspection, paper table/figure, static report, and final audit are wired |
 | automation | all-candidate-notebook-pareto-wiring | PASS | Stage-1 eligible set -> per-candidate terminal Stage 2 -> Pareto gate is wired |
+| automation | notebook-single-excel-report-wiring | PASS | raw, analyzed, per-class, repeated latency, failure, protocol, and environment sheets are wired |
+| automation | notebook-stage2-result-completeness | PENDING | notebook Stage-2 result files do not exist yet |
 | automation | paper-report-source | PASS | paper outputs consume only the current desktop engine summary |
 | automation | int8-calibration-binding | PASS | train-only deterministic calibration: count=128, seed=42 |
 | study-design | fixed-benchmark-reuse | WARN | 437 images are a repeated comparative benchmark, not an untouched confirmatory test; collect a new session for external-generalization claims |

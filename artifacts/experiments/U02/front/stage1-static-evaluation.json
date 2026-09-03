@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:43:08.100220+00:00",
+  "created_at_utc": "2026-09-03T11:41:40.924199+00:00",
   "experiment_id": "U02",
   "method_summary": "global-magnitude; sparsity=0.3",
   "artifact_kind": "onnx-graph",

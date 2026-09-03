@@ -16,6 +16,7 @@ numpy==2.2.6
 Pillow==12.3.0
 matplotlib==3.10.9
 opencv-python-headless==5.0.0.93
+XlsxWriter==3.2.9
 
 # Configuration and runtime monitoring.
 PyYAML==6.0.2

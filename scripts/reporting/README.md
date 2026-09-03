@@ -10,6 +10,7 @@
 .venv/bin/python scripts/reporting/generate_stage1_static_evaluation.py --check
 .venv/bin/python scripts/reporting/paper_results.py
 .venv/bin/python scripts/reporting/generate_paper_static_analysis.py
+.venv/bin/python scripts/reporting/generate_stage2_excel.py
 .venv/bin/python scripts/experiments/audit_evaluation_protocol.py
 ```
 
@@ -30,7 +31,12 @@
 - `docs/reports/paper-static-analysis.md`
 - `results/evaluation-automation-audit.json`
 - `docs/reports/evaluation-automation-audit.md`
+- `results/stage2-evaluation-report.xlsx`
 
 `show_project_status.py`는 1차의 평가/통과/불통/미수행 수와 2차의
 완료/실패/실행/대기 후보를 실제 상태 JSON에서 읽는다. 3차 Pareto가 생성되기
 전에는 `WAITING`, 생성된 뒤에는 비지배 후보 ID를 표시한다.
+
+`generate_stage2_excel.py`는 1차 후보표, 2차 성공·실패, 클래스별 정확도, 반복별
+latency, 평가 기준, 실험환경과 Pareto를 한 Excel 파일로 만든다. 수치의 원본은
+JSON/CSV로 유지하고, 비교·gate 시트는 B01 기준 변화량을 수식으로도 추적한다.

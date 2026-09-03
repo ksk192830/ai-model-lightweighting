@@ -568,11 +568,19 @@ def audit(root: Path) -> dict[str, Any]:
     if post_queue_path.is_file():
         post_queue = load_json(post_queue_path)
         post_protocol_match = post_queue.get("evaluation_protocol") == protocol
+        post_status = str(post_queue.get("status", ""))
+        post_check_status = (
+            "PASS"
+            if post_protocol_match
+            else "PENDING"
+            if post_status in {"failed", "cancelled", "stopped"}
+            else "FAIL"
+        )
         check(
             "post-recovery-protocol-binding",
-            "PASS" if post_protocol_match else "FAIL",
+            post_check_status,
             (
-                f"M01 post-recovery status={post_queue.get('status')}; "
+                f"M01 post-recovery status={post_status}; "
                 f"canonical protocol match={post_protocol_match}"
             ),
             category="automation",
@@ -730,11 +738,14 @@ def audit(root: Path) -> dict[str, Any]:
     notebook_required_tokens = (
         "stage1-static-evaluation.json",
         "stage2_notebook_eligible",
+        "benchmark_repetitions",
         "build-failed",
         "benchmark-failed",
         "accuracy-failed",
+        "accuracy_gate_pass",
         "pending_candidates",
         "stage3-pareto.json",
+        "generate_stage2_excel.py",
         "dominates",
     )
     missing_notebook_tokens = [
@@ -761,6 +772,107 @@ def audit(root: Path) -> dict[str, Any]:
         ),
         category="automation",
     )
+    excel_source = (
+        root / "scripts/reporting/generate_stage2_excel.py"
+    ).read_text(encoding="utf-8")
+    excel_required_tokens = (
+        "분석결과",
+        "원시결과",
+        "클래스별 정확도",
+        "반복측정",
+        "실패·제외",
+        "평가기준",
+        "실험환경",
+    )
+    missing_excel_tokens = [
+        token for token in excel_required_tokens if token not in excel_source
+    ]
+    check(
+        "notebook-single-excel-report-wiring",
+        "FAIL" if missing_excel_tokens else "PASS",
+        (
+            "missing report sections: " + ", ".join(missing_excel_tokens)
+            if missing_excel_tokens
+            else "raw, analyzed, per-class, repeated latency, failure, protocol, and environment sheets are wired"
+        ),
+        category="automation",
+    )
+
+    notebook_summary_path = root / "results/stage2-notebook-summary.json"
+    notebook_state_path = root / "results/stage2-notebook-state.json"
+    if notebook_summary_path.is_file() and notebook_state_path.is_file():
+        notebook_summary = load_json(notebook_summary_path)
+        notebook_state = load_json(notebook_state_path)
+        expected_repetitions = int(
+            protocol["latency"].get("benchmark_repetitions", 3)
+        )
+        result_errors = []
+        for row in notebook_summary.get("rows", []):
+            experiment_id = row.get("experiment_id", "unknown")
+            benchmark_paths = row.get("benchmarks", [])
+            evaluation_path = resolve(root, row.get("evaluation", ""))
+            if row.get("benchmark_repetitions") != expected_repetitions:
+                result_errors.append(f"{experiment_id}: repetition count")
+            if len(benchmark_paths) != expected_repetitions:
+                result_errors.append(f"{experiment_id}: benchmark evidence count")
+            if row.get("total_measured_runs") != (
+                expected_repetitions * protocol["latency"]["measured_runs"]
+            ):
+                result_errors.append(f"{experiment_id}: total measured runs")
+            if not all(resolve(root, path).is_file() for path in benchmark_paths):
+                result_errors.append(f"{experiment_id}: benchmark file missing")
+            if not evaluation_path.is_file():
+                result_errors.append(f"{experiment_id}: evaluation file missing")
+                continue
+            evaluation = load_json(evaluation_path)
+            metrics = evaluation.get("metrics", {})
+            if evaluation.get("image_count") != protocol["expected_images"]:
+                result_errors.append(f"{experiment_id}: test image count")
+            if not metrics.get("bbox_by_category"):
+                result_errors.append(f"{experiment_id}: per-class bbox AP")
+            if not metrics.get("segm_by_category"):
+                result_errors.append(f"{experiment_id}: per-class mask AP")
+            if not metrics.get("semantic_iou_by_category"):
+                result_errors.append(f"{experiment_id}: per-class semantic IoU")
+            for field in (
+                "p99_ms",
+                "replicate_median_cv",
+                "replicate_median_ci95_low_ms",
+                "replicate_median_ci95_high_ms",
+                "measurement_valid",
+                "accuracy_gate_pass",
+                "stage3_pareto_eligible",
+            ):
+                if field not in row:
+                    result_errors.append(f"{experiment_id}: {field}")
+        check(
+            "notebook-stage2-result-completeness",
+            "FAIL" if result_errors else "PASS",
+            (
+                "; ".join(result_errors[:12])
+                if result_errors
+                else f"{len(notebook_summary.get('rows', []))} completed rows include repeated/runtime/class-wise evidence"
+            ),
+            category="automation",
+        )
+        terminal = notebook_state.get("status") == "completed"
+        report_exists = (root / "results/stage2-evaluation-report.xlsx").is_file()
+        pareto_exists = (root / "results/stage3-pareto.json").is_file()
+        check(
+            "notebook-terminal-report-gate",
+            "PASS" if not terminal or (report_exists and pareto_exists) else "FAIL",
+            (
+                f"terminal={terminal}; Excel={report_exists}; Pareto={pareto_exists}"
+            ),
+            category="automation",
+        )
+    else:
+        check(
+            "notebook-stage2-result-completeness",
+            "PENDING",
+            "notebook Stage-2 result files do not exist yet",
+            category="automation",
+        )
     reporting_source = (root / "scripts/reporting/paper_results.py").read_text(
         encoding="utf-8"
     )

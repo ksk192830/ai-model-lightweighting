@@ -76,6 +76,20 @@ cd ../..
 기본 경로를 유지했으므로 B03 engine 생성은 추가 경로 인자 없이 이 128장만
 calibration에 사용하고, TensorRT 평가는 별도의 `test` 437장을 사용한다.
 
+## 현재 전체 후보 원클릭 실행
+
+`notebook-front-stage1` 폴더를 노트북의 로컬 SSD에 복사한 뒤 다음 한 줄을 실행한다.
+
+```bash
+bash run_notebook_pipeline.sh
+```
+
+이 명령은 Python 3.10 가상환경과 의존성을 준비하고 manifest/data checksum,
+test 437장과 누수 점검 기록을 검증한 다음 22개 후보를 build → engine inspection
+→ 3회 latency benchmark → COCO/semantic 정확도 평가 → 정확도 gate → Pareto →
+Excel 보고서 순으로 처리한다. 중단 후 같은 명령을 실행하면 완료된 후보를 재사용한다.
+최종 통합 파일은 `results/stage2-evaluation-report.xlsx`이다.
+
 ## 노트북 환경 확인
 
 ```bash
@@ -112,7 +126,8 @@ python scripts/experiments/run_notebook_stage2.py --force-build
 ```
 
 위 실행은 22개 engine plan, 17개 unique ONNX, 후보별 terminal 상태와 실패
-로그를 보존하며 전체 terminal 후에만 Pareto 결과를 생성한다.
+로그를 보존하며 전체 terminal 후에만 정확도 보존 gate와 Pareto 결과를 생성한다.
+latency는 32장·200회를 3번 반복하고 최종 결과를 한 Excel 파일로 합친다.
 
 첫 단계는 복구 학습과 무관한 네 engine이다.
 

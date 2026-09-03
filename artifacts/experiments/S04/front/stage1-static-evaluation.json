@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:43:08.580010+00:00",
+  "created_at_utc": "2026-09-03T11:41:41.441021+00:00",
   "experiment_id": "S04",
   "method_summary": "ffn-dimension; reduction=0.4",
   "artifact_kind": "onnx-graph",

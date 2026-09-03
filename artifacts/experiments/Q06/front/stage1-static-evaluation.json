@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-09-02T18:43:09.545207+00:00",
+  "created_at_utc": "2026-09-03T11:41:42.397144+00:00",
   "experiment_id": "Q06",
   "method_summary": "modelopt-fp8-mixed-kld; FP8_DEFAULT_CFG",
   "artifact_kind": "qdq-onnx",

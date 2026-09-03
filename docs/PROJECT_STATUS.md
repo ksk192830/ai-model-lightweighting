@@ -20,6 +20,9 @@
    충족한 R02, R03, S02, S04, M01, M02도 노트북 2차 대상으로 복구했다.
 7. 1차 통과표, 22개 engine plan, 17개 unique ONNX 패키지, 후보별 실패
    로그, 2차 통합 표, 전 후보 terminal 후 Pareto 생성을 하나의 자동화로 연결했다.
+8. 노트북 원클릭 실행기를 추가해 환경 설치·checksum·engine 생성·정적검사·3회
+   latency 반복·437장 정확도·정확도 gate·Pareto·Excel 보고서까지 한 번에 실행하고,
+   중단 뒤 완료 후보를 재사용하도록 구성했다.
 
 ## 1차 정적평가 판정
 
@@ -45,10 +48,12 @@
 - 현재 실행 중인 로컬 학습·평가 작업은 없다.
 - 1차는 26/26 완료됐다. 22개 통과 후보와 17개 unique ONNX 입력이
   노트북 패키지·engine plan 검증을 통과했다.
-- 다음 단계는 동일 노트북 GPU에서 22개를 모두 terminal 상태로 만드는
-  2차 평가다. 성공 후보는 정확도·latency·FPS·memory·engine 크기를 기록하고,
+- 다음 단계는 동일 노트북 GPU에서 `bash run_notebook_pipeline.sh`를 실행해 22개를
+  모두 terminal 상태로 만드는 2차 평가다. 성공 후보는 상세 정확도·3회 반복
+  latency·FPS·memory·engine 크기를 기록하고,
   build 불가 후보는 실패 이유와 로그를 남긴다.
-- 전 22개의 2차 상태가 terminal일 때만 3차 Pareto를 생성한다.
+- 전 22개의 2차 상태가 terminal일 때만 정확도 보존 gate와 3차 Pareto를 수행하고
+  `results/stage2-evaluation-report.xlsx`를 생성한다.
 
 ## 논문 초안에 바로 사용할 근거
 
@@ -78,7 +83,8 @@
 ## 남은 완료 조건
 
 - 1차 통과 22개 후보의 노트북 engine 생성 또는 build-failed terminal 기록
-- 생성된 모든 engine의 동일 장비 latency 200회·437장 정확도 측정
-- 전 22개 terminal 후 6개 목표 기반 Pareto 분석
+- 생성된 모든 engine의 동일 장비 latency 200회 × 3반복·437장 정확도 측정
+- 전 22개 terminal 후 정확도 gate 및 7개 목표 기반 Pareto 분석
+- 통합 Excel 보고서와 원시 JSON/로그 일치 여부 확인
 - `paper_results.py`, 정적 분석 생성기, 평가 감사 재실행
 - 외부 일반화 주장이 필요하면 별도 촬영 세션 holdout 확보

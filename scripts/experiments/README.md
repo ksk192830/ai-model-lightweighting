@@ -76,7 +76,11 @@ every model.
 .venv/bin/python scripts/experiments/build_engine_suite.py \
   --suite final8 --force
 
-# On the notebook, build/evaluate every Stage-1-passing candidate and emit
-# Pareto results only after every candidate has a terminal Stage-2 result.
-python scripts/experiments/run_notebook_stage2.py --force-build
+# On the notebook, run preflight, engine build, 3x benchmark, 437-image
+# accuracy, accuracy-gated Pareto, and one Excel report.
+bash run_notebook_pipeline.sh
 ```
+
+`run_notebook_stage2.py`는 중단 후 재실행 시 완료 후보의 engine·평가 JSON·반복
+benchmark JSON이 모두 남아 있으면 그 결과를 재사용한다. `--restart`는 평가는 다시
+하되 기존 engine을 재사용하고, `--force-build`는 engine부터 다시 만든다.

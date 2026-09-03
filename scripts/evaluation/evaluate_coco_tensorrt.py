@@ -108,6 +108,60 @@ def summarize_coco(evaluation: object) -> dict[str, float]:
     }
 
 
+def summarize_coco_by_category(
+    evaluation: object,
+    category_ids: list[int],
+) -> dict[str, dict[str, float]]:
+    """Extract auditable per-category AP/AR from one COCOeval accumulation.
+
+    COCOeval's headline AP is a macro average across categories.  Publishing the
+    corresponding per-category values makes class imbalance and regressions
+    visible without changing the canonical overall score.
+    """
+    precision = evaluation.eval["precision"]
+    recall = evaluation.eval["recall"]
+    iou_thresholds = np.asarray(evaluation.params.iouThrs)
+    max_detection_index = len(evaluation.params.maxDets) - 1
+
+    def valid_mean(values: np.ndarray) -> float:
+        valid = values[values > -1]
+        return float(np.mean(valid)) if valid.size else float("nan")
+
+    threshold_indices = {
+        "ap50": int(np.argmin(np.abs(iou_thresholds - 0.50))),
+        "ap75": int(np.argmin(np.abs(iou_thresholds - 0.75))),
+    }
+    rows: dict[str, dict[str, float]] = {}
+    for category_index, category_id in enumerate(category_ids):
+        rows[str(category_id)] = {
+            "ap": valid_mean(
+                precision[:, :, category_index, 0, max_detection_index]
+            ),
+            "ap50": valid_mean(
+                precision[
+                    threshold_indices["ap50"],
+                    :,
+                    category_index,
+                    0,
+                    max_detection_index,
+                ]
+            ),
+            "ap75": valid_mean(
+                precision[
+                    threshold_indices["ap75"],
+                    :,
+                    category_index,
+                    0,
+                    max_detection_index,
+                ]
+            ),
+            "ar100": valid_mean(
+                recall[:, category_index, 0, max_detection_index]
+            ),
+        }
+    return rows
+
+
 def image_path(dataset: Path, image_dir: Path, file_name: str) -> Path:
     direct = dataset / file_name
     return direct if direct.is_file() else image_dir / file_name
@@ -232,6 +286,11 @@ def main() -> int:
 
     coco = COCO(str(annotation_path))
     image_ids = sorted(coco.getImgIds())
+    expected_images = int(EVALUATION_PROTOCOL["expected_images"])
+    if len(image_ids) != expected_images:
+        raise ValueError(
+            f"Expected {expected_images} final-test images, found {len(image_ids)}."
+        )
     category_ids = sorted(
         category_id
         for category_id in coco.getCatIds()
@@ -315,7 +374,10 @@ def main() -> int:
     if not segmentation_predictions:
         raise RuntimeError("The engine produced no segmentation masks.")
 
-    def evaluate(predictions: list[dict], iou_type: str) -> dict[str, float]:
+    def evaluate(
+        predictions: list[dict],
+        iou_type: str,
+    ) -> tuple[dict[str, float], dict[str, dict[str, float]]]:
         detected = coco.loadRes(predictions)
         evaluation = COCOeval(coco, detected, iou_type)
         evaluation.params.imgIds = image_ids
@@ -323,10 +385,15 @@ def main() -> int:
         evaluation.evaluate()
         evaluation.accumulate()
         evaluation.summarize()
-        return summarize_coco(evaluation)
+        return (
+            summarize_coco(evaluation),
+            summarize_coco_by_category(evaluation, category_ids),
+        )
 
-    bbox_metrics = evaluate(bbox_predictions, "bbox")
-    segmentation_metrics = evaluate(segmentation_predictions, "segm")
+    bbox_metrics, bbox_by_category = evaluate(bbox_predictions, "bbox")
+    segmentation_metrics, segmentation_by_category = evaluate(
+        segmentation_predictions, "segm"
+    )
     miou, category_ious = semantic_iou(intersections, unions)
 
     result = {
@@ -363,9 +430,15 @@ def main() -> int:
         "cuda": torch.version.cuda,
         "tensorrt": runner.trt.__version__,
         "prediction_count": len(bbox_predictions),
+        "prediction_count_at_operating_threshold": sum(
+            prediction["score"] >= args.miou_threshold
+            for prediction in bbox_predictions
+        ),
         "metrics": {
             "bbox": bbox_metrics,
+            "bbox_by_category": bbox_by_category,
             "segm": segmentation_metrics,
+            "segm_by_category": segmentation_by_category,
             "semantic_miou": miou,
             "semantic_iou_by_category": {
                 str(key): value for key, value in category_ious.items()

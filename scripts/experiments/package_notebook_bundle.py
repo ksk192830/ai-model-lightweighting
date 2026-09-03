@@ -128,6 +128,14 @@ def main() -> int:
                 ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
             )
         shutil.copy2(REPOSITORY_ROOT / "requirements.txt", output / "requirements.txt")
+        shutil.copy2(
+            REPOSITORY_ROOT / "run_notebook_pipeline.sh",
+            output / "run_notebook_pipeline.sh",
+        )
+        shutil.copy2(
+            REPOSITORY_ROOT / "NOTEBOOK_QUICKSTART.md",
+            output / "NOTEBOOK_QUICKSTART.md",
+        )
         stage1_report = REPOSITORY_ROOT / "results/stage1-static-evaluation.json"
         report_target = output / "results/stage1-static-evaluation.json"
         report_target.parent.mkdir(parents=True, exist_ok=True)
@@ -155,7 +163,18 @@ def main() -> int:
             }
         )
 
+    automation_paths = [
+        Path("run_notebook_pipeline.sh"),
+        Path("NOTEBOOK_QUICKSTART.md"),
+        Path("requirements.txt"),
+        Path("configs/experiments/defaults.yaml"),
+        Path("scripts/experiments/run_notebook_stage2.py"),
+        Path("scripts/evaluation/benchmark_baseline.py"),
+        Path("scripts/evaluation/evaluate_coco_tensorrt.py"),
+        Path("scripts/reporting/generate_stage2_excel.py"),
+    ] if args.suite == "stage1" else []
     manifest = {
+        "schema_version": 2,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "suite": args.suite,
         "camera": "front",
@@ -186,6 +205,19 @@ def main() -> int:
         "calibration_dir": registry.defaults["reproducibility"].get(
             "front_calibration_dir"
         ),
+        "automation": {
+            "command": "bash run_notebook_pipeline.sh",
+            "output_workbook": "results/stage2-evaluation-report.xlsx",
+            "resume_rule": "reuse completed candidate only when all evidence files exist",
+            "files": [
+                {
+                    "path": path.as_posix(),
+                    "size_bytes": (output / path).stat().st_size,
+                    "sha256": sha256(output / path),
+                }
+                for path in automation_paths
+            ],
+        } if automation_paths else None,
     }
     manifest_path = output / "manifest.json"
     manifest_path.write_text(
