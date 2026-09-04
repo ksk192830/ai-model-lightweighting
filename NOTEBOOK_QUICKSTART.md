@@ -36,14 +36,15 @@ bash run_notebook_pipeline.sh --setup-only
 다른 터미널에서 진행 상황을 확인한다.
 
 ```bash
-watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
+watch -n 30 '.venv/bin/python scripts/reporting/show_project_status.py'
 ```
 
 기존 엔진과 437장 정확도 결과는 그대로 검증·재사용하고, 모든 성공 후보의
 지연시간만 성능 우선 환경에서 다시 측정하려면 다음을 실행한다. 스크립트가
 `powerprofilesctl` 프로필을 `performance`로 전환하고 실제 platform profile과
 CPU EPP가 모두 `performance`인지 검사한다. 각 반복 직전에
-CPU/GPU 부하와 GPU 온도를 1초 간격으로 5회 확인한다. 설정된 유휴 범위 및 첫
+첫 측정 전 화면 갱신이 멈추도록 30초를 기다린 뒤 CPU/GPU 부하와 GPU 온도를
+1초 간격으로 3회 확인한다. 설정된 유휴 범위 및 첫
 안정 상태의 온도 범위에 들 때만 측정을 시작한다. 5분 안에 안정화되지 않으면
 측정을 강행하지 않고 사유를 기록한 뒤 자동으로 다음 안정화 확인을 계속한다.
 

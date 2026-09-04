@@ -35,6 +35,7 @@ def load_config() -> dict:
         "enabled": True,
         "required_platform_profile": "performance",
         "required_cpu_energy_performance_preference": "performance",
+        "initial_settle_seconds": 0,
         "sample_interval_seconds": 0,
         "required_consecutive_samples": 3,
         "timeout_seconds": 20,
@@ -87,6 +88,34 @@ def test_load_gate_resets_after_busy_sample_then_accepts_stable_window() -> None
     assert result["status"] == "stable"
     assert result["total_samples"] == 5
     assert result["accepted_window_mean"]["cpu_utilization_percent"] == pytest.approx(2.5)
+
+
+def test_load_gate_settles_only_before_session_reference_is_established() -> None:
+    config = load_config()
+    config["initial_settle_seconds"] = 30
+    sleeps: list[float] = []
+    clock = iter(float(value) for value in range(20))
+    result = stage2.wait_for_stable_load(
+        config,
+        sample_fn=lambda _interval: load_sample(),
+        monotonic_fn=lambda: next(clock),
+        sleep_fn=sleeps.append,
+    )
+    assert result["status"] == "stable"
+    assert result["initial_settle_seconds"] == 30
+    assert sleeps == [30]
+
+    clock = iter(float(value) for value in range(20))
+    result = stage2.wait_for_stable_load(
+        config,
+        {"gpu_temperature_c": 45.0},
+        sample_fn=lambda _interval: load_sample(),
+        monotonic_fn=lambda: next(clock),
+        sleep_fn=sleeps.append,
+    )
+    assert result["status"] == "stable"
+    assert result["initial_settle_seconds"] == 0
+    assert sleeps == [30]
 
 
 def test_load_gate_rejects_temperature_far_from_session_reference() -> None:

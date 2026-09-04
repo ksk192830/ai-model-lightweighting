@@ -391,12 +391,20 @@ def wait_for_stable_load(
     *,
     sample_fn: Any = capture_load_sample,
     monotonic_fn: Any = time.monotonic,
+    sleep_fn: Any = time.sleep,
 ) -> dict[str, Any]:
     """Wait until a complete comparable idle window is observed or time out."""
     started_at = now()
-    started = monotonic_fn()
     if not config.get("enabled", True):
         return {"status": "disabled", "started_at_utc": started_at}
+    initial_settle_seconds = (
+        float(config.get("initial_settle_seconds", 0.0))
+        if reference is None
+        else 0.0
+    )
+    if initial_settle_seconds > 0:
+        sleep_fn(initial_settle_seconds)
+    started = monotonic_fn()
     timeout = float(config["timeout_seconds"])
     interval = float(config["sample_interval_seconds"])
     required = int(config["required_consecutive_samples"])
@@ -428,6 +436,7 @@ def wait_for_stable_load(
                 "started_at_utc": started_at,
                 "finished_at_utc": now(),
                 "wait_seconds": monotonic_fn() - started,
+                "initial_settle_seconds": initial_settle_seconds,
                 "total_samples": total_samples,
                 "accepted_window": consecutive,
                 "accepted_window_mean": summary,
@@ -442,6 +451,7 @@ def wait_for_stable_load(
         "started_at_utc": started_at,
         "finished_at_utc": now(),
         "wait_seconds": monotonic_fn() - started,
+        "initial_settle_seconds": initial_settle_seconds,
         "total_samples": total_samples,
         "last_rejection_reasons": last_reasons,
         "session_reference": reference,

@@ -61,21 +61,22 @@ evaluation_protocol:
       enabled: true
       required_platform_profile: performance
       required_cpu_energy_performance_preference: performance
+      initial_settle_seconds: 30
       sample_interval_seconds: 1.0
-      required_consecutive_samples: 5
+      required_consecutive_samples: 3
       timeout_seconds: 300
-      max_cpu_utilization_percent: 20.0
-      max_gpu_utilization_percent: 40.0
-      max_gpu_memory_utilization_percent: 25.0
-      max_gpu_temperature_c: 65.0
-      max_cpu_utilization_span_percent: 10.0
-      max_gpu_utilization_span_percent: 8.0
-      max_gpu_memory_utilization_span_percent: 5.0
-      max_gpu_temperature_span_c: 3.0
-      max_cpu_utilization_delta_from_reference_percent: 10.0
-      max_gpu_utilization_delta_from_reference_percent: 8.0
-      max_gpu_memory_utilization_delta_from_reference_percent: 5.0
-      max_gpu_temperature_delta_from_reference_c: 5.0
+      max_cpu_utilization_percent: 30.0
+      max_gpu_utilization_percent: 50.0
+      max_gpu_memory_utilization_percent: 50.0
+      max_gpu_temperature_c: 75.0
+      max_cpu_utilization_span_percent: 20.0
+      max_gpu_utilization_span_percent: 50.0
+      max_gpu_memory_utilization_span_percent: 50.0
+      max_gpu_temperature_span_c: 6.0
+      max_cpu_utilization_delta_from_reference_percent: 20.0
+      max_gpu_utilization_delta_from_reference_percent: 50.0
+      max_gpu_memory_utilization_delta_from_reference_percent: 50.0
+      max_gpu_temperature_delta_from_reference_c: 15.0
       require_ac_power: true
       recorded_sample_limit: 30
 

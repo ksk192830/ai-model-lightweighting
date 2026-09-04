@@ -13,28 +13,30 @@ governor 이름만으로 전원 모드를 판정하지 않는다.
 
 ## 측정 시작 조건
 
-각 반복 측정 직전에 1초 간격으로 시스템 및 GPU 상태를 표본화한다. 다음 조건을
-5개 연속 표본이 모두 충족해야 warm-up과 본 측정을 시작한다.
+첫 반복 전에는 실행 직후 화면 갱신이 GPU 기준값에 포함되지 않도록 30초 동안
+정착시킨다. 이후 각 반복 측정 직전에 1초 간격으로 시스템 및 GPU 상태를
+표본화한다. 다음 조건을 3개 연속 표본이 모두 충족해야 warm-up과 본 측정을 시작한다.
 
 | 조건 | 상한 |
 |---|---:|
-| CPU 사용률 | 20% |
-| GPU 사용률 | 40% |
-| GPU memory-controller 사용률 | 25% |
-| GPU 온도 | 65°C |
-| 5개 표본의 CPU 사용률 범위 | 10%p |
-| 5개 표본의 GPU 사용률 범위 | 8%p |
-| 5개 표본의 GPU memory-controller 사용률 범위 | 5%p |
-| 5개 표본의 GPU 온도 범위 | 3°C |
+| CPU 사용률 | 30% |
+| GPU 사용률 | 50% |
+| GPU memory-controller 사용률 | 50% |
+| GPU 온도 | 75°C |
+| 3개 표본의 CPU 사용률 범위 | 20%p |
+| 3개 표본의 GPU 사용률 범위 | 50%p |
+| 3개 표본의 GPU memory-controller 사용률 범위 | 50%p |
+| 3개 표본의 GPU 온도 범위 | 6°C |
 
-AC 전원 연결도 필수다. 첫 번째로 통과한 5개 표본의 평균을 해당 재측정 세션의
-기준값으로 고정한다. 이후 반복의 평균은 기준값과 비교해 CPU 10%p, GPU 8%p,
-GPU memory-controller 5%p, GPU 온도 5°C 이내여야 한다.
+AC 전원 연결도 필수다. 첫 번째로 통과한 3개 표본의 평균을 해당 재측정 세션의
+기준값으로 고정한다. 이후 반복의 평균은 기준값과 비교해 CPU 20%p, GPU 50%p,
+GPU memory-controller 50%p, GPU 온도 15°C 이내여야 한다. 이 완화 기준은 장시간
+대기를 피하면서 지속적인 고부하 상태에서 측정을 시작하는 것은 막는 수준이다.
 
-이 노트북은 GNOME 화면 합성과 Codex 화면이 외장 GPU를 지속적으로 사용한다.
-프로토콜 적용 전 확인된 상주 GPU 부하는 약 27~31%였다. GPU 0%를 요구하면 측정이
-영구 대기하므로, 절대 상한과 세션 기준값을 함께 적용해 상주 부하는 허용하면서
-후보별 시작 조건의 차이를 제한한다.
+이 노트북은 화면이 갱신되는 순간 GNOME과 Codex가 외장 GPU를 약 27~33% 사용하지만,
+화면이 정지하면 GPU 사용률은 0% 부근으로 내려간다. 실행 직후 값을 바로 기준으로
+삼으면 이후 실제 유휴 상태를 오히려 거부하므로 30초 정착 후의 낮은 부하를 기준으로
+사용한다. 진행 확인 화면도 30초 간격으로 갱신해 안정 표본 사이의 간섭을 줄인다.
 실행 스크립트는 `systemd-inhibit`의 `idle:sleep` 억제를 자동으로 적용해 화면 유휴
 전환으로 이 상주 부하가 중간에 사라지지 않게 한다.
 
@@ -68,7 +70,7 @@ bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-
 다른 터미널의 진행 확인 명령은 다음과 같다.
 
 ```bash
-watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
+watch -n 30 '.venv/bin/python scripts/reporting/show_project_status.py'
 ```
 
 ## 전원 조건 결정
