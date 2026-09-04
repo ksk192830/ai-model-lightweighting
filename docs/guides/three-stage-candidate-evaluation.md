@@ -66,7 +66,9 @@ terminal 결과로 저장한다. 따라서 지원되지 않는 후보가 다시 
 Mask AP는 극대화하고 median latency와 engine size는 극소화한다. 다른 후보가
 이 세 목표에서 모두 같거나 우수하고 적어도 하나에서 엄격히 우세하면 해당 후보를
 dominated로 판정한다. BBox AP, semantic mIoU, p95 latency와 peak allocated GPU
-memory는 후보 해석을 위한 보조지표로 함께 보고한다.
+memory는 후보 해석을 위한 보조지표로 함께 보고한다. Pareto front 중 median
+latency가 33.33 ms 이하인 후보만 30 FPS 실시간 배포 후보군으로 표시한다. 이
+기준은 Pareto 지위를 바꾸지 않으며 배포 가능성만 별도로 구분한다.
 
 ## 재현 명령
 

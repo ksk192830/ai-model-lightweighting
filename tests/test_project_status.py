@@ -76,6 +76,7 @@ def test_stage2_failures_are_terminal_and_allow_pareto_status(tmp_path: Path) ->
                 "minimize": ["median_ms", "engine_size_bytes"],
             },
             "pareto_candidate_ids": ["B01"],
+            "deployment_candidate_ids": ["B01"],
         },
     )
 
@@ -85,6 +86,7 @@ def test_stage2_failures_are_terminal_and_allow_pareto_status(tmp_path: Path) ->
     assert status["stage2"]["terminal"] == 2
     assert status["stage2"]["failed"] == 1
     assert status["stage3"]["status"] == "COMPLETE"
+    assert status["stage3"]["deployment_candidate_ids"] == ["B01"]
 
 
 def test_old_pareto_is_marked_stale_while_stage2_is_incomplete(tmp_path: Path) -> None:

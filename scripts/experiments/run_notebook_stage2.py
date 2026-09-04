@@ -826,12 +826,16 @@ def add_baseline_comparisons(
             row.update(
                 measurement_valid=False,
                 accuracy_gate_pass=False,
+                realtime_30fps_pass=False,
                 stage3_pareto_eligible=False,
                 exclusion_reason="B01 baseline measurement is unavailable",
             )
         return output
 
     limits = defaults["selection"]["accuracy_vs_baseline"]
+    realtime = defaults["selection"]["deployment_realtime"]
+    latency_budget_ms = float(realtime["median_latency_max_ms"])
+    target_fps = float(realtime["target_fps"])
     stability_warning = float(
         defaults["evaluation_protocol"]["latency"].get(
             "replicate_median_cv_warning_threshold", 0.05
@@ -877,6 +881,12 @@ def add_baseline_comparisons(
             >= -float(limits["mask_ap_max_absolute_drop"])
             and row["semantic_miou_delta_vs_B01"]
             >= -float(limits["semantic_miou_max_absolute_drop"])
+        )
+        row["realtime_target_fps"] = target_fps
+        row["median_latency_budget_ms"] = latency_budget_ms
+        row["realtime_30fps_pass"] = (
+            row["measurement_valid"]
+            and float(row["median_ms"]) <= latency_budget_ms
         )
         row["stage3_pareto_eligible"] = (
             row["measurement_valid"] and row["accuracy_gate_pass"]
@@ -1581,8 +1591,20 @@ def main() -> int:
             )
         ]
         pareto_rows = [
-            {**row, "pareto_optimal": row["experiment_id"] in pareto_ids}
+            {
+                **row,
+                "pareto_optimal": row["experiment_id"] in pareto_ids,
+                "deployment_candidate": (
+                    row["experiment_id"] in pareto_ids
+                    and bool(row.get("realtime_30fps_pass"))
+                ),
+            }
             for row in summary["rows"]
+        ]
+        deployment_candidate_ids = [
+            row["experiment_id"]
+            for row in pareto_rows
+            if row["deployment_candidate"]
         ]
         pareto = {
             "created_at_utc": now(),
@@ -1595,7 +1617,11 @@ def main() -> int:
                 "minimize": list(PARETO_MINIMIZE),
             },
             "secondary_reported_metrics": list(PARETO_SECONDARY),
+            "deployment_constraint": defaults["selection"][
+                "deployment_realtime"
+            ],
             "pareto_candidate_ids": pareto_ids,
+            "deployment_candidate_ids": deployment_candidate_ids,
             "rows": pareto_rows,
         }
         write_json(ROOT / PARETO_JSON, pareto)

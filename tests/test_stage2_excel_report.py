@@ -71,6 +71,7 @@ def result_row(experiment_id: str, value: float, benchmark: str, evaluation: str
         "measurement_valid": True,
         "accuracy_gate_pass": True,
         "stage3_pareto_eligible": True,
+        "realtime_30fps_pass": True,
         "latency_stability_warning": False,
         "bbox_ap_delta_vs_B01": 0.0,
         "mask_ap_delta_vs_B01": 0.0,
@@ -160,6 +161,7 @@ def test_excel_contains_results_raw_evidence_protocol_and_formulas(tmp_path: Pat
                 "minimize": ["median_ms", "engine_size_bytes"],
             },
             "pareto_candidate_ids": ["B02"],
+            "deployment_candidate_ids": ["B02"],
         },
     )
     output = tmp_path / "results/stage2-evaluation-report.xlsx"
@@ -180,6 +182,8 @@ def test_excel_contains_results_raw_evidence_protocol_and_formulas(tmp_path: Pat
         "실패·제외",
         "평가기준",
         "실험환경",
+        "30 FPS 적합",
+        "최종 배포 후보",
     ):
         assert label in text
     assert "MATCH" in text

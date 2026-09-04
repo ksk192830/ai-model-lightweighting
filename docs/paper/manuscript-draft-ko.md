@@ -153,7 +153,7 @@ Stage-1에서는 registry의 26개 후보를 모두 평가했으며 22개가 통
 
 ### 6.3 Accuracy gate와 Pareto 분석
 
-`[Stage-3 후 삽입]` Stage-2 대상 22개가 모두 성공 또는 명시적 실패 상태가 된 뒤, 측정이 유효하고 bbox AP·mask AP·semantic mIoU 보존 gate를 통과한 후보만 Pareto 분석에 포함한다. 주 Pareto는 segmentation의 대표 품질인 mask AP를 최대화하고 median latency와 TensorRT engine size를 최소화하는 세 목적을 사용한다. 한 후보가 다른 후보보다 세 목적에서 모두 같거나 우수하며 적어도 하나에서 엄격히 우수하면 전자가 후자를 지배한다고 정의한다. Bbox AP, semantic mIoU, P95 latency와 peak allocated GPU memory는 후보 해석과 안정성 확인을 위한 보조지표로 함께 제시한다. 비지배 후보를 대상으로 균형형, 정확도 우선, 속도 우선과 크기 우선 배포 시나리오의 권장안을 제시한다.
+`[Stage-3 후 삽입]` Stage-2 대상 22개가 모두 성공 또는 명시적 실패 상태가 된 뒤, 측정이 유효하고 bbox AP·mask AP·semantic mIoU 보존 gate를 통과한 후보만 Pareto 분석에 포함한다. 주 Pareto는 segmentation의 대표 품질인 mask AP를 최대화하고 median latency와 TensorRT engine size를 최소화하는 세 목적을 사용한다. 한 후보가 다른 후보보다 세 목적에서 모두 같거나 우수하며 적어도 하나에서 엄격히 우수하면 전자가 후자를 지배한다고 정의한다. Bbox AP, semantic mIoU, P95 latency와 peak allocated GPU memory는 후보 해석과 안정성 확인을 위한 보조지표로 함께 제시한다. Pareto front 중 median latency가 33.33 ms 이하인 후보를 30 FPS 실시간 배포 후보군으로 별도 표시한다. 이는 중앙 지연시간 기준이며 P95나 지속 처리량의 30 FPS 보장을 의미하지 않는다. 비지배 후보를 대상으로 균형형, 정확도 우선, 속도 우선과 크기 우선 배포 시나리오의 권장안을 제시한다.
 
 ### 6.4 타당성의 위협
 

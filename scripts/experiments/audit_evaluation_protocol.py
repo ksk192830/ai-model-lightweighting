@@ -516,6 +516,24 @@ def audit(root: Path) -> dict[str, Any]:
         for name in ("bbox_ap", "mask_ap", "semantic_miou")
     }
     base_policy = selection["accuracy_vs_baseline"]
+    realtime_policy = selection.get("deployment_realtime", {})
+    target_fps = float(realtime_policy.get("target_fps", 0))
+    median_budget = float(realtime_policy.get("median_latency_max_ms", 0))
+    realtime_policy_valid = (
+        target_fps == 30
+        and abs(median_budget - 1000.0 / target_fps) < 1e-9
+        and realtime_policy.get("rule") == "median_latency_max"
+    )
+    check(
+        "deployment-30fps-median-budget",
+        "PASS" if realtime_policy_valid else "FAIL",
+        (
+            f"target_fps={target_fps:g}; median_latency_max_ms={median_budget:.6f}"
+            if realtime_policy_valid
+            else "30 FPS deployment rule must use median latency <= 1000/30 ms"
+        ),
+        category="selection",
+    )
     for record in evaluation_records:
         if record["experiment_id"] == "B01" or not record["metrics"]:
             continue
@@ -743,6 +761,8 @@ def audit(root: Path) -> dict[str, Any]:
         "benchmark-failed",
         "accuracy-failed",
         "accuracy_gate_pass",
+        "realtime_30fps_pass",
+        "deployment_candidate_ids",
         "pending_candidates",
         "stage3-pareto.json",
         "generate_stage2_excel.py",

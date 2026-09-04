@@ -57,6 +57,8 @@
 - Q03은 TensorRT 10.16.1.11이 block size 128 INT4 `DequantizeLinear` 입력을
   파싱하지 못해 build-failed로 종료됐다. 같은 환경에서 변경 없이 재실행할 이유는 없다.
 - C02, B03과 R01은 현재 잠정 비교 후보이며 최종 후보는 새 3축 Pareto 이후 정한다.
+- 새 Pareto 중 median latency 33.33 ms 이하인 후보만 30 FPS 실시간 배포 후보로
+  별도 표시한다.
 - R01은 반복 중앙값 CV 5.25%가 경고 기준 5%를 소폭 넘어 전력·온도 조건을
   고정한 추가 측정을 권장한다.
 - 전체 결과는 [노트북 Stage 2 최종 평가](reports/notebook-stage2-results.md)와

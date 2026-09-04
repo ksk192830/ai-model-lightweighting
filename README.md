@@ -205,7 +205,8 @@ BBox AP, semantic mIoU, p95 latency와 peak allocated GPU memory는 보조지표
 함께 보고한다. 후보 A가 후보 B보다 세 주 목표에서 모두 같거나 우수하고 적어도
 하나에서 엄격히 우수하면 A가 B를 지배한다.
 어느 후보에도 지배되지 않는 집합을 Pareto front로 보고, 하나의 임의 가중치로
-정확도와 효율을 합산하지 않는다.
+정확도와 효율을 합산하지 않는다. Pareto front 중 median latency가 33.33 ms
+이하인 후보만 30 FPS 실시간 배포 후보군으로 별도 표시한다.
 
 ## 데이터와 평가 타당성
 
@@ -254,6 +255,8 @@ benchmark, 정확도 평가 중 실패하면 이유와 로그를 남겨 terminal
 대비 bbox/mask AP와 mIoU 보존 gate를 통과한 engine만 비지배 판정에 사용한다.
 주 Pareto는 Mask AP 최대화, median latency와 engine 크기 최소화의 세 축이며,
 BBox AP·mIoU·p95·GPU memory는 보조지표로 해석한다.
+Pareto 후보 중 median latency 33.33 ms 이하를 만족하는 후보만 30 FPS 실시간
+배포 후보로 표시하되, 미달 후보의 실험값과 Pareto 지위도 삭제하지 않는다.
 실패·gate 탈락 후보의 수치와 사유도 삭제하지 않고 Excel과 원시 결과에 보존한다.
 
 ## 데스크탑과 노트북 작업 분리

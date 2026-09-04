@@ -97,6 +97,11 @@ def collect_status(root: Path) -> dict[str, Any]:
     else:
         stage3_status = "WAITING"
     pareto_ids = pareto.get("pareto_candidate_ids", []) if pareto else []
+    deployment_ids = (
+        pareto.get("deployment_candidate_ids", [])
+        if pareto_definition_current and pareto
+        else []
+    )
 
     return {
         "stage1": {
@@ -129,6 +134,7 @@ def collect_status(root: Path) -> dict[str, Any]:
         "stage3": {
             "status": stage3_status,
             "pareto_candidate_ids": pareto_ids,
+            "deployment_candidate_ids": deployment_ids,
             "objectives_current": pareto_definition_current,
             "result_file": "results/stage3-pareto.json" if pareto is not None else None,
         },
@@ -185,6 +191,10 @@ def render(status: dict[str, Any]) -> str:
         lines.append(
             "Stage 3 Pareto: COMPLETE | "
             + " ".join(stage3["pareto_candidate_ids"])
+        )
+        lines.append(
+            "  30 FPS 배포 후보: "
+            + (" ".join(stage3["deployment_candidate_ids"]) or "없음")
         )
     else:
         lines.append("Stage 3 Pareto: " + stage3["status"])

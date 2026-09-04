@@ -98,6 +98,10 @@ workflow:
 # statistical significance thresholds. They were fixed before TensorRT accuracy
 # evaluation and are consumed directly by the desktop queue and audit scripts.
 selection:
+  deployment_realtime:
+    target_fps: 30
+    median_latency_max_ms: 33.333333333333336
+    rule: median_latency_max
   # Stage 1 is static only. Accuracy and runtime gates below are Stage-2 gates.
   # A graph-transform candidate must produce a meaningful deployment-side
   # reduction in at least one dense artifact metric. Precision candidates use

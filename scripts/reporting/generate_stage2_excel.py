@@ -127,6 +127,11 @@ def build_report(root: Path, output: Path) -> None:
         if pareto.get("objectives") == EXPECTED_PARETO_OBJECTIVES
         else set()
     )
+    deployment_ids = (
+        set(pareto.get("deployment_candidate_ids", []))
+        if pareto.get("objectives") == EXPECTED_PARETO_OBJECTIVES
+        else set()
+    )
     eligible_ids = [
         str(row["experiment_id"])
         for row in stage1_rows
@@ -296,6 +301,18 @@ def build_report(root: Path, output: Path) -> None:
             "B01 TensorRT 재측정값 대비 절대 하락 한계",
         ),
         (
+            "실시간 목표 FPS",
+            defaults["selection"]["deployment_realtime"]["target_fps"],
+            "최종 배포 후보 표시 기준",
+        ),
+        (
+            "Median latency 예산(ms)",
+            defaults["selection"]["deployment_realtime"][
+                "median_latency_max_ms"
+            ],
+            "30 FPS frame period에 해당; P95와 실제 FPS는 별도 보고",
+        ),
+        (
             "Pareto 최대화",
             "Mask AP",
             "정확도 3종 보존 gate와 측정 유효성 통과 후 적용",
@@ -319,8 +336,10 @@ def build_report(root: Path, output: Path) -> None:
         "bbox_drop": "$B$10",
         "mask_drop": "$B$11",
         "miou_drop": "$B$12",
+        "median_budget": "$B$14",
     }
-    criteria_sheet.write(15, 0, "보고 지표 정의", section)
+    definition_title_row = len(criteria_rows) + 2
+    criteria_sheet.write(definition_title_row, 0, "보고 지표 정의", section)
     definitions = [
         ("BBox/Mask AP", "COCO AP@[IoU=.50:.05:.95], maxDets=100"),
         ("AP50 / AP75", "완화/엄격 IoU 조건의 위치·경계 품질"),
@@ -331,8 +350,8 @@ def build_report(root: Path, output: Path) -> None:
         ("반복 median 95% CI", "3회 반복 median 평균의 t 구간"),
         ("GPU memory", "3회 측정 중 max allocated/reserved"),
     ]
-    criteria_sheet.write_row(16, 0, ["지표", "정의"], header)
-    for index, row in enumerate(definitions, start=17):
+    criteria_sheet.write_row(definition_title_row + 1, 0, ["지표", "정의"], header)
+    for index, row in enumerate(definitions, start=definition_title_row + 2):
         criteria_sheet.write_row(index, 0, row)
 
     raw_sheet = workbook.add_worksheet("원시결과")
@@ -500,6 +519,8 @@ def build_report(root: Path, output: Path) -> None:
         "Pareto 최적",
         "재측정 경고",
         "제외 사유",
+        "30 FPS 적합",
+        "최종 배포 후보",
     ]
     analysis_sheet.write_row(0, 0, analysis_headers, header)
     for index, experiment_id in enumerate(eligible_ids, start=1):
@@ -652,6 +673,21 @@ def build_report(root: Path, output: Path) -> None:
             latency_warning,
         )
         analysis_sheet.write(index, 29, result.get("exclusion_reason", ""), wrapped)
+        realtime_pass = bool(result.get("realtime_30fps_pass")) if completed else False
+        analysis_sheet.write_formula(
+            index,
+            30,
+            f'=AND(Y{excel_row},L{excel_row}<=\'평가기준\'!{criteria_cells["median_budget"]})',
+            None,
+            realtime_pass,
+        )
+        analysis_sheet.write_formula(
+            index,
+            31,
+            f"=AND(AB{excel_row},AE{excel_row})",
+            None,
+            experiment_id in deployment_ids,
+        )
 
     if eligible_ids:
         analysis_sheet.add_table(
@@ -679,13 +715,14 @@ def build_report(root: Path, output: Path) -> None:
     analysis_sheet.set_column("W:X", 15, percent)
     analysis_sheet.set_column("Y:AC", 13)
     analysis_sheet.set_column("AD:AD", 42, wrapped)
+    analysis_sheet.set_column("AE:AF", 15)
     analysis_sheet.conditional_format(
         1, 4, len(eligible_ids), 4, {"type": "text", "criteria": "containing", "value": "완료", "format": workbook.add_format({"bg_color": colors["light_green"]})}
     )
     analysis_sheet.conditional_format(
         1, 4, len(eligible_ids), 4, {"type": "text", "criteria": "containing", "value": "실패", "format": workbook.add_format({"bg_color": colors["light_red"], "font_color": colors["red"]})}
     )
-    for column in (24, 25, 26, 27):
+    for column in (24, 25, 26, 27, 30, 31):
         analysis_sheet.conditional_format(
             1, column, len(eligible_ids), column, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": colors["light_green"], "font_color": "#375623"})}
         )
@@ -710,6 +747,10 @@ def build_report(root: Path, output: Path) -> None:
         if row.get("measurement_valid") and not row.get("accuracy_gate_pass"):
             failure_rows.append(
                 [row["experiment_id"], "Pareto 사전 gate", "제외", row.get("exclusion_reason", ""), "실측값은 보존하되 최종 Pareto 대상에서 제외"]
+            )
+        elif row.get("stage3_pareto_eligible") and not row.get("realtime_30fps_pass"):
+            failure_rows.append(
+                [row["experiment_id"], "배포 기준", "30 FPS 미달", f"median latency가 {defaults['selection']['deployment_realtime']['median_latency_max_ms']:.2f} ms를 초과", "Pareto 결과에는 보존하되 실시간 배포 후보에서 제외"]
             )
     add_table(
         failure_sheet,
@@ -906,6 +947,7 @@ def build_report(root: Path, output: Path) -> None:
         ("대기", pending_count),
         ("정확도 Gate 통과", gate_count),
         ("Pareto 최적", len(pareto_ids)),
+        ("30 FPS 배포 후보", len(deployment_ids)),
     ]
     for index, (label, value) in enumerate(cards):
         column = 1 + index * 2
@@ -919,7 +961,8 @@ def build_report(root: Path, output: Path) -> None:
         "3) 정확도는 고정 test 437장, 속도는 동일 32장 × 200회 × 3반복입니다.\n"
         "4) B01 대비 정확도 보존 gate를 통과한 유효 측정만 Pareto에 투입합니다.\n"
         "5) 주 Pareto는 Mask AP 최대화, median latency·engine 크기 최소화의 3축입니다.\n"
-        "   BBox AP, mIoU, P95와 GPU memory는 보조지표로 함께 보고합니다.",
+        "   BBox AP, mIoU, P95와 GPU memory는 보조지표로 함께 보고합니다.\n"
+        "6) Pareto 중 median latency 33.33 ms 이하만 30 FPS 배포 후보로 표시합니다.",
         wrapped,
     )
     dashboard.merge_range("K11:R11", "파일 내 시트", section)

@@ -127,6 +127,11 @@ Pareto에 포함됐다는 사실만으로 최적 모델이 되는 것은 아니�
 적용한 뒤 Mask AP를 최대화하고 median latency와 engine size를 최소화한다.
 BBox AP, mIoU, P95 latency와 GPU memory는 보조지표로 보고한다.
 
+실제 배포 후보는 주 Pareto front와 별도로 30 FPS 응답시간 예산을 적용한다.
+Median latency가 \(1000/30 = 33.33\) ms 이하인 Pareto 후보를 실시간 배포
+후보군으로 표시한다. 이 기준은 중앙 지연시간에 대한 조건이며 P95나 지속 처리량이
+30 FPS를 보장한다는 뜻은 아니므로 두 값은 별도로 보고한다.
+
 ## 8. 공정한 비교 조건
 
 동일 계열 경량화 효과를 주장하려면 다음 조건이 같아야 한다.
