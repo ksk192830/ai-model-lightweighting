@@ -4,7 +4,8 @@
 
 이 프로토콜은 성능 우선 전원 조건의 TensorRT 지연시간 측정에 적용한다. 기존 엔진과 437장 정확도 결과는
 SHA-256이 일치할 때 재사용하고, Q03을 제외한 엔진 생성 성공 후보 21개의 지연시간을
-각 3회씩 총 63회 다시 측정한다.
+각 3회씩 최초 총 63회 다시 측정한다. 후보별 반복 median CV가 5%를 초과하면 해당
+후보의 지연시간 3회만 한 번 더 측정한다.
 
 실행 전에 `powerprofilesctl`을 `performance`로 전환한다. platform profile과 AMD
 P-State EPP가 모두 `performance`인지 확인하며 AC 연결도 요구한다. AMD P-State
@@ -55,8 +56,11 @@ benchmark 원시 JSON에도 연결되며 최종 Excel의 실험환경 시트에 
 시작한다. 사용자가 중단하거나 시스템이 재시작된 경우 같은 명령을 실행하면 완료
 후보를 재사용하고 중단 후보부터 진행한다.
 
-진행 상태에는 총 63회 중 완료 횟수, 현재 후보, 반복 번호, 현재 단계, 경과 시간과
-예상 종료 시각을 저장한다. 원시 환경 기록은
+진행 상태에는 최초 총 63회 중 완료 횟수, 현재 후보, 반복 번호, 현재 단계, 경과
+시간과 예상 종료 시각을 저장한다. CV 재측정이 시작되면 총량을 후보당 3회씩
+자동 증가시킨다. 첫 라운드와 재측정 라운드를 모두 보존하고 두 번째 라운드를 공식
+지연시간으로 사용한다. 재측정 후에도 CV가 5%를 넘으면 Pareto에는 유지하되 최종
+권장 후보에서는 제외한다. 원시 환경 기록은
 `results/measurement-environment/<run-id>/<candidate>/repeat-XX.json`, 통제된
 benchmark는 `results/benchmarks/notebook-controlled/<run-id>/` 아래에 보존한다.
 
@@ -77,4 +81,4 @@ watch -n 30 '.venv/bin/python scripts/reporting/show_project_status.py'
 
 논문의 공식 비교는 성공 후보 21개 모두를 `performance` 조건에서 평가한다.
 `power-saver`/`quiet` 부분 결과와 성능 우선 결과를 섞지 않는다. 최종 Pareto와
-성능 순위에는 새 성능 우선 세션의 63회 측정값만 사용한다.
+성능 순위에는 새 성능 우선 세션의 공식 측정 라운드만 사용한다.

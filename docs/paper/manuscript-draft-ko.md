@@ -123,7 +123,7 @@ TensorRT engine은 평가 장비의 GPU, compute capability, CUDA와 TensorRT �
 
 ### 5.3 실행 성능과 자원 측정
 
-실행 성능은 batch 1과 seed 42로 고정한 32장에서 측정한다. 각 후보를 세 번 반복하고, 매 반복에서 20회 warm-up 후 200회 본 측정을 수행한다. 측정 범위는 disk image decoding을 제외한 in-memory image end-to-end 추론이다. 주 통계는 pooled median latency이고 mean, P95, P99, IQR, FPS, 반복 median의 CV와 95% t 구간을 함께 보고한다. 반복 median CV가 5%를 초과하면 후보를 자동 탈락시키지 않고 전력 모드, thermal throttling과 백그라운드 부하를 확인한 후 재측정 대상으로 표시한다. 자원 지표로 peak allocated/reserved GPU memory와 TensorRT engine byte 크기를 기록한다.
+실행 성능은 batch 1과 seed 42로 고정한 32장에서 측정한다. 각 후보를 세 번 반복하고, 매 반복에서 20회 warm-up 후 200회 본 측정을 수행한다. 측정 범위는 disk image decoding을 제외한 in-memory image end-to-end 추론이다. 주 통계는 pooled median latency이고 mean, P95, P99, IQR, FPS, 반복 median의 CV와 95% t 구간을 함께 보고한다. 반복 median CV가 5%를 초과하면 동일 엔진으로 지연시간 3회를 한 번 전체 재측정한다. 재측정이 발생한 경우 두 번째 라운드를 공식값으로 사용하고 첫 번째 라운드도 원시 근거로 보존한다. 두 번째 라운드의 CV도 5%를 초과하면 결과를 Pareto 분석에는 유지하되 최종 권장 모델에서 제외한다. 이 과정에서 TensorRT engine과 437장 정확도 결과는 재사용한다. 자원 지표로 peak allocated/reserved GPU memory와 TensorRT engine byte 크기를 기록한다.
 
 ### 5.4 수용 기준과 자동화
 
@@ -153,7 +153,7 @@ Stage-1에서는 registry의 26개 후보를 모두 평가했으며 22개가 통
 
 ### 6.3 Accuracy gate와 Pareto 분석
 
-`[Stage-3 후 삽입]` Stage-2 대상 22개가 모두 성공 또는 명시적 실패 상태가 된 뒤, 측정이 유효하고 bbox AP·mask AP·semantic mIoU 보존 gate를 통과한 후보만 Pareto 분석에 포함한다. 주 Pareto는 segmentation의 대표 품질인 mask AP를 최대화하고 median latency와 TensorRT engine size를 최소화하는 세 목적을 사용한다. 한 후보가 다른 후보보다 세 목적에서 모두 같거나 우수하며 적어도 하나에서 엄격히 우수하면 전자가 후자를 지배한다고 정의한다. Bbox AP, semantic mIoU, P95 latency와 peak allocated GPU memory는 후보 해석과 안정성 확인을 위한 보조지표로 함께 제시한다. Pareto front 중 median latency가 33.33 ms 이하인 후보를 30 FPS 실시간 배포 후보군으로 별도 표시한다. P95가 33.33 ms를 초과하면 tail-latency 경고를 기록하지만 hard gate나 Pareto 제외 조건으로 사용하지 않는다. 따라서 이 판정은 중앙 지연시간 기준이며 P95나 지속 처리량의 30 FPS 보장을 의미하지 않는다. 비지배 후보를 대상으로 균형형, 정확도 우선, 속도 우선과 크기 우선 배포 시나리오의 권장안을 제시한다.
+`[Stage-3 후 삽입]` Stage-2 대상 22개가 모두 성공 또는 명시적 실패 상태가 된 뒤, 측정이 유효하고 bbox AP·mask AP·semantic mIoU 보존 gate를 통과한 후보만 Pareto 분석에 포함한다. 주 Pareto는 segmentation의 대표 품질인 mask AP를 최대화하고 median latency와 TensorRT engine size를 최소화하는 세 목적을 사용한다. 한 후보가 다른 후보보다 세 목적에서 모두 같거나 우수하며 적어도 하나에서 엄격히 우수하면 전자가 후자를 지배한다고 정의한다. Bbox AP, semantic mIoU, P95 latency와 peak allocated GPU memory는 후보 해석과 안정성 확인을 위한 보조지표로 함께 제시한다. Pareto front 중 median latency가 33.33 ms 이하인 후보를 30 FPS 실시간 배포 후보군으로 별도 표시한다. P95가 33.33 ms를 초과하면 tail-latency 경고를 기록하지만 hard gate나 Pareto 제외 조건으로 사용하지 않는다. 따라서 이 판정은 중앙 지연시간 기준이며 P95나 지속 처리량의 30 FPS 보장을 의미하지 않는다. 지연시간 전체 재측정 후에도 반복 median CV가 5%를 초과한 후보는 실험값과 Pareto 지위를 보존하되 측정 안정성 미확보로 최종 권장 후보에서 제외한다. 나머지 비지배 후보를 대상으로 균형형, 정확도 우선, 속도 우선과 크기 우선 배포 시나리오의 권장안을 제시한다.
 
 ### 6.4 타당성의 위협
 

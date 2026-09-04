@@ -318,6 +318,11 @@ def build_report(root: Path, output: Path) -> None:
             "33.33 ms 초과 시 경고하되 배포·Pareto hard gate에는 사용하지 않음",
         ),
         (
+            "CV 5% 초과 처리",
+            "지연시간 3회 전체 재측정 최대 1회",
+            "두 번째 3회를 공식값으로 사용; 여전히 초과하면 최종 권장에서 제외",
+        ),
+        (
             "Pareto 최대화",
             "Mask AP",
             "정확도 3종 보존 gate와 측정 유효성 통과 후 적용",
@@ -409,6 +414,11 @@ def build_report(root: Path, output: Path) -> None:
         "예측 수",
         "Engine SHA256",
         "Annotation SHA256",
+        "전체 Benchmark JSON 목록",
+        "CV 재측정 수행",
+        "CV 재측정 횟수",
+        "CV 불안정 미해결",
+        "Latency 측정 라운드",
     ]
     raw_rows: list[list[Any]] = []
     raw_index: dict[str, int] = {}
@@ -473,6 +483,11 @@ def build_report(root: Path, output: Path) -> None:
                 result.get("prediction_count"),
                 result.get("engine_sha256"),
                 result.get("annotation_sha256"),
+                result.get("all_benchmarks", result.get("benchmarks")),
+                result.get("latency_retry_performed", False),
+                result.get("latency_retry_count", 0),
+                result.get("latency_stability_unresolved", False),
+                result.get("latency_measurement_rounds"),
             ]
         )
     add_table(raw_sheet, raw_headers, raw_rows, "RawCandidateResults")
@@ -489,6 +504,9 @@ def build_report(root: Path, output: Path) -> None:
     raw_sheet.set_column("AN:AP", 46)
     raw_sheet.set_column("AQ:AR", 14)
     raw_sheet.set_column("AS:AT", 66)
+    raw_sheet.set_column("AU:AU", 66)
+    raw_sheet.set_column("AV:AX", 18)
+    raw_sheet.set_column("AY:AY", 80, wrapped)
 
     analysis_sheet = workbook.add_worksheet("분석결과")
     analysis_sheet.hide_gridlines(2)
@@ -527,6 +545,8 @@ def build_report(root: Path, output: Path) -> None:
         "제외 사유",
         "30 FPS 적합",
         "최종 배포 후보",
+        "CV 재측정 수행",
+        "CV 불안정 미해결",
     ]
     analysis_sheet.write_row(0, 0, analysis_headers, header)
     for index, experiment_id in enumerate(eligible_ids, start=1):
@@ -698,9 +718,19 @@ def build_report(root: Path, output: Path) -> None:
         analysis_sheet.write_formula(
             index,
             32,
-            f"=AND(AB{excel_row},AF{excel_row})",
+            f"=AND(AB{excel_row},AF{excel_row},NOT(AI{excel_row}))",
             None,
             experiment_id in deployment_ids,
+        )
+        analysis_sheet.write(
+            index,
+            33,
+            bool(result.get("latency_retry_performed")) if completed else False,
+        )
+        analysis_sheet.write(
+            index,
+            34,
+            bool(result.get("latency_stability_unresolved")) if completed else False,
         )
 
     if eligible_ids:
@@ -731,6 +761,7 @@ def build_report(root: Path, output: Path) -> None:
     analysis_sheet.set_column("AD:AD", 18)
     analysis_sheet.set_column("AE:AE", 42, wrapped)
     analysis_sheet.set_column("AF:AG", 15)
+    analysis_sheet.set_column("AH:AI", 18)
     analysis_sheet.conditional_format(
         1, 4, len(eligible_ids), 4, {"type": "text", "criteria": "containing", "value": "완료", "format": workbook.add_format({"bg_color": colors["light_green"]})}
     )
@@ -745,6 +776,12 @@ def build_report(root: Path, output: Path) -> None:
         analysis_sheet.conditional_format(
             1, column, len(eligible_ids), column, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": "#FFF2CC", "font_color": "#7F6000"})}
         )
+    analysis_sheet.conditional_format(
+        1, 33, len(eligible_ids), 33, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": "#FFF2CC", "font_color": "#7F6000"})}
+    )
+    analysis_sheet.conditional_format(
+        1, 34, len(eligible_ids), 34, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": colors["light_red"], "font_color": colors["red"]})}
+    )
 
     failure_sheet = workbook.add_worksheet("실패·제외")
     failure_sheet.hide_gridlines(2)
@@ -767,6 +804,10 @@ def build_report(root: Path, output: Path) -> None:
         elif row.get("stage3_pareto_eligible") and not row.get("realtime_30fps_pass"):
             failure_rows.append(
                 [row["experiment_id"], "배포 기준", "30 FPS 미달", f"median latency가 {defaults['selection']['deployment_realtime']['median_latency_max_ms']:.2f} ms를 초과", "Pareto 결과에는 보존하되 실시간 배포 후보에서 제외"]
+            )
+        if row.get("latency_stability_unresolved"):
+            failure_rows.append(
+                [row["experiment_id"], "측정 안정성", "최종 권장 제외", "지연시간 전체 재측정 후에도 반복 median CV가 5% 초과", "두 측정 라운드를 모두 보존하고 Pareto에는 유지"]
             )
     add_table(
         failure_sheet,
@@ -822,12 +863,30 @@ def build_report(root: Path, output: Path) -> None:
     repeat_sheet.freeze_panes(1, 0)
     repeat_rows: list[list[Any]] = []
     for experiment_id, row in result_map.items():
-        for repetition, relative in enumerate(row.get("benchmarks", []), start=1):
+        round_lookup: dict[str, tuple[int, int, bool]] = {}
+        for round_data in row.get("latency_measurement_rounds", []):
+            for within_round, relative in enumerate(
+                round_data.get("benchmarks", []), start=1
+            ):
+                round_lookup[str(relative)] = (
+                    int(round_data.get("round", 1)),
+                    within_round,
+                    bool(round_data.get("official")),
+                )
+        official_paths = set(row.get("benchmarks", []))
+        all_paths = row.get("all_benchmarks", row.get("benchmarks", []))
+        for repetition, relative in enumerate(all_paths, start=1):
             payload = load_json(root / relative, {}) or {}
+            round_number, within_round, official = round_lookup.get(
+                str(relative), (1, repetition, relative in official_paths)
+            )
             repeat_rows.append(
                 [
                     experiment_id,
                     repetition,
+                    round_number,
+                    within_round,
+                    "예" if official else "아니오",
                     payload.get("image_count"),
                     payload.get("warmup_runs"),
                     payload.get("measured_runs"),
@@ -846,17 +905,17 @@ def build_report(root: Path, output: Path) -> None:
             )
     add_table(
         repeat_sheet,
-        ["ID", "반복", "표본 이미지", "Warm-up", "측정 횟수", "Mean ms", "Median ms", "P95 ms", "P99 ms", "IQR ms", "CV", "FPS", "GPU allocated bytes", "GPU reserved bytes", "Engine SHA256", "고정 이미지 목록"],
+        ["ID", "전체 반복", "측정 라운드", "라운드 내 반복", "공식 결과", "표본 이미지", "Warm-up", "측정 횟수", "Mean ms", "Median ms", "P95 ms", "P99 ms", "IQR ms", "CV", "FPS", "GPU allocated bytes", "GPU reserved bytes", "Engine SHA256", "고정 이미지 목록"],
         repeat_rows,
         "LatencyRepetitions",
     )
     repeat_sheet.set_row(0, 36, header)
-    repeat_sheet.set_column("A:E", 13)
-    repeat_sheet.set_column("F:J", 14, decimal3)
-    repeat_sheet.set_column("K:K", 12, percent)
-    repeat_sheet.set_column("L:N", 18)
-    repeat_sheet.set_column("O:O", 66)
-    repeat_sheet.set_column("P:P", 80, wrapped)
+    repeat_sheet.set_column("A:H", 13)
+    repeat_sheet.set_column("I:M", 14, decimal3)
+    repeat_sheet.set_column("N:N", 12, percent)
+    repeat_sheet.set_column("O:Q", 18)
+    repeat_sheet.set_column("R:R", 66)
+    repeat_sheet.set_column("S:S", 80, wrapped)
 
     environment_sheet = workbook.add_worksheet("실험환경")
     environment_sheet.hide_gridlines(2)
@@ -979,7 +1038,9 @@ def build_report(root: Path, output: Path) -> None:
         "5) 주 Pareto는 Mask AP 최대화, median latency·engine 크기 최소화의 3축입니다.\n"
         "   BBox AP, mIoU, P95와 GPU memory는 보조지표로 함께 보고합니다.\n"
         "6) Pareto 중 median latency 33.33 ms 이하만 30 FPS 배포 후보로 표시합니다.\n"
-        "7) P95가 33.33 ms를 넘으면 경고하되 탈락 조건으로 사용하지 않습니다.",
+        "7) P95가 33.33 ms를 넘으면 경고하되 탈락 조건으로 사용하지 않습니다.\n"
+        "8) 반복 median CV가 5%를 넘으면 지연시간 3회를 한 번 다시 측정합니다.\n"
+        "   재측정 후에도 초과하면 Pareto에는 보존하고 최종 권장에서는 제외합니다.",
         wrapped,
     )
     dashboard.merge_range("K11:R11", "파일 내 시트", section)

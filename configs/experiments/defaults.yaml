@@ -54,6 +54,13 @@ evaluation_protocol:
     primary_statistic: median_ms
     secondary_statistics: [mean_ms, p95_ms, p99_ms, iqr_ms, coefficient_of_variation, replicate_median_ci95]
     replicate_median_cv_warning_threshold: 0.05
+    high_variability_remediation:
+      enabled: true
+      trigger: replicate_median_cv_above_warning_threshold
+      max_full_remeasurement_rounds: 1
+      official_result: latest_complete_round
+      unresolved_policy: retain_for_pareto_exclude_from_final_recommendation
+      reused_artifacts: [tensorrt_engine, accuracy_result]
     confidence_level: 0.95
     scope: end_to_end_in_memory_image
     disk_image_decode_included: false

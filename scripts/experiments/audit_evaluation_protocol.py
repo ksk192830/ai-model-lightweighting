@@ -550,6 +550,29 @@ def audit(root: Path) -> dict[str, Any]:
         ),
         category="selection",
     )
+    cv_policy = protocol["latency"].get("high_variability_remediation", {})
+    cv_policy_valid = (
+        cv_policy.get("enabled") is True
+        and cv_policy.get("trigger")
+        == "replicate_median_cv_above_warning_threshold"
+        and cv_policy.get("max_full_remeasurement_rounds") == 1
+        and cv_policy.get("official_result") == "latest_complete_round"
+        and cv_policy.get("unresolved_policy")
+        == "retain_for_pareto_exclude_from_final_recommendation"
+        and cv_policy.get("reused_artifacts")
+        == ["tensorrt_engine", "accuracy_result"]
+    )
+    check(
+        "latency-cv-single-remeasurement-policy",
+        "PASS" if cv_policy_valid else "FAIL",
+        (
+            "CV > 5% triggers one full three-repetition retry; unresolved "
+            "candidates remain in Pareto evidence but not final recommendations"
+            if cv_policy_valid
+            else "latency CV remediation policy does not match the locked protocol"
+        ),
+        category="selection",
+    )
     for record in evaluation_records:
         if record["experiment_id"] == "B01" or not record["metrics"]:
             continue
@@ -779,6 +802,9 @@ def audit(root: Path) -> dict[str, Any]:
         "accuracy_gate_pass",
         "realtime_30fps_pass",
         "p95_latency_warning",
+        "latency_remediation_decision",
+        "latency_stability_unresolved",
+        "final_recommendation_eligible",
         "deployment_candidate_ids",
         "pending_candidates",
         "stage3-pareto.json",

@@ -801,6 +801,31 @@ def aggregate_benchmarks(payloads: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def latency_remediation_decision(
+    round_aggregates: list[dict[str, Any]], latency_config: dict[str, Any]
+) -> dict[str, Any]:
+    """Decide whether one complete latency round must be repeated."""
+    if not round_aggregates:
+        raise ValueError("At least one latency round is required")
+    threshold = float(latency_config["replicate_median_cv_warning_threshold"])
+    policy = latency_config.get("high_variability_remediation", {})
+    enabled = bool(policy.get("enabled", False))
+    max_retries = int(policy.get("max_full_remeasurement_rounds", 0))
+    retry_count = len(round_aggregates) - 1
+    cv = float(round_aggregates[-1]["replicate_median_cv"])
+    above_threshold = not math.isfinite(cv) or cv > threshold
+    should_retry = enabled and above_threshold and retry_count < max_retries
+    return {
+        "threshold": threshold,
+        "retry_count": retry_count,
+        "should_retry": should_retry,
+        "unresolved": above_threshold and not should_retry,
+        "official_round": len(round_aggregates),
+        "official_result": policy.get("official_result", "latest_complete_round"),
+        "unresolved_policy": policy.get("unresolved_policy"),
+    }
+
+
 def accuracy_columns(payload: dict[str, Any]) -> dict[str, float]:
     metrics = payload["metrics"]
     bbox = metrics["bbox"]
@@ -838,6 +863,7 @@ def add_baseline_comparisons(
                 accuracy_gate_pass=False,
                 realtime_30fps_pass=False,
                 p95_latency_warning=False,
+                final_recommendation_eligible=False,
                 stage3_pareto_eligible=False,
                 exclusion_reason="B01 baseline measurement is unavailable",
             )
@@ -909,6 +935,11 @@ def add_baseline_comparisons(
         row["stage3_pareto_eligible"] = (
             row["measurement_valid"] and row["accuracy_gate_pass"]
         )
+        row["final_recommendation_eligible"] = (
+            row["measurement_valid"]
+            and row["accuracy_gate_pass"]
+            and not bool(row.get("latency_stability_unresolved", False))
+        )
         reasons = []
         if not row["measurement_valid"]:
             reasons.append("invalid or incomplete measurement")
@@ -930,6 +961,17 @@ def dominates(left: dict[str, Any], right: dict[str, Any]) -> bool:
     )
     return all(a <= b for a, b in zip(left_values, right_values)) and any(
         a < b for a, b in zip(left_values, right_values)
+    )
+
+
+def qualifies_as_deployment_candidate(
+    row: dict[str, Any], pareto_ids: set[str]
+) -> bool:
+    """Apply post-Pareto deployment and measurement-stability constraints."""
+    return (
+        str(row["experiment_id"]) in pareto_ids
+        and bool(row.get("realtime_30fps_pass"))
+        and bool(row.get("final_recommendation_eligible"))
     )
 
 
@@ -1100,7 +1142,12 @@ def main() -> int:
         print(f"Preflight PASS: {preflight_result}")
         print(f"Stage-1 eligible candidates: {len(eligible)}")
         print(" ".join(eligible))
-        print(f"Latency: {repetitions} repetitions per candidate")
+        print(f"Latency: {repetitions} initial repetitions per candidate")
+        print(
+            "Latency CV remediation: one full repetition round retry when "
+            f"replicate median CV > "
+            f"{protocol['latency']['replicate_median_cv_warning_threshold']:.2%}"
+        )
         print(
             "Load stabilization: "
             + json.dumps(
@@ -1175,7 +1222,23 @@ def main() -> int:
         if args.remeasure_latency
         else []
     )
-    total_progress_units = len(measurable_ids) * repetitions
+    prior_retry_units = sum(
+        max(
+            len(
+                record.get("result", {}).get(
+                    "all_benchmarks",
+                    record.get("result", {}).get("benchmarks", []),
+                )
+            )
+            - repetitions,
+            0,
+        )
+        for record in previous.values()
+        if record.get("status") == "completed"
+        and record.get("measurement_mode") == "controlled-latency-remeasurement"
+        and isinstance(record.get("result"), dict)
+    )
+    total_progress_units = len(measurable_ids) * repetitions + prior_retry_units
     completed_progress_units = 0
     measurement_environment = capture_environment()
     validate_measurement_environment(measurement_environment, load_config)
@@ -1240,7 +1303,9 @@ def main() -> int:
                 record["reused_at_utc"] = now()
                 state["candidates"][experiment_id] = record
                 completed_rows.append(result)
-                completed_progress_units += len(result.get("benchmarks", []))
+                completed_progress_units += len(
+                    result.get("all_benchmarks", result.get("benchmarks", []))
+                )
                 update_progress(
                     state,
                     completed_units=completed_progress_units,
@@ -1338,8 +1403,12 @@ def main() -> int:
 
         benchmark_payloads: list[dict[str, Any]] = []
         benchmark_paths: list[Path] = []
+        latency_rounds: list[dict[str, Any]] = []
         benchmark_failed = False
-        for repetition in range(1, repetitions + 1):
+        planned_repetitions = repetitions
+        round_start_index = 0
+        repetition = 1
+        while repetition <= planned_repetitions:
             if args.remeasure_latency:
                 benchmark_dir = (
                     ROOT
@@ -1498,9 +1567,52 @@ def main() -> int:
             )
             write_json(ROOT / STATE, state)
             print_progress(state)
+            if repetition == planned_repetitions:
+                round_payloads = benchmark_payloads[round_start_index:]
+                round_paths = benchmark_paths[round_start_index:]
+                round_aggregate = aggregate_benchmarks(round_payloads)
+                latency_rounds.append(
+                    {
+                        "round": len(latency_rounds) + 1,
+                        "benchmarks": [
+                            str(path.relative_to(ROOT)) for path in round_paths
+                        ],
+                        "aggregate": round_aggregate,
+                    }
+                )
+                remediation = latency_remediation_decision(latency_rounds, latency)
+                record["latency_measurement_rounds"] = latency_rounds
+                record["latency_remediation_decision"] = remediation
+                if remediation["should_retry"]:
+                    round_start_index = len(benchmark_payloads)
+                    planned_repetitions += repetitions
+                    total_progress_units += repetitions
+                    update_progress(
+                        state,
+                        completed_units=completed_progress_units,
+                        total_units=total_progress_units,
+                        current_candidate=experiment_id,
+                        current_stage="latency CV exceeded 5%; scheduling one full retry",
+                        current_repetition=None,
+                    )
+                    write_json(ROOT / STATE, state)
+                    print(
+                        f"{experiment_id}: replicate median CV "
+                        f"{round_aggregate['replicate_median_cv']:.2%} exceeds "
+                        f"{remediation['threshold']:.2%}; rerunning all "
+                        f"{repetitions} latency repetitions once",
+                        flush=True,
+                    )
+            repetition += 1
         if benchmark_failed:
             continue
-        aggregate = aggregate_benchmarks(benchmark_payloads)
+        aggregate = dict(latency_rounds[-1]["aggregate"])
+        official_benchmark_paths = benchmark_paths[-repetitions:]
+        remediation = latency_remediation_decision(latency_rounds, latency)
+        for latency_round in latency_rounds:
+            latency_round["official"] = (
+                latency_round["round"] == remediation["official_round"]
+            )
 
         if args.remeasure_latency:
             assert source_result is not None
@@ -1567,7 +1679,16 @@ def main() -> int:
             "test_image_count": int(evaluation["image_count"]),
             "prediction_count": int(evaluation["prediction_count"]),
             "engine": str(engine.relative_to(ROOT)),
-            "benchmarks": [str(path.relative_to(ROOT)) for path in benchmark_paths],
+            "benchmarks": [
+                str(path.relative_to(ROOT)) for path in official_benchmark_paths
+            ],
+            "all_benchmarks": [
+                str(path.relative_to(ROOT)) for path in benchmark_paths
+            ],
+            "latency_measurement_rounds": latency_rounds,
+            "latency_retry_performed": remediation["retry_count"] > 0,
+            "latency_retry_count": remediation["retry_count"],
+            "latency_stability_unresolved": remediation["unresolved"],
             "load_stabilization_records": list(
                 record["load_stabilization_records"]
             ),
@@ -1618,13 +1739,13 @@ def main() -> int:
                 if other is not row
             )
         ]
+        pareto_id_set = set(pareto_ids)
         pareto_rows = [
             {
                 **row,
-                "pareto_optimal": row["experiment_id"] in pareto_ids,
-                "deployment_candidate": (
-                    row["experiment_id"] in pareto_ids
-                    and bool(row.get("realtime_30fps_pass"))
+                "pareto_optimal": row["experiment_id"] in pareto_id_set,
+                "deployment_candidate": qualifies_as_deployment_candidate(
+                    row, pareto_id_set
                 ),
             }
             for row in summary["rows"]

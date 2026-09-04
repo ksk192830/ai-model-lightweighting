@@ -85,6 +85,8 @@ def test_stage2_failures_are_terminal_and_allow_pareto_status(tmp_path: Path) ->
     assert status["stage2"]["status"] == "COMPLETE"
     assert status["stage2"]["terminal"] == 2
     assert status["stage2"]["failed"] == 1
+    assert status["stage2"]["latency_retried"] == []
+    assert status["stage2"]["latency_unresolved"] == []
     assert status["stage3"]["status"] == "COMPLETE"
     assert status["stage3"]["deployment_candidate_ids"] == ["B01"]
 

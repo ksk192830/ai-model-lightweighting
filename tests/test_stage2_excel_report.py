@@ -74,6 +74,10 @@ def result_row(experiment_id: str, value: float, benchmark: str, evaluation: str
         "realtime_30fps_pass": True,
         "p95_latency_warning": False,
         "latency_stability_warning": False,
+        "latency_retry_performed": False,
+        "latency_retry_count": 0,
+        "latency_stability_unresolved": False,
+        "latency_measurement_rounds": [],
         "bbox_ap_delta_vs_B01": 0.0,
         "mask_ap_delta_vs_B01": 0.0,
         "semantic_miou_delta_vs_B01": 0.0,
@@ -186,7 +190,10 @@ def test_excel_contains_results_raw_evidence_protocol_and_formulas(tmp_path: Pat
         "30 FPS 적합",
         "최종 배포 후보",
         "P95 예산 초과 경고",
+        "CV 재측정 수행",
+        "CV 불안정 미해결",
     ):
         assert label in text
+    assert "NOT(AI2)" in text
     assert "MATCH" in text
     assert "parking_space" in text

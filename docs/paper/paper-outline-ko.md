@@ -240,7 +240,10 @@
 - 범위: disk image decode를 제외한 in-memory image end-to-end
 - 보고: pooled median·mean·P95·P99·IQR·FPS
 - 안정성: 반복 median CV와 95% t 구간
-- CV 5% 초과 시 자동 탈락이 아니라 실행 환경 확인 후 재측정 경고
+- CV 5% 초과 시 동일 엔진의 지연시간 3회를 한 번 전체 재측정
+- 재측정 시 두 번째 라운드를 공식값으로 사용하고 첫 라운드도 원시 근거로 보존
+- 두 번째 CV도 5% 초과 시 Pareto에는 유지하되 최종 권장 모델에서는 제외
+- CV 재측정에서는 engine과 437장 정확도 결과 재사용
 - peak allocated/reserved GPU memory와 engine bytes 기록
 
 ### 5.4 정확도 및 특수 후보 gate
@@ -316,6 +319,7 @@
 - 실시간 배포 후보: Pareto front 중 median latency ≤ 33.33 ms(30 FPS frame period)
 - P95 정책: 33.33 ms 초과 시 tail-latency 경고, hard gate·Pareto 제외에는 미사용
 - 30 FPS 기준은 median 조건이며 P95·지속 처리량 보장은 별도 해석
+- 전체 재측정 후에도 반복 median CV > 5%인 후보는 Pareto에 보존하되 최종 권장에서 제외
 - `[Stage-3 후 삽입]` Pareto front 후보
 - `[Stage-3 후 삽입]` 균형형·정확도 우선·속도 우선·크기 우선 권장 후보와 선택 근거
 

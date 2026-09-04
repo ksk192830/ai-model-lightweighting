@@ -74,6 +74,20 @@ def collect_status(root: Path) -> dict[str, Any]:
     )
     terminal = set(completed) | set(failed)
     pending = sorted(set(eligible) - terminal - set(running))
+    latency_retried = sorted(
+        experiment_id
+        for experiment_id in completed
+        if candidate_states.get(experiment_id, {})
+        .get("result", {})
+        .get("latency_retry_performed")
+    )
+    latency_unresolved = sorted(
+        experiment_id
+        for experiment_id in completed
+        if candidate_states.get(experiment_id, {})
+        .get("result", {})
+        .get("latency_stability_unresolved")
+    )
 
     if len(terminal) == len(eligible):
         stage2_status = "COMPLETE"
@@ -123,6 +137,8 @@ def collect_status(root: Path) -> dict[str, Any]:
             "failed": len(failed),
             "running": running,
             "pending": pending,
+            "latency_retried": latency_retried,
+            "latency_unresolved": latency_unresolved,
             "measurement_mode": (
                 stage2_state.get("measurement_mode") if stage2_state else None
             ),
@@ -164,6 +180,12 @@ def render(status: dict[str, Any]) -> str:
             lines.append("  running: " + " ".join(stage2["running"]))
         if stage2["pending"]:
             lines.append("  pending: " + " ".join(stage2["pending"]))
+        if stage2["latency_retried"]:
+            lines.append("  CV 재측정 완료: " + " ".join(stage2["latency_retried"]))
+        if stage2["latency_unresolved"]:
+            lines.append(
+                "  CV 불안정 미해결: " + " ".join(stage2["latency_unresolved"])
+            )
         progress = stage2.get("progress", {})
         if progress and progress.get("total_units"):
             eta = progress.get("estimated_finish_at_utc")

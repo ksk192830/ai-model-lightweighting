@@ -187,6 +187,45 @@ def test_three_repetition_aggregate_has_tail_and_uncertainty_metrics() -> None:
     assert result["replicate_median_ci95_high_ms"] > 21.5
 
 
+def test_high_latency_cv_gets_exactly_one_full_retry() -> None:
+    latency = {
+        "replicate_median_cv_warning_threshold": 0.05,
+        "high_variability_remediation": {
+            "enabled": True,
+            "max_full_remeasurement_rounds": 1,
+            "official_result": "latest_complete_round",
+            "unresolved_policy": (
+                "retain_for_pareto_exclude_from_final_recommendation"
+            ),
+        },
+    }
+    first = stage2.latency_remediation_decision(
+        [{"replicate_median_cv": 0.06}], latency
+    )
+    unresolved = stage2.latency_remediation_decision(
+        [
+            {"replicate_median_cv": 0.06},
+            {"replicate_median_cv": 0.07},
+        ],
+        latency,
+    )
+    resolved = stage2.latency_remediation_decision(
+        [
+            {"replicate_median_cv": 0.06},
+            {"replicate_median_cv": 0.04},
+        ],
+        latency,
+    )
+
+    assert first["should_retry"] is True
+    assert first["unresolved"] is False
+    assert unresolved["should_retry"] is False
+    assert unresolved["unresolved"] is True
+    assert unresolved["official_round"] == 2
+    assert resolved["should_retry"] is False
+    assert resolved["unresolved"] is False
+
+
 def candidate(experiment_id: str, *, bbox: float, mask: float, miou: float, ms: float) -> dict:
     return {
         "experiment_id": experiment_id,
@@ -270,11 +309,14 @@ def test_realtime_budget_marks_deployment_feasibility_without_changing_pareto_ga
             candidate("SLOW", bbox=0.70, mask=0.60, miou=0.72, ms=40.0),
             candidate("TAIL", bbox=0.70, mask=0.60, miou=0.72, ms=32.0)
             | {"p95_ms": 40.0},
+            candidate("UNSTABLE", bbox=0.70, mask=0.60, miou=0.72, ms=25.0)
+            | {"latency_stability_unresolved": True},
         ],
         defaults,
     )
     slow = next(row for row in rows if row["experiment_id"] == "SLOW")
     tail = next(row for row in rows if row["experiment_id"] == "TAIL")
+    unstable = next(row for row in rows if row["experiment_id"] == "UNSTABLE")
 
     assert slow["accuracy_gate_pass"] is True
     assert slow["stage3_pareto_eligible"] is True
@@ -283,6 +325,8 @@ def test_realtime_budget_marks_deployment_feasibility_without_changing_pareto_ga
     assert tail["stage3_pareto_eligible"] is True
     assert tail["realtime_30fps_pass"] is True
     assert tail["p95_latency_warning"] is True
+    assert unstable["stage3_pareto_eligible"] is True
+    assert unstable["final_recommendation_eligible"] is False
 
 
 def test_pareto_dominance_uses_only_registered_primary_axes() -> None:
@@ -307,6 +351,23 @@ def test_pareto_dominance_uses_only_registered_primary_axes() -> None:
 
     assert stage2.dominates(better_primary, worse_primary) is True
     assert stage2.dominates(worse_primary, better_primary) is False
+
+
+def test_unresolved_latency_variability_blocks_only_final_recommendation() -> None:
+    stable = {
+        "experiment_id": "STABLE",
+        "realtime_30fps_pass": True,
+        "final_recommendation_eligible": True,
+    }
+    unstable = {
+        "experiment_id": "UNSTABLE",
+        "realtime_30fps_pass": True,
+        "final_recommendation_eligible": False,
+    }
+    pareto_ids = {"STABLE", "UNSTABLE"}
+
+    assert stage2.qualifies_as_deployment_candidate(stable, pareto_ids) is True
+    assert stage2.qualifies_as_deployment_candidate(unstable, pareto_ids) is False
 
 
 def test_per_category_coco_summary_uses_valid_precision_entries() -> None:

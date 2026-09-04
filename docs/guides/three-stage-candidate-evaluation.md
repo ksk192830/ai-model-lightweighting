@@ -51,6 +51,9 @@ CUDA, TensorRT 버전에 종속되므로 노트북에서 새로 생성한다.
 - 지연시간: batch 1, 이미지 32장 고정 추출, 반복마다 warm-up 20회와 본 측정
   200회를 수행해 총 3회 반복
 - 보고: pooled median/mean/p95/p99/IQR/FPS, 반복 median CV와 95% t 구간
+- 안정성 보완: 반복 median CV가 5%를 넘으면 동일 엔진의 지연시간 3회를 한 번
+  전체 재측정한다. 두 번째 라운드를 공식값으로 사용하고 첫 라운드도 보존한다.
+  두 번째 CV도 5% 초과면 Pareto에는 유지하되 최종 권장 후보에서 제외한다.
 - 자원: peak allocated/reserved GPU memory, engine byte 크기
 - 근거: ONNX/engine SHA-256, GPU·compute capability·CUDA·TensorRT, layer precision,
   M02 sparse tactic 선택 로그
