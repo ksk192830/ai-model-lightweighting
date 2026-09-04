@@ -1,7 +1,7 @@
 # Front RF-DETR 경량화 후보 정량 비교
 
 > 이 문서는 기존 데스크탑 정확도 진단 기록이며 1차 정적평가 판정표가 아니다.
-> 전체 27개 후보의 정적 gate는
+> 전체 26개 후보의 정적 gate는
 > [`results/stage1-static-evaluation.md`](../../results/stage1-static-evaluation.md)만을
 > 단일 기준으로 삼는다. 이 문서의 정확도 결과는 1차 탈락 근거로 사용하지 않는다.
 

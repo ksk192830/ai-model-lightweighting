@@ -8,6 +8,7 @@
 - `paper-static-analysis.md`: 동일 분석기로 계산한 파라미터·node·MAC/FLOP
 - `evaluation-automation-audit.md`: 평가 기준, provenance, 자동화 누락 감사
 - `notebook-stage2-results.md`: 노트북 TensorRT 실측, 정확도 gate, Pareto와 후속 작업
+- `stage3-final-analysis.md`: 공식 결과 동결, 26개 최종 판정, Pareto와 용도별 추천
 - `measurement-load-control.md`: Stage 2 지연시간 재측정의 부하 통제 기준과 기록 방식
 - `metrics/`: 데이터 분할 보고서의 CSV/JSON 근거
 

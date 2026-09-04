@@ -11,6 +11,8 @@
 - 현재 상태: [프로젝트 진행 현황](docs/PROJECT_STATUS.md)
 - 전체 후보표: [1차 정적평가 26개 결과](results/stage1-static-evaluation.md)
 - 노트북 최종 결과: [Stage 2 TensorRT 평가와 Stage 3 Pareto](docs/reports/notebook-stage2-results.md)
+- 논문 작성 입력: [Stage 3 최종 분석·판정표·추천](docs/reports/stage3-final-analysis.md)
+- 논문 근거 연결표: [Stage 3 evidence map](docs/paper/stage3-evidence-map.md)
 - 평가 방법: [1차 정적 → 2차 노트북 → 3차 Pareto](docs/guides/three-stage-candidate-evaluation.md)
 - 노트북 전달: [TensorRT 노트북 재현 가이드](docs/guides/tensorrt-notebook-portability.md)
 - 논문 개조식 구성안: [한국어 논문 구성안](docs/paper/paper-outline-ko.md)
@@ -243,11 +245,11 @@ precision 후보는 유효 source ONNX와 재현 가능한 TensorRT recipe 또�
 Q/DQ ONNX를 요구한다. 2:4 후보는 패턴 준수와 sparse tactic recipe를 확인한다.
 정확도, latency, FPS와 GPU memory는 1차 gate에서 제외한다.
 
-### 2차: 노트북 TensorRT 정확도·성능 평가 — 다음 단계
+### 2차: 노트북 TensorRT 정확도·성능 평가 — 완료
 
-1차 통과 22개 전부에 대해 engine build를 시도한다. build, engine inspection,
-benchmark, 정확도 평가 중 실패하면 이유와 로그를 남겨 terminal 실패로 처리한다.
-성공한 후보는 동일 장비에서 다음 항목을 측정한다.
+1차 통과 22개 전부에 대해 engine build를 시도했고, 21개는 평가를 완료했다.
+Q03은 TensorRT 10.16.1.11 INT4 parser 오류를 남기고 terminal 실패로 처리했다.
+성공 후보는 RTX 4050 Laptop GPU의 성능 우선 조건에서 다음 항목을 측정했다.
 
 - 정확도: 고정 benchmark 437장, bbox/mask AP·AP50·AP75·크기별 AP·AR100,
   semantic mIoU와 클래스별 AP/IoU
@@ -257,9 +259,9 @@ benchmark, 정확도 평가 중 실패하면 이유와 로그를 남겨 terminal
 - 환경: GPU, compute capability, driver, CUDA, TensorRT 버전
 - 재현성: ONNX·engine SHA-256, layer precision, M02 sparse tactic 근거
 
-### 3차: Pareto 분석 — 2차 전체 terminal 후 자동 실행
+### 3차: Pareto 분석 — 완료
 
-22개 모두가 성공 또는 명시적 실패 상태가 되어야 시작한다. 측정이 유효하고 B01
+22개 모두가 성공 또는 명시적 실패 상태가 된 뒤 실행했다. 측정이 유효하고 B01
 대비 bbox/mask AP와 mIoU 보존 gate를 통과한 engine만 비지배 판정에 사용한다.
 주 Pareto는 Mask AP 최대화, median latency와 engine 크기 최소화의 세 축이며,
 BBox AP·mIoU·p95·GPU memory는 보조지표로 해석한다.
@@ -270,6 +272,8 @@ P95는 33.33 ms 초과 여부를 경고로 표시하는 보조지표이며 후�
 반복 median CV가 5%를 넘으면 지연시간 3회를 한 번 전체 재측정한다. 재측정
 후에도 5%를 넘는 후보는 Pareto 분석에는 유지하지만 최종 권장 모델에서는 제외한다.
 실패·gate 탈락 후보의 수치와 사유도 삭제하지 않고 Excel과 원시 결과에 보존한다.
+최종 Pareto 및 30 FPS 배포 후보는 C01과 R01이며, 용도별 추천은 C01을
+균형·Mask AP·engine 크기 우선, R01을 지연시간 우선으로 고정했다.
 
 ## 데스크탑과 노트북 작업 분리
 
@@ -307,21 +311,18 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q
   --suite stage1 --output-dir delivery/notebook-front-stage1 --dry-run
 ```
 
-#### 노트북 결과 회수 후
+#### 노트북 결과 회수 후 — 완료
 
-1. `stage2-evaluation-report.xlsx`, `stage2-notebook-state.json`, summary, Pareto,
-   후보별 평가 JSON과 전체 로그를 동일한 상대경로로 데스크탑 저장소에 복사한다.
-2. `audit_evaluation_protocol.py`를 다시 실행해 후보 누락, 데이터·threshold 차이,
-   반복 횟수와 장비 메타데이터 누락을 검사한다.
-3. 자동 생성 표·그림을 갱신하고 Pareto 후보의 정량 근거를 논문 결과 장에 반영한다.
-4. build 실패 후보는 삭제하지 않고 지원되지 않은 precision/kernel과 장비 정보를
-   실패 원인으로 보고한다.
-5. 필요하면 별도 세션 holdout을 수집해 Pareto 선택 이후 한 번만 외적 검증한다.
+1. 노트북 상태·summary·Pareto·후보별 JSON과 로그를 데스크탑에 반영했다.
+2. 데이터 fingerprint, 평가 프로토콜과 C01·R01 engine SHA-256을 검증했다.
+3. 26개 전체 최종 판정표, Pareto 그림, CV 그림과 논문 근거 연결표를 생성했다.
+4. 다음 작업은 이 근거를 사용한 Stage 3 개조식 구성안·줄글 초안·Notion 갱신이다.
+5. 별도 세션 holdout은 외적 일반화 주장이 필요할 때만 추가한다.
 
 이 데스크탑에서 생성한 TensorRT 성능을 노트북 결과와 섞거나, benchmark 437장을
 calibration 또는 후보 민감도 선정에 재사용하면 안 된다.
 
-### 노트북에서 할 일
+### 노트북에서 수행한 절차 — 완료
 
 1. **전달 파일 배치**
    `notebook-front-stage1` 폴더를 노트북의 로컬 SSD에 복사하고 그 폴더를 연다.

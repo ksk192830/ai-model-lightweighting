@@ -1,0 +1,54 @@
+{
+  "official_measurement_run_id": "20260904_104755",
+  "selection_policy": "scenario-specific Pareto recommendation; no weighted single winner",
+  "pareto_objectives": {
+    "maximize": [
+      "mask_ap"
+    ],
+    "minimize": [
+      "median_ms",
+      "engine_size_bytes"
+    ]
+  },
+  "pareto_candidate_ids": [
+    "C01",
+    "R01"
+  ],
+  "deployment_candidate_ids": [
+    "C01",
+    "R01"
+  ],
+  "recommendations": {
+    "balanced": "C01",
+    "accuracy_priority_mask_ap": "C01",
+    "engine_size_priority_within_pareto": "C01",
+    "latency_priority": "R01"
+  },
+  "secondary_metric_leaders_among_accuracy_gate_pass": {
+    "bbox_ap": "B03",
+    "semantic_miou": "C02"
+  },
+  "c01": {
+    "mask_ap": 0.6029119261351803,
+    "bbox_ap": 0.738597901902575,
+    "semantic_miou": 0.7366895364204816,
+    "median_ms": 25.29960950050736,
+    "p95_ms": 27.511681694886644,
+    "engine_size_bytes": 67873396
+  },
+  "r01": {
+    "mask_ap": 0.5941087991992697,
+    "bbox_ap": 0.7287984799915459,
+    "semantic_miou": 0.7034388832290747,
+    "median_ms": 24.010295503103407,
+    "p95_ms": 25.820945401574136,
+    "engine_size_bytes": 71359388
+  },
+  "limitations": [
+    "fixed 437-image repeated comparison benchmark",
+    "single training seed",
+    "single RTX 4050 Laptop GPU environment",
+    "30 FPS classification is based on median latency",
+    "Q03 excluded after TensorRT INT4 parser build failure"
+  ]
+}

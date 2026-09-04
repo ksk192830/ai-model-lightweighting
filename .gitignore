@@ -34,6 +34,8 @@ artifacts/experiments/*
 
 results/*
 !results/README.md
+!results/stage3-paper-candidate-decisions.csv
+!results/stage3-final-recommendations.json
 !results/coco-evaluation/
 results/coco-evaluation/*
 !results/coco-evaluation/README.md

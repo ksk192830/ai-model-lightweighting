@@ -6,11 +6,13 @@
 
 - `coco-evaluation/`: PTH, ONNX, TensorRT의 bbox AP, mask AP, semantic mIoU
 - `round2-candidate-summary.csv|md`: 후보별 정적/정확도 요약
-- `stage1-static-evaluation.json|csv|md`: 등록된 27개 전체 후보의 1차 정적평가
+- `stage1-static-evaluation.json|csv|md`: 등록된 26개 전체 후보의 1차 정적평가
 - `stage2-notebook-state.json`: 노트북 실행 중 후보별 현재/terminal 상태
 - `stage2-notebook-summary.json|csv`: 노트북 정확도·성능 통합 결과
 - `stage2-notebook-logs/`: 후보별 build·검사·benchmark·정확도 실패 근거
 - `stage3-pareto.json|csv`: 2차 전체 terminal 후 생성되는 비지배 후보 집합
+- `stage3-paper-candidate-decisions.csv`: 최초 26개 후보의 단계별 최종 판정과 사유
+- `stage3-final-recommendations.json`: C01·R01 용도별 추천 원칙과 확정 수치
 - `paper-static-analysis.csv`: 논문 표에 사용한 정적 분석 집계
 - `evaluation-automation-audit.json`: 프로토콜과 artifact 자동 감사 결과
 - `desktop-engine-summary.json`: 과거 데스크탑 실행용 통합 원본; 최종 노트북
