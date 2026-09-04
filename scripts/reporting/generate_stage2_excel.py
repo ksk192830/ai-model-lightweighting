@@ -58,6 +58,7 @@ def status_label(status: str) -> str:
         "accuracy-failed": "정확도 평가 실패",
         "running": "진행 중",
         "pending": "대기",
+        "not-applicable": "대상 외",
     }
     return labels.get(status, status)
 
@@ -427,7 +428,11 @@ def build_report(root: Path, output: Path) -> None:
         result = result_map.get(experiment_id, {})
         record = state_map.get(experiment_id, {})
         experiment = registry.get(experiment_id, {})
-        stage2_status = record.get("status", "completed" if result else "pending")
+        stage2_status = (
+            record.get("status", "completed" if result else "pending")
+            if stage1_row.get("stage2_notebook_eligible") is True
+            else "not-applicable"
+        )
         raw_index[experiment_id] = len(raw_rows) + 2
         raw_rows.append(
             [

@@ -101,8 +101,8 @@ weight-only 그래프의 `DequantizeLinear` 입력을 Float로 판정해 `INVALI
 |---|---|---|
 | 정확도·크기 균형 | C01 | B01 대비 Mask AP +0.00027, mIoU +0.02468, median 44.79% 감소, engine 49.95% 감소 |
 | 최저 지연시간 | R01 | 정확도 gate 통과 후보 중 최저 24.010 ms, B01 대비 1.91배, CV 3.82% |
-| 최고 BBox AP | B03 | BBox AP 0.7422, median 25.360 ms, engine 68.0 MiB |
-| 최고 mIoU | C02 | mIoU 0.7412, median 26.183 ms, engine 64.8 MiB |
+| 정확도 gate 통과 중 최고 BBox AP | B03 | BBox AP 0.7422, median 25.360 ms, engine 68.0 MiB |
+| 정확도 gate 통과 중 최고 mIoU | C02 | mIoU 0.7412, median 26.183 ms, engine 64.8 MiB |
 
 C01은 R01보다 1.29 ms 느리지만 Mask AP가 0.00880 높고 engine이 약 3.3 MiB
 작다. R01은 더 빠르지만 품질과 크기에서 C01보다 열세이므로 두 후보가 서로를

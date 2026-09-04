@@ -597,15 +597,32 @@ def audit(root: Path) -> dict[str, Any]:
             }
         )
 
+    notebook_summary_path = root / "results/stage2-notebook-summary.json"
+    notebook_state_path = root / "results/stage2-notebook-state.json"
+    notebook_summary = (
+        load_json(notebook_summary_path) if notebook_summary_path.is_file() else {}
+    )
+    notebook_state = (
+        load_json(notebook_state_path) if notebook_state_path.is_file() else {}
+    )
+    notebook_stage2_complete = (
+        notebook_state.get("status") == "completed"
+        and len(notebook_summary.get("rows", [])) > 0
+    )
+
     queue_path = root / "results/desktop-tensorrt-pipeline.json"
     if queue_path.is_file():
         queue = load_json(queue_path)
         queue_protocol = queue.get("evaluation_protocol")
+        queue_superseded = notebook_stage2_complete
         check(
             "desktop-pipeline-protocol-binding",
-            "PASS" if queue_protocol == protocol else "PENDING",
+            "PASS" if queue_protocol == protocol or queue_superseded else "PENDING",
             (
-                f"pipeline status={queue.get('status')}; "
+                "historical desktop queue is superseded by the terminal notebook "
+                "Stage-2 result"
+                if queue_superseded
+                else f"pipeline status={queue.get('status')}; "
                 + (
                     "running queue records the canonical protocol"
                     if queue_protocol == protocol
@@ -617,8 +634,12 @@ def audit(root: Path) -> dict[str, Any]:
     else:
         check(
             "desktop-pipeline-protocol-binding",
-            "PENDING",
-            "pipeline state has not been created",
+            "PASS" if notebook_stage2_complete else "PENDING",
+            (
+                "desktop queue is not required because the notebook Stage-2 result is terminal"
+                if notebook_stage2_complete
+                else "pipeline state has not been created"
+            ),
             category="automation",
         )
     post_queue_path = root / "artifacts/experiments/M01/front/post-recovery-queue.json"
@@ -628,7 +649,7 @@ def audit(root: Path) -> dict[str, Any]:
         post_status = str(post_queue.get("status", ""))
         post_check_status = (
             "PASS"
-            if post_protocol_match
+            if post_protocol_match or notebook_stage2_complete
             else "PENDING"
             if post_status in {"failed", "cancelled", "stopped"}
             else "FAIL"
@@ -637,7 +658,10 @@ def audit(root: Path) -> dict[str, Any]:
             "post-recovery-protocol-binding",
             post_check_status,
             (
-                f"M01 post-recovery status={post_status}; "
+                "historical M01 recovery queue is superseded by the completed "
+                "Stage-1 artifact and notebook Stage-2 result"
+                if notebook_stage2_complete
+                else f"M01 post-recovery status={post_status}; "
                 f"canonical protocol match={post_protocol_match}"
             ),
             category="automation",
@@ -661,10 +685,19 @@ def audit(root: Path) -> dict[str, Any]:
                 severity="advisory" if not valid else "required",
             )
     else:
+        notebook_benchmark_count = sum(
+            len(row.get("benchmarks", []))
+            for row in notebook_summary.get("rows", [])
+            if isinstance(row, dict)
+        )
         check(
             "latency-results",
-            "PENDING",
-            "retained candidates await separate TensorRT engine benchmarking",
+            "PASS" if notebook_stage2_complete and notebook_benchmark_count == 63 else "PENDING",
+            (
+                f"official notebook benchmark evidence={notebook_benchmark_count}/63"
+                if notebook_stage2_complete
+                else "retained candidates await separate TensorRT engine benchmarking"
+            ),
             category="latency",
         )
 
@@ -762,8 +795,12 @@ def audit(root: Path) -> dict[str, Any]:
     else:
         check(
             "engine-summary",
-            "PENDING",
-            "desktop engine summary will be generated during the second-stage engine evaluation",
+            "PASS" if notebook_stage2_complete else "PENDING",
+            (
+                f"official notebook summary contains {len(notebook_summary.get('rows', []))} completed engine rows"
+                if notebook_stage2_complete
+                else "desktop engine summary will be generated during the second-stage engine evaluation"
+            ),
             category="automation",
         )
 
@@ -861,11 +898,7 @@ def audit(root: Path) -> dict[str, Any]:
         category="automation",
     )
 
-    notebook_summary_path = root / "results/stage2-notebook-summary.json"
-    notebook_state_path = root / "results/stage2-notebook-state.json"
     if notebook_summary_path.is_file() and notebook_state_path.is_file():
-        notebook_summary = load_json(notebook_summary_path)
-        notebook_state = load_json(notebook_state_path)
         expected_repetitions = int(
             protocol["latency"].get("benchmark_repetitions", 3)
         )
@@ -936,16 +969,19 @@ def audit(root: Path) -> dict[str, Any]:
             "notebook Stage-2 result files do not exist yet",
             category="automation",
         )
-    reporting_source = (root / "scripts/reporting/paper_results.py").read_text(
+    reporting_source = (root / "scripts/reporting/generate_stage3_paper_assets.py").read_text(
         encoding="utf-8"
     )
     report_source_valid = (
-        'SOURCE = Path("results/desktop-engine-summary.json")' in reporting_source
+        'STAGE3 = Path("results/stage3-pareto.json")' in reporting_source
+        and "desktop-engine-summary.json" not in reporting_source
+        and (root / "docs/reports/stage3-final-analysis.md").is_file()
+        and (root / "results/stage3-paper-candidate-decisions.csv").is_file()
     )
     check(
         "paper-report-source",
         "PASS" if report_source_valid else "FAIL",
-        "paper outputs consume only the current desktop engine summary",
+        "paper outputs consume the frozen notebook Stage-3 Pareto result",
         category="automation",
     )
     calibration_valid = (

@@ -192,6 +192,7 @@ def test_excel_contains_results_raw_evidence_protocol_and_formulas(tmp_path: Pat
         "P95 예산 초과 경고",
         "CV 재측정 수행",
         "CV 불안정 미해결",
+        "대상 외",
     ):
         assert label in text
     assert "NOT(AI2)" in text

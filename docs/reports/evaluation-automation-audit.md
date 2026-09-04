@@ -1,10 +1,10 @@
 # 평가 기준 및 자동화 감사 보고서
 
-- 감사 상태: **IN_PROGRESS**
+- 감사 상태: **PASS_WITH_ADVISORIES**
 - 기준 원본: `configs/experiments/defaults.yaml`
-- 검사 수: 79
+- 검사 수: 83
 - 필수 실패: 0
-- 실행 대기: 5
+- 실행 대기: 0
 - 권고 사항: 9
 
 ## 감사 판정
@@ -78,15 +78,19 @@
 | static-analysis | static-analysis-Q06 | PASS | artifacts/experiments/Q06/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.25263157894736843; estimated/all-node fraction=0.010282776349614395 |
 | static-analysis | static-analysis-Q07 | PASS | artifacts/experiments/Q07/front/static-analysis.json; status=partial-lower-bound; resolved Conv/MatMul/Gemm coverage=0.18421052631578946; estimated/all-node fraction=0.007219471947194719 |
 | static-analysis | stage1-all-candidate-coverage | PASS | registered=26; rows=26; unperformed=0; missing=none; extra=none; static-only=True |
-| automation | desktop-pipeline-protocol-binding | PENDING | pipeline status=failed; running queue predates canonical protocol and must be restarted |
-| automation | post-recovery-protocol-binding | PENDING | M01 post-recovery status=failed; canonical protocol match=False |
-| latency | latency-results | PENDING | retained candidates await separate TensorRT engine benchmarking |
-| automation | engine-summary | PENDING | desktop engine summary will be generated during the second-stage engine evaluation |
+| selection | deployment-30fps-median-budget | PASS | target_fps=30; median_latency_max_ms=33.333333 |
+| selection | deployment-p95-diagnostic-only | PASS | P95 warns above the 30 FPS frame budget and is not a hard gate |
+| selection | latency-cv-single-remeasurement-policy | PASS | CV > 5% triggers one full three-repetition retry; unresolved candidates remain in Pareto evidence but not final recommendations |
+| automation | desktop-pipeline-protocol-binding | PASS | historical desktop queue is superseded by the terminal notebook Stage-2 result |
+| automation | post-recovery-protocol-binding | PASS | historical M01 recovery queue is superseded by the completed Stage-1 artifact and notebook Stage-2 result |
+| latency | latency-results | PASS | official notebook benchmark evidence=63/63 |
+| automation | engine-summary | PASS | official notebook summary contains 21 completed engine rows |
 | automation | pipeline-stage-wiring | PASS | engine inspection, paper table/figure, static report, and final audit are wired |
 | automation | all-candidate-notebook-pareto-wiring | PASS | Stage-1 eligible set -> per-candidate terminal Stage 2 -> Pareto gate is wired |
 | automation | notebook-single-excel-report-wiring | PASS | raw, analyzed, per-class, repeated latency, failure, protocol, and environment sheets are wired |
-| automation | notebook-stage2-result-completeness | PENDING | notebook Stage-2 result files do not exist yet |
-| automation | paper-report-source | PASS | paper outputs consume only the current desktop engine summary |
+| automation | notebook-stage2-result-completeness | PASS | 21 completed rows include repeated/runtime/class-wise evidence |
+| automation | notebook-terminal-report-gate | PASS | terminal=True; Excel=True; Pareto=True |
+| automation | paper-report-source | PASS | paper outputs consume the frozen notebook Stage-3 Pareto result |
 | automation | int8-calibration-binding | PASS | train-only deterministic calibration: count=128, seed=42 |
 | study-design | fixed-benchmark-reuse | WARN | 437 images are a repeated comparative benchmark, not an untouched confirmatory test; collect a new session for external-generalization claims |
 | study-design | training-seed-replication | WARN | current recovery results use seed 42 only; report this as a deterministic engineering comparison or add multiple training seeds for variance estimates |
