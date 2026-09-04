@@ -17,6 +17,16 @@ for argument in "$@"; do
   esac
 done
 
+# Keep the desktop compositor state and power availability stable throughout
+# latency measurement. The environment flag prevents recursion after re-exec.
+if [[ "$MODE" == "run" && "${NOTEBOOK_INHIBITOR_ACTIVE:-0}" != "1" ]] \
+  && command -v systemd-inhibit >/dev/null 2>&1; then
+  exec env NOTEBOOK_INHIBITOR_ACTIVE=1 systemd-inhibit \
+    --what=idle:sleep \
+    --why="Stage 2 latency measurement" \
+    bash "$0" "$@"
+fi
+
 PYTHON_BIN="${NOTEBOOK_PYTHON:-python3}"
 if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
   echo "오류: Python을 찾을 수 없습니다. NOTEBOOK_PYTHON 경로를 지정하세요." >&2

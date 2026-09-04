@@ -50,6 +50,9 @@ set -o pipefail
 bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-rerun-console.log
 ```
 
+실행 스크립트는 측정 중 화면 유휴 전환과 시스템 절전을 자동으로 막는다. 화면이
+꺼지면서 GNOME 합성 부하가 사라져 세션 기준이 바뀌는 일을 방지하기 위해서다.
+
 중단되거나 부하 안정화 대기로 멈춘 뒤에는 위 명령을 그대로 다시 실행한다.
 완료 후보는 재사용하고 남은 후보부터 이어서 측정한다. 진행률은 총 63회
 (21개 성공 후보 × 3회) 기준이며, 첫 반복이 끝난 뒤 예상 종료 시각을 표시한다.

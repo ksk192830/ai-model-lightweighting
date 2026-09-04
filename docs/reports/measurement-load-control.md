@@ -30,6 +30,8 @@ GPU memory-controller 5%p, GPU 온도 5°C 이내여야 한다.
 프로토콜 적용 전 확인된 상주 GPU 부하는 약 27~31%였다. GPU 0%를 요구하면 측정이
 영구 대기하므로, 절대 상한과 세션 기준값을 함께 적용해 상주 부하는 허용하면서
 후보별 시작 조건의 차이를 제한한다.
+실행 스크립트는 `systemd-inhibit`의 `idle:sleep` 억제를 자동으로 적용해 화면 유휴
+전환으로 이 상주 부하가 중간에 사라지지 않게 한다.
 
 현재 재측정 세션의 최초 기준 평균은 CPU 2.72%, GPU 29.0%, GPU
 memory-controller 17.4%, GPU 온도 47.0°C다. 실행 시작 시 CPU governor는
@@ -54,8 +56,8 @@ benchmark는 `results/benchmarks/notebook-controlled/<run-id>/` 아래에 보존
 ## 실행과 확인
 
 ```bash
-systemd-inhibit --what=sleep --why="Stage 2 latency remeasurement" \
-  bash -c 'set -o pipefail; bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-rerun-console.log'
+set -o pipefail
+bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-rerun-console.log
 ```
 
 다른 터미널의 진행 확인 명령은 다음과 같다.
@@ -63,3 +65,15 @@ systemd-inhibit --what=sleep --why="Stage 2 latency remeasurement" \
 ```bash
 watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
 ```
+
+## 후속 performance 조건 평가
+
+현재 21개 후보 전체 재측정은 CPU governor `powersave`, 노트북 platform profile
+`quiet`인 조건의 비교 결과로 보존한다. 완료 후 정확도 보존 gate를 통과한 후보 중
+지연시간·FPS가 우수한 약 3개를 고른다. 이 후보들만 CPU governor와 platform
+profile을 `performance`로 전환해 별도의 성능 우선 평가를 수행한다.
+
+후속 평가에서도 후보별 반복 횟수와 부하 gate를 동일하게 적용하고 실제 governor,
+platform profile, 온도, 전력과 클럭을 기록한다. 전원 모드가 다른 두 결과는 하나의
+동일 조건 Pareto 표에 섞지 않고 `powersave/quiet` 전체 비교와 `performance` 상위
+3개 확인 결과로 분리해 보고한다.
