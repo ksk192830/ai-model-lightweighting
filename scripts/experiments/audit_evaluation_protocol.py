@@ -519,6 +519,7 @@ def audit(root: Path) -> dict[str, Any]:
     realtime_policy = selection.get("deployment_realtime", {})
     target_fps = float(realtime_policy.get("target_fps", 0))
     median_budget = float(realtime_policy.get("median_latency_max_ms", 0))
+    p95_policy = realtime_policy.get("p95_policy", {})
     realtime_policy_valid = (
         target_fps == 30
         and abs(median_budget - 1000.0 / target_fps) < 1e-9
@@ -531,6 +532,21 @@ def audit(root: Path) -> dict[str, Any]:
             f"target_fps={target_fps:g}; median_latency_max_ms={median_budget:.6f}"
             if realtime_policy_valid
             else "30 FPS deployment rule must use median latency <= 1000/30 ms"
+        ),
+        category="selection",
+    )
+    p95_policy_valid = (
+        p95_policy.get("role") == "diagnostic_warning_only"
+        and p95_policy.get("warning_when") == "above_median_latency_budget"
+        and p95_policy.get("hard_gate") is False
+    )
+    check(
+        "deployment-p95-diagnostic-only",
+        "PASS" if p95_policy_valid else "FAIL",
+        (
+            "P95 warns above the 30 FPS frame budget and is not a hard gate"
+            if p95_policy_valid
+            else "P95 policy must be diagnostic_warning_only with hard_gate=false"
         ),
         category="selection",
     )
@@ -762,6 +778,7 @@ def audit(root: Path) -> dict[str, Any]:
         "accuracy-failed",
         "accuracy_gate_pass",
         "realtime_30fps_pass",
+        "p95_latency_warning",
         "deployment_candidate_ids",
         "pending_candidates",
         "stage3-pareto.json",

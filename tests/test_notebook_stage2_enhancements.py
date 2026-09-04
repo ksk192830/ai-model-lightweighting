@@ -182,6 +182,11 @@ def test_accuracy_gate_precedes_pareto() -> None:
             "deployment_realtime": {
                 "target_fps": 30,
                 "median_latency_max_ms": 1000 / 30,
+                "p95_policy": {
+                    "role": "diagnostic_warning_only",
+                    "warning_when": "above_median_latency_budget",
+                    "hard_gate": False,
+                },
             },
             "accuracy_vs_baseline": {
                 "bbox_ap_max_absolute_drop": 0.01,
@@ -202,6 +207,7 @@ def test_accuracy_gate_precedes_pareto() -> None:
     assert by_id["GOOD"]["accuracy_gate_pass"] is True
     assert by_id["GOOD"]["stage3_pareto_eligible"] is True
     assert by_id["GOOD"]["realtime_30fps_pass"] is True
+    assert by_id["GOOD"]["p95_latency_warning"] is False
     assert by_id["FAST_BAD"]["accuracy_gate_pass"] is False
     assert by_id["FAST_BAD"]["stage3_pareto_eligible"] is False
     assert by_id["GOOD"]["median_latency_reduction_vs_B01_pct"] == 50.0
@@ -216,6 +222,11 @@ def test_realtime_budget_marks_deployment_feasibility_without_changing_pareto_ga
             "deployment_realtime": {
                 "target_fps": 30,
                 "median_latency_max_ms": 1000 / 30,
+                "p95_policy": {
+                    "role": "diagnostic_warning_only",
+                    "warning_when": "above_median_latency_budget",
+                    "hard_gate": False,
+                },
             },
             "accuracy_vs_baseline": {
                 "bbox_ap_max_absolute_drop": 0.01,
@@ -228,14 +239,21 @@ def test_realtime_budget_marks_deployment_feasibility_without_changing_pareto_ga
         [
             candidate("B01", bbox=0.70, mask=0.60, miou=0.72, ms=20.0),
             candidate("SLOW", bbox=0.70, mask=0.60, miou=0.72, ms=40.0),
+            candidate("TAIL", bbox=0.70, mask=0.60, miou=0.72, ms=32.0)
+            | {"p95_ms": 40.0},
         ],
         defaults,
     )
     slow = next(row for row in rows if row["experiment_id"] == "SLOW")
+    tail = next(row for row in rows if row["experiment_id"] == "TAIL")
 
     assert slow["accuracy_gate_pass"] is True
     assert slow["stage3_pareto_eligible"] is True
     assert slow["realtime_30fps_pass"] is False
+    assert slow["p95_latency_warning"] is True
+    assert tail["stage3_pareto_eligible"] is True
+    assert tail["realtime_30fps_pass"] is True
+    assert tail["p95_latency_warning"] is True
 
 
 def test_pareto_dominance_uses_only_registered_primary_axes() -> None:

@@ -310,7 +310,12 @@ def build_report(root: Path, output: Path) -> None:
             defaults["selection"]["deployment_realtime"][
                 "median_latency_max_ms"
             ],
-            "30 FPS frame period에 해당; P95와 실제 FPS는 별도 보고",
+            "30 FPS frame period에 해당",
+        ),
+        (
+            "P95 latency 정책",
+            "보조지표·경고 전용",
+            "33.33 ms 초과 시 경고하되 배포·Pareto hard gate에는 사용하지 않음",
         ),
         (
             "Pareto 최대화",
@@ -517,7 +522,8 @@ def build_report(root: Path, output: Path) -> None:
         "정확도 Gate",
         "Pareto 대상",
         "Pareto 최적",
-        "재측정 경고",
+        "CV 재측정 경고",
+        "P95 예산 초과 경고",
         "제외 사유",
         "30 FPS 적합",
         "최종 배포 후보",
@@ -672,19 +678,27 @@ def build_report(root: Path, output: Path) -> None:
             None,
             latency_warning,
         )
-        analysis_sheet.write(index, 29, result.get("exclusion_reason", ""), wrapped)
+        p95_warning = bool(result.get("p95_latency_warning")) if completed else False
+        analysis_sheet.write_formula(
+            index,
+            29,
+            f'=AND(Y{excel_row},M{excel_row}>\'평가기준\'!{criteria_cells["median_budget"]})',
+            None,
+            p95_warning,
+        )
+        analysis_sheet.write(index, 30, result.get("exclusion_reason", ""), wrapped)
         realtime_pass = bool(result.get("realtime_30fps_pass")) if completed else False
         analysis_sheet.write_formula(
             index,
-            30,
+            31,
             f'=AND(Y{excel_row},L{excel_row}<=\'평가기준\'!{criteria_cells["median_budget"]})',
             None,
             realtime_pass,
         )
         analysis_sheet.write_formula(
             index,
-            31,
-            f"=AND(AB{excel_row},AE{excel_row})",
+            32,
+            f"=AND(AB{excel_row},AF{excel_row})",
             None,
             experiment_id in deployment_ids,
         )
@@ -714,21 +728,23 @@ def build_report(root: Path, output: Path) -> None:
     analysis_sheet.set_column("V:V", 12, decimal3)
     analysis_sheet.set_column("W:X", 15, percent)
     analysis_sheet.set_column("Y:AC", 13)
-    analysis_sheet.set_column("AD:AD", 42, wrapped)
-    analysis_sheet.set_column("AE:AF", 15)
+    analysis_sheet.set_column("AD:AD", 18)
+    analysis_sheet.set_column("AE:AE", 42, wrapped)
+    analysis_sheet.set_column("AF:AG", 15)
     analysis_sheet.conditional_format(
         1, 4, len(eligible_ids), 4, {"type": "text", "criteria": "containing", "value": "완료", "format": workbook.add_format({"bg_color": colors["light_green"]})}
     )
     analysis_sheet.conditional_format(
         1, 4, len(eligible_ids), 4, {"type": "text", "criteria": "containing", "value": "실패", "format": workbook.add_format({"bg_color": colors["light_red"], "font_color": colors["red"]})}
     )
-    for column in (24, 25, 26, 27, 30, 31):
+    for column in (24, 25, 26, 27, 31, 32):
         analysis_sheet.conditional_format(
             1, column, len(eligible_ids), column, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": colors["light_green"], "font_color": "#375623"})}
         )
-    analysis_sheet.conditional_format(
-        1, 28, len(eligible_ids), 28, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": "#FFF2CC", "font_color": "#7F6000"})}
-    )
+    for column in (28, 29):
+        analysis_sheet.conditional_format(
+            1, column, len(eligible_ids), column, {"type": "cell", "criteria": "==", "value": True, "format": workbook.add_format({"bg_color": "#FFF2CC", "font_color": "#7F6000"})}
+        )
 
     failure_sheet = workbook.add_worksheet("실패·제외")
     failure_sheet.hide_gridlines(2)
@@ -962,7 +978,8 @@ def build_report(root: Path, output: Path) -> None:
         "4) B01 대비 정확도 보존 gate를 통과한 유효 측정만 Pareto에 투입합니다.\n"
         "5) 주 Pareto는 Mask AP 최대화, median latency·engine 크기 최소화의 3축입니다.\n"
         "   BBox AP, mIoU, P95와 GPU memory는 보조지표로 함께 보고합니다.\n"
-        "6) Pareto 중 median latency 33.33 ms 이하만 30 FPS 배포 후보로 표시합니다.",
+        "6) Pareto 중 median latency 33.33 ms 이하만 30 FPS 배포 후보로 표시합니다.\n"
+        "7) P95가 33.33 ms를 넘으면 경고하되 탈락 조건으로 사용하지 않습니다.",
         wrapped,
     )
     dashboard.merge_range("K11:R11", "파일 내 시트", section)

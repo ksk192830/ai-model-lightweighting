@@ -68,7 +68,8 @@ Mask AP는 극대화하고 median latency와 engine size는 극소화한다. 다
 dominated로 판정한다. BBox AP, semantic mIoU, p95 latency와 peak allocated GPU
 memory는 후보 해석을 위한 보조지표로 함께 보고한다. Pareto front 중 median
 latency가 33.33 ms 이하인 후보만 30 FPS 실시간 배포 후보군으로 표시한다. 이
-기준은 Pareto 지위를 바꾸지 않으며 배포 가능성만 별도로 구분한다.
+기준은 Pareto 지위를 바꾸지 않으며 배포 가능성만 별도로 구분한다. P95가 동일한
+33.33 ms 예산을 넘으면 경고를 남기지만 자동 탈락시키지 않는다.
 
 ## 재현 명령
 

@@ -827,6 +827,7 @@ def add_baseline_comparisons(
                 measurement_valid=False,
                 accuracy_gate_pass=False,
                 realtime_30fps_pass=False,
+                p95_latency_warning=False,
                 stage3_pareto_eligible=False,
                 exclusion_reason="B01 baseline measurement is unavailable",
             )
@@ -887,6 +888,13 @@ def add_baseline_comparisons(
         row["realtime_30fps_pass"] = (
             row["measurement_valid"]
             and float(row["median_ms"]) <= latency_budget_ms
+        )
+        # P95 is intentionally diagnostic only: exceeding the frame budget is
+        # surfaced as a warning but never changes the accuracy/Pareto gates or
+        # the median-based 30 FPS deployment decision.
+        row["p95_latency_warning"] = (
+            row["measurement_valid"]
+            and float(row["p95_ms"]) > latency_budget_ms
         )
         row["stage3_pareto_eligible"] = (
             row["measurement_valid"] and row["accuracy_gate_pass"]

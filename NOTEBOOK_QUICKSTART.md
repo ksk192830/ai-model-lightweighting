@@ -64,6 +64,7 @@ bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-
 과거 절전 모드 부분 결과는 공식 비교에 섞지 않는다.
 정확도 gate 통과 후 Mask AP·median latency·engine 크기의 3축 Pareto를 계산하며,
 그중 median latency 33.33 ms 이하인 후보를 30 FPS 배포 후보로 따로 표시한다.
+P95가 33.33 ms를 넘으면 tail-latency 경고만 표시하며 후보를 탈락시키지 않는다.
 
 최종 결과는 `results/stage2-evaluation-report.xlsx` 하나에서 확인한다. 원시 JSON,
 CSV와 로그도 `results/`에 그대로 보존되므로 논문 수치의 추적과 재검증이 가능하다.

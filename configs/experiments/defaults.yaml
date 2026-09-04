@@ -102,6 +102,10 @@ selection:
     target_fps: 30
     median_latency_max_ms: 33.333333333333336
     rule: median_latency_max
+    p95_policy:
+      role: diagnostic_warning_only
+      warning_when: above_median_latency_budget
+      hard_gate: false
   # Stage 1 is static only. Accuracy and runtime gates below are Stage-2 gates.
   # A graph-transform candidate must produce a meaningful deployment-side
   # reduction in at least one dense artifact metric. Precision candidates use

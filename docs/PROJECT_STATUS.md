@@ -59,6 +59,8 @@
 - C02, B03과 R01은 현재 잠정 비교 후보이며 최종 후보는 새 3축 Pareto 이후 정한다.
 - 새 Pareto 중 median latency 33.33 ms 이하인 후보만 30 FPS 실시간 배포 후보로
   별도 표시한다.
+- P95는 33.33 ms 초과 시 경고하는 보조지표이며 배포 후보·Pareto hard gate로
+  사용하지 않는다.
 - R01은 반복 중앙값 CV 5.25%가 경고 기준 5%를 소폭 넘어 전력·온도 조건을
   고정한 추가 측정을 권장한다.
 - 전체 결과는 [노트북 Stage 2 최종 평가](reports/notebook-stage2-results.md)와

@@ -72,6 +72,7 @@ def result_row(experiment_id: str, value: float, benchmark: str, evaluation: str
         "accuracy_gate_pass": True,
         "stage3_pareto_eligible": True,
         "realtime_30fps_pass": True,
+        "p95_latency_warning": False,
         "latency_stability_warning": False,
         "bbox_ap_delta_vs_B01": 0.0,
         "mask_ap_delta_vs_B01": 0.0,
@@ -184,6 +185,7 @@ def test_excel_contains_results_raw_evidence_protocol_and_formulas(tmp_path: Pat
         "실험환경",
         "30 FPS 적합",
         "최종 배포 후보",
+        "P95 예산 초과 경고",
     ):
         assert label in text
     assert "MATCH" in text
