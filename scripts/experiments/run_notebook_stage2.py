@@ -48,6 +48,14 @@ TERMINAL_STATUSES = {
     "accuracy-failed",
 }
 T_CRITICAL_95 = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776}
+PARETO_MAXIMIZE = ("mask_ap",)
+PARETO_MINIMIZE = ("median_ms", "engine_size_bytes")
+PARETO_SECONDARY = (
+    "bbox_ap",
+    "semantic_miou",
+    "p95_ms",
+    "gpu_peak_allocated_bytes",
+)
 
 
 def now() -> str:
@@ -883,24 +891,14 @@ def add_baseline_comparisons(
 
 
 def dominates(left: dict[str, Any], right: dict[str, Any]) -> bool:
-    # Lower is better after negating accuracy metrics.
-    left_values = (
-        -left["bbox_ap"],
-        -left["mask_ap"],
-        -left["semantic_miou"],
-        left["median_ms"],
-        left["p95_ms"],
-        left["gpu_peak_allocated_bytes"],
-        left["engine_size_bytes"],
+    # Primary three-objective Pareto: segmentation quality, latency, artifact size.
+    # The remaining measured metrics are reported as secondary evidence and have
+    # already contributed to the accuracy-retention and validity gates.
+    left_values = tuple(-left[name] for name in PARETO_MAXIMIZE) + tuple(
+        left[name] for name in PARETO_MINIMIZE
     )
-    right_values = (
-        -right["bbox_ap"],
-        -right["mask_ap"],
-        -right["semantic_miou"],
-        right["median_ms"],
-        right["p95_ms"],
-        right["gpu_peak_allocated_bytes"],
-        right["engine_size_bytes"],
+    right_values = tuple(-right[name] for name in PARETO_MAXIMIZE) + tuple(
+        right[name] for name in PARETO_MINIMIZE
     )
     return all(a <= b for a, b in zip(left_values, right_values)) and any(
         a < b for a, b in zip(left_values, right_values)
@@ -1593,14 +1591,10 @@ def main() -> int:
                 "valid measurement and B01-relative accuracy-retention gate"
             ),
             "objectives": {
-                "maximize": ["bbox_ap", "mask_ap", "semantic_miou"],
-                "minimize": [
-                    "median_ms",
-                    "p95_ms",
-                    "gpu_peak_allocated_bytes",
-                    "engine_size_bytes",
-                ],
+                "maximize": list(PARETO_MAXIMIZE),
+                "minimize": list(PARETO_MINIMIZE),
             },
+            "secondary_reported_metrics": list(PARETO_SECONDARY),
             "pareto_candidate_ids": pareto_ids,
             "rows": pareto_rows,
         }

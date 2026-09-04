@@ -154,7 +154,13 @@ def test_excel_contains_results_raw_evidence_protocol_and_formulas(tmp_path: Pat
     )
     write_json(
         tmp_path / "results/stage3-pareto.json",
-        {"pareto_candidate_ids": ["B02"]},
+        {
+            "objectives": {
+                "maximize": ["mask_ap"],
+                "minimize": ["median_ms", "engine_size_bytes"],
+            },
+            "pareto_candidate_ids": ["B02"],
+        },
     )
     output = tmp_path / "results/stage2-evaluation-report.xlsx"
     module.build_report(tmp_path, output)

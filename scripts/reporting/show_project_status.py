@@ -18,6 +18,10 @@ TERMINAL_STAGE2_STATUSES = {
     "benchmark-failed",
     "accuracy-failed",
 }
+EXPECTED_PARETO_OBJECTIVES = {
+    "maximize": ["mask_ap"],
+    "minimize": ["median_ms", "engine_size_bytes"],
+}
 
 
 def read_json(path: Path) -> dict[str, Any] | None:
@@ -82,7 +86,11 @@ def collect_status(root: Path) -> dict[str, Any]:
         stage2_status = "NOT_STARTED"
 
     pareto = read_json(root / "results/stage3-pareto.json")
-    if pareto is not None and stage2_status == "COMPLETE":
+    pareto_definition_current = (
+        pareto is not None
+        and pareto.get("objectives") == EXPECTED_PARETO_OBJECTIVES
+    )
+    if pareto_definition_current and stage2_status == "COMPLETE":
         stage3_status = "COMPLETE"
     elif pareto is not None:
         stage3_status = "STALE"
@@ -121,6 +129,7 @@ def collect_status(root: Path) -> dict[str, Any]:
         "stage3": {
             "status": stage3_status,
             "pareto_candidate_ids": pareto_ids,
+            "objectives_current": pareto_definition_current,
             "result_file": "results/stage3-pareto.json" if pareto is not None else None,
         },
     }

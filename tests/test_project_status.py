@@ -70,7 +70,13 @@ def test_stage2_failures_are_terminal_and_allow_pareto_status(tmp_path: Path) ->
     )
     write_json(
         tmp_path / "results/stage3-pareto.json",
-        {"pareto_candidate_ids": ["B01"]},
+        {
+            "objectives": {
+                "maximize": ["mask_ap"],
+                "minimize": ["median_ms", "engine_size_bytes"],
+            },
+            "pareto_candidate_ids": ["B01"],
+        },
     )
 
     status = status_module.collect_status(tmp_path)
@@ -103,6 +109,41 @@ def test_old_pareto_is_marked_stale_while_stage2_is_incomplete(tmp_path: Path) -
 
     assert status["stage2"]["status"] == "NOT_STARTED"
     assert status["stage3"]["status"] == "STALE"
+
+
+def test_superseded_pareto_objectives_are_marked_stale(tmp_path: Path) -> None:
+    write_json(
+        tmp_path / "results/stage1-static-evaluation.json",
+        {
+            "candidate_count": 1,
+            "evaluated_count": 1,
+            "passed_count": 1,
+            "unperformed_count": 0,
+            "rows": [
+                {"experiment_id": "B01", "stage2_notebook_eligible": True},
+            ],
+        },
+    )
+    write_json(
+        tmp_path / "results/stage2-notebook-state.json",
+        {"candidates": {"B01": {"status": "completed"}}},
+    )
+    write_json(
+        tmp_path / "results/stage3-pareto.json",
+        {
+            "objectives": {
+                "maximize": ["bbox_ap", "mask_ap", "semantic_miou"],
+                "minimize": ["median_ms", "p95_ms"],
+            },
+            "pareto_candidate_ids": ["old-result"],
+        },
+    )
+
+    status = status_module.collect_status(tmp_path)
+
+    assert status["stage2"]["status"] == "COMPLETE"
+    assert status["stage3"]["status"] == "STALE"
+    assert status["stage3"]["objectives_current"] is False
 
 
 def test_controlled_rerun_shows_repeat_progress_and_eta(tmp_path: Path) -> None:

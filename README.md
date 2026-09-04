@@ -3,8 +3,8 @@
 무증강 주차장 전방 영상으로 재학습한 RF-DETR Segmentation Large를 대상으로
 정확도뿐 아니라 실제 배포 비용까지 함께 비교하는 연구 저장소다. 구조 축소,
 입력 해상도 축소, 비정형·2:4 희소화, FP16·INT8·INT4·FP8 및 혼합정밀도 후보를
-동일한 데이터와 프로토콜로 평가하고, 최종적으로 정확도·지연시간·GPU 메모리·
-engine 크기의 Pareto 비지배해를 선택한다.
+동일한 데이터와 프로토콜로 평가하고, 정확도 보존 gate 이후 Mask AP·중앙
+지연시간·engine 크기의 3축 Pareto 비지배해를 선택한다.
 
 - GitHub: [kips-ai-model-lightweighting](https://github.com/ksk192830/kips-ai-model-lightweighting)
 - Notion: [AI 경량화 및 최적화 프로젝트](https://app.notion.com/p/389d4a78ceed80d28d95c37d83422a60)
@@ -19,7 +19,8 @@ engine 크기의 Pareto 비지배해를 선택한다.
 ## 현재 진행 상황
 
 기준일은 **2026-09-04**다. 모델 준비, 1차 정적평가와 노트북 TensorRT
-평가가 끝났으며 현재 실행 중인 학습이나 로컬 평가는 없다.
+최초 평가가 끝났고, 논문용 최종 수치를 위해 성능 우선 조건의 지연시간 재측정과
+3축 Pareto 재산출을 진행한다.
 
 | 단계 | 대상 | 상태 | 결과 및 다음 조건 |
 |---|---:|---|---|
@@ -27,8 +28,8 @@ engine 크기의 Pareto 비지배해를 선택한다.
 | 기준 모델 재학습 | B01 | 완료 | bbox AP 0.737791 / mask AP 0.601016 / semantic mIoU 0.712200 |
 | 1차 정적평가 | 26개 | **완료** | 평가 26/26, 통과 22, 불통 4, 미수행 0 |
 | 노트북 전달 묶음 | 통과 22개 | 완료 | engine plan 22개, unique ONNX 17개, calibration 128장, benchmark 437장 |
-| 2차 TensorRT 평가 | 통과 22개 | **완료** | 21개 측정 완료, Q03 TensorRT INT4 parser build 실패 1개 |
-| 3차 Pareto 분석 | 2차 성공 후보 | **완료** | B02·B03·C01·C02·C03·C04·R01·R02 |
+| 2차 TensorRT 평가 | 통과 22개 | 재측정 중 | 기존 21개 완료·Q03 build 실패; 21개 performance 통제 재측정 필요 |
+| 3차 Pareto 분석 | 2차 성공 후보 | 재산출 대기 | performance 재측정 후 Mask AP·median·engine 크기 3축으로 산출 |
 
 현재 1차 불통 후보는 U01·U02·U03·S03이다. U01~U03은 비정형 희소화가
 dense ONNX 크기·노드·MAC을 줄이지 못했고, S03은 세 정적 효율 항목 모두
@@ -198,10 +199,11 @@ CPU 10%p, GPU 8%p, GPU memory-controller 5%p, GPU 온도 5°C 이내로 제한�
 AC 전원 연결도 필수로 확인한다. 조건이 5분 안에 충족되지 않으면 해당 측정을
 시작하지 않는다.
 
-최종 선택에서는 B01 대비 정확도 보존 gate를 먼저 적용한 뒤 bbox AP·mask AP·
-semantic mIoU를 극대화하고 median/p95 latency·peak allocated GPU memory·engine
-크기를 최소화한다. 후보 A가 후보 B보다 모든
-목표에서 같거나 우수하고 적어도 하나에서 엄격히 우수하면 A가 B를 지배한다.
+최종 선택에서는 B01 대비 bbox AP·mask AP·semantic mIoU 보존 gate를 먼저
+적용한 뒤 Mask AP를 극대화하고 median latency와 engine 크기를 최소화한다.
+BBox AP, semantic mIoU, p95 latency와 peak allocated GPU memory는 보조지표로
+함께 보고한다. 후보 A가 후보 B보다 세 주 목표에서 모두 같거나 우수하고 적어도
+하나에서 엄격히 우수하면 A가 B를 지배한다.
 어느 후보에도 지배되지 않는 집합을 Pareto front로 보고, 하나의 임의 가중치로
 정확도와 효율을 합산하지 않는다.
 
@@ -250,6 +252,8 @@ benchmark, 정확도 평가 중 실패하면 이유와 로그를 남겨 terminal
 
 22개 모두가 성공 또는 명시적 실패 상태가 되어야 시작한다. 측정이 유효하고 B01
 대비 bbox/mask AP와 mIoU 보존 gate를 통과한 engine만 비지배 판정에 사용한다.
+주 Pareto는 Mask AP 최대화, median latency와 engine 크기 최소화의 세 축이며,
+BBox AP·mIoU·p95·GPU memory는 보조지표로 해석한다.
 실패·gate 탈락 후보의 수치와 사유도 삭제하지 않고 Excel과 원시 결과에 보존한다.
 
 ## 데스크탑과 노트북 작업 분리

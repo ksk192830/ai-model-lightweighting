@@ -123,9 +123,9 @@ Pareto front는 한 지표를 개선하려면 다른 지표를 포기해야 하�
 Pareto에 포함됐다는 사실만으로 최적 모델이 되는 것은 아니다. YOLO처럼 매우
 작아서 front에 포함되지만 정확도가 크게 낮은 선택지도 있다. 실제 요구사항의
 최소 정확도, 최소 FPS, 최대 메모리를 먼저 정한 뒤 front에서 선택한다. 본
-실험에서는 먼저 B01 대비 정확도 보존 gate와 측정 유효성을 적용한 뒤 bbox AP,
-mask AP와 mIoU를 최대화하고 median/P95 latency, GPU memory와 engine size를
-최소화한다.
+실험에서는 먼저 B01 대비 bbox AP·mask AP·mIoU 보존 gate와 측정 유효성을
+적용한 뒤 Mask AP를 최대화하고 median latency와 engine size를 최소화한다.
+BBox AP, mIoU, P95 latency와 GPU memory는 보조지표로 보고한다.
 
 ## 8. 공정한 비교 조건
 

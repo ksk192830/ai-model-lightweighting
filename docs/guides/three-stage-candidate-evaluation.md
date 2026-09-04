@@ -62,11 +62,11 @@ terminal 결과로 저장한다. 따라서 지원되지 않는 후보가 다시 
 ## 3차: Pareto 분석
 
 1차 통과 대상의 2차 상태가 모두 terminal일 때만 생성한다. 측정이 유효하고 B01
-대비 정확도 보존 gate를 통과한 engine을 대상으로 bbox AP, mask AP, semantic
-mIoU는 극대화하고 median/p95 latency, peak allocated GPU memory, engine size는
-극소화한다. 다른 후보가 모든
-목표에서 이상이고 적어도 하나에서 엄격히 우세하면 해당 후보를 dominated로
-판정한다.
+대비 bbox AP, mask AP, semantic mIoU 보존 gate를 통과한 engine을 대상으로
+Mask AP는 극대화하고 median latency와 engine size는 극소화한다. 다른 후보가
+이 세 목표에서 모두 같거나 우수하고 적어도 하나에서 엄격히 우세하면 해당 후보를
+dominated로 판정한다. BBox AP, semantic mIoU, p95 latency와 peak allocated GPU
+memory는 후보 해석을 위한 보조지표로 함께 보고한다.
 
 ## 재현 명령
 

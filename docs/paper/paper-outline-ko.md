@@ -308,9 +308,11 @@
 ### 6.5 Accuracy gate와 Pareto
 
 - `[Stage-2 후 삽입]` 측정 유효 후보 수와 accuracy gate 통과 수
-- 최대화: bbox AP, mask AP, semantic mIoU
-- 최소화: median latency, P95 latency, peak allocated GPU memory, engine size
-- 한 후보가 모든 목적에서 같거나 우수하고 하나 이상 엄격히 우수하면 지배 관계로 판정
+- 정확도 선행 gate: bbox AP, mask AP, semantic mIoU 보존 기준
+- 주 Pareto 최대화: mask AP
+- 주 Pareto 최소화: median latency, engine size
+- 보조지표: bbox AP, semantic mIoU, P95 latency, peak allocated GPU memory
+- 한 후보가 세 주 목적에서 같거나 우수하고 하나 이상 엄격히 우수하면 지배 관계로 판정
 - `[Stage-3 후 삽입]` Pareto front 후보
 - `[Stage-3 후 삽입]` 균형형·정확도 우선·속도 우선·크기 우선 권장 후보와 선택 근거
 
@@ -371,4 +373,3 @@
 | Stage-2 대기 | 22개 engine build·정확도·latency·memory·size | 최종 성능 비교 |
 | Stage-3 대기 | accuracy gate 결과·Pareto front | 최종 후보 선정 |
 | 추가 실험 필요 | 별도 장소의 잠금 holdout session | 외적 일반화 주장 |
-

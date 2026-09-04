@@ -89,7 +89,10 @@ workflow:
     input_rule: stage1-static-evaluation.stage2_notebook_eligible
   stage_3_pareto:
     starts_after: all-stage2-eligible-candidates-have-terminal-results
-    objectives: [maximize-accuracy, minimize-median-and-p95-latency, minimize-gpu-memory, minimize-engine-size]
+    objectives:
+      maximize: [mask_ap]
+      minimize: [median_ms, engine_size_bytes]
+    secondary_reported_metrics: [bbox_ap, semantic_miou, p95_ms, gpu_peak_allocated_bytes]
 
 # These are project-specific engineering acceptance gates, not universal
 # statistical significance thresholds. They were fixed before TensorRT accuracy

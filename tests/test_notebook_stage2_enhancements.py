@@ -202,6 +202,30 @@ def test_accuracy_gate_precedes_pareto() -> None:
     assert by_id["GOOD"]["median_latency_reduction_vs_B01_pct"] == 50.0
 
 
+def test_pareto_dominance_uses_only_registered_primary_axes() -> None:
+    better_primary = {
+        "mask_ap": 0.61,
+        "median_ms": 10.0,
+        "engine_size_bytes": 80,
+        "bbox_ap": 0.60,
+        "semantic_miou": 0.60,
+        "p95_ms": 30.0,
+        "gpu_peak_allocated_bytes": 300,
+    }
+    worse_primary = {
+        "mask_ap": 0.60,
+        "median_ms": 11.0,
+        "engine_size_bytes": 90,
+        "bbox_ap": 0.80,
+        "semantic_miou": 0.80,
+        "p95_ms": 12.0,
+        "gpu_peak_allocated_bytes": 100,
+    }
+
+    assert stage2.dominates(better_primary, worse_primary) is True
+    assert stage2.dominates(worse_primary, better_primary) is False
+
+
 def test_per_category_coco_summary_uses_valid_precision_entries() -> None:
     precision = np.full((2, 3, 2, 1, 1), -1.0)
     recall = np.full((2, 2, 1, 1), -1.0)

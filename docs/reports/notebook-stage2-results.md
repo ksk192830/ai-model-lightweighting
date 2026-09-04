@@ -1,5 +1,9 @@
 # 노트북 Stage 2 TensorRT 최종 평가
 
+> 아래 수치는 최초 Stage 2 결과다. 최종 논문용 latency와 Pareto는 21개 후보의
+> `performance` 통제 재측정 후 Mask AP·median latency·engine 크기 3축으로
+> 교체한다. 아래 기존 Pareto 표시는 잠정 참고값이다.
+
 ## 결론
 
 - Stage 1 통과 후보 22개가 모두 terminal 상태에 도달했다.

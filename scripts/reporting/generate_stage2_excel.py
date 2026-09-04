@@ -12,6 +12,10 @@ from typing import Any, Iterable
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = Path("results/stage2-evaluation-report.xlsx")
+EXPECTED_PARETO_OBJECTIVES = {
+    "maximize": ["mask_ap"],
+    "minimize": ["median_ms", "engine_size_bytes"],
+}
 
 
 def load_json(path: Path, default: Any = None) -> Any:
@@ -118,7 +122,11 @@ def build_report(root: Path, output: Path) -> None:
         str(row["experiment_id"]): row for row in summary.get("rows", [])
     }
     state_map = state.get("candidates", {}) if isinstance(state, dict) else {}
-    pareto_ids = set(pareto.get("pareto_candidate_ids", []))
+    pareto_ids = (
+        set(pareto.get("pareto_candidate_ids", []))
+        if pareto.get("objectives") == EXPECTED_PARETO_OBJECTIVES
+        else set()
+    )
     eligible_ids = [
         str(row["experiment_id"])
         for row in stage1_rows
@@ -289,13 +297,13 @@ def build_report(root: Path, output: Path) -> None:
         ),
         (
             "Pareto 최대화",
-            "BBox AP, Mask AP, mIoU",
-            "정확도 보존 gate와 측정 유효성 통과 후 적용",
+            "Mask AP",
+            "정확도 3종 보존 gate와 측정 유효성 통과 후 적용",
         ),
         (
             "Pareto 최소화",
-            "Median, P95, GPU memory, engine size",
-            "단일 가중합 점수는 사용하지 않음",
+            "Median latency, engine size",
+            "BBox AP, mIoU, P95, GPU memory는 보조지표",
         ),
     ]
     add_table(
@@ -910,7 +918,8 @@ def build_report(root: Path, output: Path) -> None:
         "2) 엔진 생성 실패도 terminal 결과로 보존합니다.\n"
         "3) 정확도는 고정 test 437장, 속도는 동일 32장 × 200회 × 3반복입니다.\n"
         "4) B01 대비 정확도 보존 gate를 통과한 유효 측정만 Pareto에 투입합니다.\n"
-        "5) Pareto는 정확도 3종을 최대화하고 median/P95·메모리·크기를 최소화합니다.",
+        "5) 주 Pareto는 Mask AP 최대화, median latency·engine 크기 최소화의 3축입니다.\n"
+        "   BBox AP, mIoU, P95와 GPU memory는 보조지표로 함께 보고합니다.",
         wrapped,
     )
     dashboard.merge_range("K11:R11", "파일 내 시트", section)

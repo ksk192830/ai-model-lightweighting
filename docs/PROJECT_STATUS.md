@@ -25,7 +25,8 @@
    중단 뒤 완료 후보를 재사용하도록 구성했다.
 9. RTX 4050 Laptop GPU에서 22개 후보를 terminal 상태로 만들었다. 21개는 전체
    평가를 완료했고 Q03은 TensorRT INT4 block quantization parser 오류를 기록했다.
-   정확도 gate 이후 Pareto 후보는 B02, B03, C01, C02, C03, C04, R01, R02다.
+   이 최초 결과의 다목적 Pareto 집합은 이후 확정한 3축 주 Pareto의 최종 결과로
+   사용하지 않고, performance 통제 재측정 후 다시 산출한다.
 
 ## 1차 정적평가 판정
 
@@ -48,12 +49,14 @@
 
 ## 현재 실행 상태와 다음 작업
 
-- 현재 실행 중인 로컬 학습·평가 작업은 없다.
-- 1차는 26/26, 2차는 terminal 22/22, 3차 Pareto 분석까지 완료됐다.
-- 21개 후보는 상세 정확도·3회 반복 latency·FPS·memory·engine 크기를 기록했다.
+- 1차는 26/26 완료됐고, 최초 2차 실행은 terminal 22/22에 도달했다.
+- 엔진 성공 후보 21개의 latency를 동일 `performance` 전원 조건에서 다시 측정한
+  뒤 주 Pareto를 재산출해야 한다.
+- 기존 21개 후보의 정확도·latency·FPS·memory·engine 크기는 보존하지만 통제 전
+  latency와 기존 7축 Pareto는 최종 논문 수치로 사용하지 않는다.
 - Q03은 TensorRT 10.16.1.11이 block size 128 INT4 `DequantizeLinear` 입력을
   파싱하지 못해 build-failed로 종료됐다. 같은 환경에서 변경 없이 재실행할 이유는 없다.
-- C02를 주 배포 후보로 우선 검토하고 B03과 R01을 비교 후보로 유지한다.
+- C02, B03과 R01은 현재 잠정 비교 후보이며 최종 후보는 새 3축 Pareto 이후 정한다.
 - R01은 반복 중앙값 CV 5.25%가 경고 기준 5%를 소폭 넘어 전력·온도 조건을
   고정한 추가 측정을 권장한다.
 - 전체 결과는 [노트북 Stage 2 최종 평가](reports/notebook-stage2-results.md)와
