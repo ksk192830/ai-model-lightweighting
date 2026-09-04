@@ -96,6 +96,25 @@ def test_load_gate_rejects_temperature_far_from_session_reference() -> None:
     assert any("session reference" in reason for reason in reasons)
 
 
+def test_terminal_progress_line_accepts_current_repetition(capsys: pytest.CaptureFixture) -> None:
+    state = {
+        "progress": {
+            "completed_units": 1,
+            "total_units": 63,
+            "percent": 100 / 63,
+            "current_candidate": "B01",
+            "current_stage": "latency benchmark",
+            "current_repetition": 2,
+            "elapsed_seconds": 12.0,
+            "estimated_finish_at_utc": None,
+        }
+    }
+    stage2.print_progress(state)
+    output = capsys.readouterr().out
+    assert "1/63" in output
+    assert "B01 latency benchmark repeat 2" in output
+
+
 def benchmark(timings: list[float]) -> dict:
     ordered = sorted(timings)
     return {

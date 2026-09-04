@@ -477,6 +477,7 @@ def print_progress(state: dict[str, Any]) -> None:
             **progress,
             elapsed=format_duration(progress["elapsed_seconds"]),
             eta=eta_local,
+            repetition=repetition,
         ),
         flush=True,
     )
