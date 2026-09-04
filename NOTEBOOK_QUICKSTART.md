@@ -40,9 +40,9 @@ watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
 ```
 
 기존 엔진과 437장 정확도 결과는 그대로 검증·재사용하고, 모든 성공 후보의
-지연시간만 성능 우선 환경에서 다시 측정하려면 다음을 실행한다. 스크립트가
-`powerprofilesctl` 프로필을 `performance`로 전환하고 실제 platform profile과
-CPU EPP가 모두 `performance`인지 검사한다. 각 반복 직전에
+지연시간만 보수적인 절전 환경에서 다시 측정하려면 다음을 실행한다. 스크립트가
+`powerprofilesctl` 프로필을 `power-saver`로 전환하고 실제 platform profile이
+`quiet`, CPU EPP가 `power`인지 검사한다. 각 반복 직전에
 CPU/GPU 부하와 GPU 온도를 1초 간격으로 5회 확인한다. 설정된 유휴 범위 및 첫
 안정 상태의 온도 범위에 들 때만 측정을 시작하며, 5분 안에 안정화되지 않으면
 측정을 강행하지 않고 일시 중단한다.
@@ -59,5 +59,18 @@ bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-
 완료 후보는 재사용하고 남은 후보부터 이어서 측정한다. 진행률은 총 63회
 (21개 성공 후보 × 3회) 기준이며, 첫 반복이 끝난 뒤 예상 종료 시각을 표시한다.
 
+공식 Pareto를 산출한 뒤 상위 3개만 `performance` 전원 조건에서 별도 배포
+검증한다. 이 결과는 절전 모드의 21개 공식 비교와 섞지 않는다.
+
 최종 결과는 `results/stage2-evaluation-report.xlsx` 하나에서 확인한다. 원시 JSON,
 CSV와 로그도 `results/`에 그대로 보존되므로 논문 수치의 추적과 재검증이 가능하다.
+
+데스크탑 데이터와 평가 데이터의 동일성을 확인할 때는 원본 데이터 대신 다음
+fingerprint 보고서만 생성해 원격에 올린다.
+
+```bash
+.venv/bin/python scripts/data_preparation/fingerprint_coco_dataset.py generate \
+  --dataset data/training/front_session_split_v1/test \
+  --label notebook \
+  --output docs/reports/metrics/dataset-fingerprint-notebook.json
+```

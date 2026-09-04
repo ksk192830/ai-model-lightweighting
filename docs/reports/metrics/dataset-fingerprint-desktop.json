@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-04T00:27:38.869044+00:00",
+  "label": "desktop",
+  "privacy": "hashes and aggregate counts only; image bytes and annotation geometry are not included",
+  "counts": {
+    "images": 437,
+    "annotations": 593,
+    "categories": 4
+  },
+  "category_annotation_counts": {
+    "out_line": 257,
+    "parking_lot": 177,
+    "parking_space": 159
+  },
+  "raw_annotation_sha256": "8bb43b8f94b182b51b5ff4484cc04964d606a3eff53304fa01cc00b7fbfb3eba",
+  "coco_evaluation_semantics_sha256": "10d03b404c827e332e9438be641327f6336762aec7438be3bd9c2a2c91b1937c",
+  "image_collection_sha256": "1d77edb6f138f231ea15cd2d07a186fb741114fff85deab2f506666639e220db",
+  "dataset_fingerprint_sha256": "fd7e6e95100147959d63d93921d47c83a3b632bfd5280460e3800402eb175bde"
+}

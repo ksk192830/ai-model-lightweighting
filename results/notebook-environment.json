@@ -257,20 +257,20 @@
       }
     ]
   },
-  "next_measurement_scope": "Remeasure latency for all 21 successful candidates under platform_profile=performance and AMD P-State EPP=performance; reuse exact engines and 437-image accuracy evidence after SHA-256 validation.",
+  "next_measurement_scope": "Remeasure latency for all 21 successful candidates under power-saver, platform_profile=quiet and AMD P-State EPP=power; reuse exact engines and 437-image accuracy evidence only after semantic fingerprint validation.",
   "final_measurement_power_policy": {
-    "powerprofilesctl": "performance",
-    "required_platform_profile": "performance",
-    "required_cpu_energy_performance_preference": "performance",
+    "powerprofilesctl": "power-saver",
+    "required_platform_profile": "quiet",
+    "required_cpu_energy_performance_preference": "power",
     "scope": "all 21 candidates with successful TensorRT engines, 3 latency repetitions each"
   },
   "excluded_partial_power_saver_run": {
     "run_id": "20260904_090710",
     "completed_repetitions": 5,
-    "reason": "User changed the final protocol to performance-first for the full cohort.",
+    "reason": "Archived when a performance-first run was considered; the final decision returned the official comparison to power-saver, so this partial run is not mixed into a new session.",
     "archive": "results/archives/power-saver-partial-20260904_090710"
   },
-  "performance_policy_check_before_rerun": {
+  "superseded_performance_policy_check": {
     "recorded_at_utc": "2026-09-04T00:24:59.006184+00:00",
     "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
     "logical_cpus": 16,
@@ -292,5 +292,20 @@
       "clocks.mem": "405",
       "pstate": "P8"
     }
+  },
+  "deployment_performance_validation_policy": {
+    "scope": "top 3 candidates selected after the official power-saver Pareto analysis",
+    "powerprofilesctl": "performance",
+    "reporting": "separate deployment table; never mixed into the official Pareto inputs"
+  },
+  "external_validation_policy": {
+    "new_holdout_session": false,
+    "dataset_role": "fixed repeated comparative benchmark",
+    "claim_limit": "no external generalization claim"
+  },
+  "q03_policy": {
+    "status": "TensorRT 10.16.1.11 platform compatibility failure",
+    "pareto_included": false,
+    "report_failure_evidence": true
   }
 }

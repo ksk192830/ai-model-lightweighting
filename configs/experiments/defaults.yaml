@@ -59,8 +59,8 @@ evaluation_protocol:
     disk_image_decode_included: false
     load_stabilization:
       enabled: true
-      required_platform_profile: performance
-      required_cpu_energy_performance_preference: performance
+      required_platform_profile: quiet
+      required_cpu_energy_performance_preference: power
       sample_interval_seconds: 1.0
       required_consecutive_samples: 5
       timeout_seconds: 300
