@@ -1335,61 +1335,71 @@ def main() -> int:
                     ROOT
                     / f"results/benchmarks/notebook/{experiment_id}/repeat-{repetition:02d}"
                 )
-            update_progress(
-                state,
-                completed_units=completed_progress_units,
-                total_units=total_progress_units,
-                current_candidate=experiment_id,
-                current_stage="waiting for stable load",
-                current_repetition=repetition,
-            )
-            write_json(ROOT / STATE, state)
-            print_progress(state)
-            gate = wait_for_stable_load(
-                load_config,
-                state.get("load_stabilization_reference"),
-            )
-            gate_path = (
-                ROOT
-                / "results/measurement-environment"
-                / measurement_run_id
-                / experiment_id
-                / f"repeat-{repetition:02d}.json"
-            )
-            write_json(gate_path, gate)
-            record["load_stabilization_records"].append(
-                str(gate_path.relative_to(ROOT))
-            )
-            if gate["status"] == "stable" and state["load_stabilization_reference"] is None:
-                state["load_stabilization_reference"] = gate["accepted_window_mean"]
-                gate["established_session_reference"] = True
-                write_json(gate_path, gate)
-            if gate["status"] not in {"stable", "disabled"}:
-                record.update(
-                    status="running",
-                    reason=(
-                        "load stabilization timed out; benchmark was not started: "
-                        + "; ".join(gate.get("last_rejection_reasons", []))
-                    ),
-                    waiting_repetition=repetition,
-                )
-                state["status"] = "paused-load-not-stable"
+            stabilization_attempt = 1
+            while True:
                 update_progress(
                     state,
                     completed_units=completed_progress_units,
                     total_units=total_progress_units,
                     current_candidate=experiment_id,
-                    current_stage="paused: load did not stabilize",
+                    current_stage=(
+                        "waiting for stable load"
+                        if stabilization_attempt == 1
+                        else f"waiting for stable load, retry {stabilization_attempt}"
+                    ),
                     current_repetition=repetition,
                 )
                 write_json(ROOT / STATE, state)
+                print_progress(state)
+                gate = wait_for_stable_load(
+                    load_config,
+                    state.get("load_stabilization_reference"),
+                )
+                gate_path = (
+                    ROOT
+                    / "results/measurement-environment"
+                    / measurement_run_id
+                    / experiment_id
+                    / (
+                        f"repeat-{repetition:02d}-"
+                        f"attempt-{stabilization_attempt:02d}.json"
+                    )
+                )
+                write_json(gate_path, gate)
+                record["load_stabilization_records"].append(
+                    str(gate_path.relative_to(ROOT))
+                )
+                if gate["status"] == "stable":
+                    if state["load_stabilization_reference"] is None:
+                        state["load_stabilization_reference"] = gate[
+                            "accepted_window_mean"
+                        ]
+                        gate["established_session_reference"] = True
+                        write_json(gate_path, gate)
+                    state["status"] = "running"
+                    record.pop("reason", None)
+                    record.pop("waiting_repetition", None)
+                    break
+                if gate["status"] == "disabled":
+                    break
+                record.update(
+                    status="running",
+                    reason=(
+                        "load stabilization still waiting: "
+                        + "; ".join(gate.get("last_rejection_reasons", []))
+                    ),
+                    waiting_repetition=repetition,
+                    stabilization_attempt=stabilization_attempt,
+                )
+                state["status"] = "waiting-for-stable-load"
+                write_json(ROOT / STATE, state)
                 persist_summary(state, eligible, completed_rows, defaults)
                 print(
-                    f"{experiment_id}: load did not stabilize within "
-                    f"{load_config['timeout_seconds']} seconds; no benchmark was run",
+                    f"{experiment_id}: load was not stable during attempt "
+                    f"{stabilization_attempt}; retrying automatically",
                     flush=True,
                 )
-                return 2
+                stabilization_attempt += 1
             accepted = gate.get("accepted_window_mean", {})
             print(
                 f"{experiment_id} repeat {repetition}: stable load accepted "

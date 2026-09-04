@@ -24,12 +24,18 @@ done
 
 # Keep the desktop compositor state and power availability stable throughout
 # latency measurement. The environment flag prevents recursion after re-exec.
-if [[ "$MODE" == "run" && "${NOTEBOOK_INHIBITOR_ACTIVE:-0}" != "1" ]] \
-  && command -v systemd-inhibit >/dev/null 2>&1; then
-  exec env NOTEBOOK_INHIBITOR_ACTIVE=1 systemd-inhibit \
-    --what=idle:sleep \
-    --why="Stage 2 latency measurement" \
-    bash "$0" "$@"
+if [[ "$MODE" == "run" && "${NOTEBOOK_INHIBITOR_ACTIVE:-0}" != "1" ]]; then
+  if command -v gnome-session-inhibit >/dev/null 2>&1; then
+    exec env NOTEBOOK_INHIBITOR_ACTIVE=1 gnome-session-inhibit \
+      --reason "Stage 2 latency measurement" \
+      --inhibit idle:suspend \
+      bash "$0" "$@"
+  elif command -v systemd-inhibit >/dev/null 2>&1; then
+    exec env NOTEBOOK_INHIBITOR_ACTIVE=1 systemd-inhibit \
+      --what=idle:sleep \
+      --why="Stage 2 latency measurement" \
+      bash "$0" "$@"
+  fi
 fi
 
 if [[ "$PERFORMANCE_RERUN" == "true" ]] \
