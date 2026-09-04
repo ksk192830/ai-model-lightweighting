@@ -257,5 +257,40 @@
       }
     ]
   },
-  "next_measurement_scope": "Remeasure latency for all 21 candidates with successful engines; reuse exact engine and 437-image accuracy evidence after SHA-256 validation."
+  "next_measurement_scope": "Remeasure latency for all 21 successful candidates under platform_profile=performance and AMD P-State EPP=performance; reuse exact engines and 437-image accuracy evidence after SHA-256 validation.",
+  "final_measurement_power_policy": {
+    "powerprofilesctl": "performance",
+    "required_platform_profile": "performance",
+    "required_cpu_energy_performance_preference": "performance",
+    "scope": "all 21 candidates with successful TensorRT engines, 3 latency repetitions each"
+  },
+  "excluded_partial_power_saver_run": {
+    "run_id": "20260904_090710",
+    "completed_repetitions": 5,
+    "reason": "User changed the final protocol to performance-first for the full cohort.",
+    "archive": "results/archives/power-saver-partial-20260904_090710"
+  },
+  "performance_policy_check_before_rerun": {
+    "recorded_at_utc": "2026-09-04T00:24:59.006184+00:00",
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "logical_cpus": 16,
+    "physical_cpus": 8,
+    "ram_total_bytes": 15966171136,
+    "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+    "kernel": "6.8.0-136-generic",
+    "cpu_scaling_governor": "powersave",
+    "cpu_energy_performance_preference": "performance",
+    "platform_profile": "performance",
+    "ac_power_connected": true,
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "memory.total": "6141",
+      "driver_version": "580.173.02",
+      "power.limit": "[N/A]",
+      "temperature.gpu": "42",
+      "clocks.sm": "210",
+      "clocks.mem": "405",
+      "pstate": "P8"
+    }
+  }
 }

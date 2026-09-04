@@ -40,7 +40,9 @@ watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
 ```
 
 기존 엔진과 437장 정확도 결과는 그대로 검증·재사용하고, 모든 성공 후보의
-지연시간만 통제된 환경에서 다시 측정하려면 다음을 실행한다. 각 반복 직전에
+지연시간만 성능 우선 환경에서 다시 측정하려면 다음을 실행한다. 스크립트가
+`powerprofilesctl` 프로필을 `performance`로 전환하고 실제 platform profile과
+CPU EPP가 모두 `performance`인지 검사한다. 각 반복 직전에
 CPU/GPU 부하와 GPU 온도를 1초 간격으로 5회 확인한다. 설정된 유휴 범위 및 첫
 안정 상태의 온도 범위에 들 때만 측정을 시작하며, 5분 안에 안정화되지 않으면
 측정을 강행하지 않고 일시 중단한다.

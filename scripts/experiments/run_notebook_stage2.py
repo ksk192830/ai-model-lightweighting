@@ -208,10 +208,39 @@ def capture_environment() -> dict[str, Any]:
         "cpu_scaling_governor": read_first_line(
             Path("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor")
         ),
+        "cpu_energy_performance_preference": read_first_line(
+            Path(
+                "/sys/devices/system/cpu/cpu0/cpufreq/"
+                "energy_performance_preference"
+            )
+        ),
         "platform_profile": read_first_line(Path("/sys/firmware/acpi/platform_profile")),
         "ac_power_connected": ac_power_connected(),
         "gpu": gpu,
     }
+
+
+def validate_measurement_environment(
+    environment: dict[str, Any], config: dict[str, Any]
+) -> None:
+    """Reject a latency run whose selected power policy differs from protocol."""
+    requirements = {
+        "platform_profile": config.get("required_platform_profile"),
+        "cpu_energy_performance_preference": config.get(
+            "required_cpu_energy_performance_preference"
+        ),
+    }
+    mismatches = [
+        f"{field}={environment.get(field)!r}, required={required!r}"
+        for field, required in requirements.items()
+        if required is not None and environment.get(field) != required
+    ]
+    if mismatches:
+        raise RuntimeError(
+            "Latency measurement power policy mismatch: " + "; ".join(mismatches)
+        )
+    if config.get("require_ac_power") and environment.get("ac_power_connected") is not True:
+        raise RuntimeError("Latency measurement requires confirmed AC power")
 
 
 def capture_load_sample(interval_seconds: float) -> dict[str, Any]:
@@ -1122,6 +1151,8 @@ def main() -> int:
     )
     total_progress_units = len(measurable_ids) * repetitions
     completed_progress_units = 0
+    measurement_environment = capture_environment()
+    validate_measurement_environment(measurement_environment, load_config)
     state: dict[str, Any] = {
         "created_at_utc": now(),
         "status": "running",
@@ -1137,7 +1168,7 @@ def main() -> int:
         "tensorrt": trt.__version__,
         "nvidia_driver_and_bus": preflight_result["nvidia_driver_and_bus"],
         "preflight": preflight_result,
-        "environment": capture_environment(),
+        "environment": measurement_environment,
         "load_stabilization_protocol": load_config,
         "load_stabilization_reference": initial_load_reference,
         "eligible_candidates": eligible,

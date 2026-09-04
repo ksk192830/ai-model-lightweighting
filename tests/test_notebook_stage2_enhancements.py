@@ -33,6 +33,8 @@ evaluator = load_module(
 def load_config() -> dict:
     return {
         "enabled": True,
+        "required_platform_profile": "performance",
+        "required_cpu_energy_performance_preference": "performance",
         "sample_interval_seconds": 0,
         "required_consecutive_samples": 3,
         "timeout_seconds": 20,
@@ -113,6 +115,19 @@ def test_terminal_progress_line_accepts_current_repetition(capsys: pytest.Captur
     output = capsys.readouterr().out
     assert "1/63" in output
     assert "B01 latency benchmark repeat 2" in output
+
+
+def test_measurement_environment_requires_registered_performance_policy() -> None:
+    environment = {
+        "platform_profile": "performance",
+        "cpu_energy_performance_preference": "performance",
+        "ac_power_connected": True,
+    }
+    stage2.validate_measurement_environment(environment, load_config())
+
+    environment["platform_profile"] = "quiet"
+    with pytest.raises(RuntimeError, match="platform_profile"):
+        stage2.validate_measurement_environment(environment, load_config())
 
 
 def benchmark(timings: list[float]) -> dict:

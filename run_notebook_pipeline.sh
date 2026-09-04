@@ -5,6 +5,7 @@ ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 MODE="run"
+PERFORMANCE_RERUN="false"
 PYTHON_ARGS=()
 for argument in "$@"; do
   case "$argument" in
@@ -12,6 +13,10 @@ for argument in "$@"; do
     --dry-run) MODE="dry-run" ;;
     --force-rebuild)
       PYTHON_ARGS+=("--force-build" "--restart")
+      ;;
+    --remeasure-latency)
+      PERFORMANCE_RERUN="true"
+      PYTHON_ARGS+=("$argument")
       ;;
     *) PYTHON_ARGS+=("$argument") ;;
   esac
@@ -25,6 +30,12 @@ if [[ "$MODE" == "run" && "${NOTEBOOK_INHIBITOR_ACTIVE:-0}" != "1" ]] \
     --what=idle:sleep \
     --why="Stage 2 latency measurement" \
     bash "$0" "$@"
+fi
+
+if [[ "$PERFORMANCE_RERUN" == "true" ]] \
+  && command -v powerprofilesctl >/dev/null 2>&1; then
+  powerprofilesctl set performance
+  echo "성능 프로필: $(powerprofilesctl get)"
 fi
 
 PYTHON_BIN="${NOTEBOOK_PYTHON:-python3}"
