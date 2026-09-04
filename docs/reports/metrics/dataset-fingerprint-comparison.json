@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-04T04:55:31.485145+00:00",
+  "left_label": "desktop",
+  "right_label": "notebook",
+  "equivalent": true,
+  "raw_annotation_bytes_equal": false,
+  "comparisons": {
+    "counts": true,
+    "category_annotation_counts": true,
+    "coco_evaluation_semantics_sha256": true,
+    "image_collection_sha256": true,
+    "dataset_fingerprint_sha256": true
+  },
+  "interpretation": "The evaluated COCO semantics and image bytes are identical. Raw JSON hashes may differ because ordering or serialization differs."
+}

@@ -28,6 +28,8 @@
 10. 성공 후보 21개의 latency를 AC 전원 및 `performance` 정책에서 3회씩 총
     63회 다시 측정했다. 모든 부하 확인이 첫 시도에 통과했고 CV 5% 초과 후보는
     없었다. 최종 3축 Pareto 및 30 FPS 배포 후보는 C01과 R01이다.
+11. 노트북 test 437장의 fingerprint가 데스크톱 기준과 `equivalent`임을 확인했다.
+    C01·R01 TensorRT 엔진 SHA-256도 등록된 기대값과 일치한다.
 
 ## 1차 정적평가 판정
 
@@ -64,6 +66,8 @@
   모델에서는 제외한다. 이번 실행에서는 21개 후보 모두 5% 이내였다.
 - C01은 B01보다 median latency 44.79%, engine 크기 49.95%가 작고 Mask AP는
   0.00027 높다. R01은 정확도 gate 통과 후보 중 가장 빠른 24.010 ms다.
+- 노트북의 데이터 fingerprint와 최종 엔진 해시 확인까지 끝나 노트북 필수 작업은
+  모두 완료됐다.
 - 전체 결과는 [노트북 Stage 2 최종 평가](reports/notebook-stage2-results.md)와
   `results/stage2-evaluation-report.xlsx`에 있다.
 

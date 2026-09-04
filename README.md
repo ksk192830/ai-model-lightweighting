@@ -39,6 +39,8 @@ dense ONNX 크기·노드·MAC을 줄이지 못했고, S03은 세 정적 효율 
 줄이면서 Mask AP는 0.00027, mIoU는 0.02468 높았다. R01은 정확도 gate 통과
 후보 중 가장 빠른 24.010 ms였고 반복 중앙값 CV는 3.82%였다. 21개 후보 모두
 CV 5% 이내여서 추가 재측정 없이 첫 3회가 공식 결과가 됐다.
+노트북 test 437장의 fingerprint는 데스크톱 기준과 동등했고, C01·R01 엔진
+SHA-256도 등록된 기대값과 일치했다.
 전체 수치와 후속 작업은 [노트북 Stage 2 최종 평가](docs/reports/notebook-stage2-results.md)에
 정리했다.
 

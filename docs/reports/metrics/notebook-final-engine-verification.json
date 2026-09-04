@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-04T04:56:01.483440+00:00",
+  "label": "notebook",
+  "all_match_expected": true,
+  "engines": [
+    {
+      "experiment_id": "C01",
+      "path": "artifacts/experiments/C01/front/model.engine",
+      "size_bytes": 67873396,
+      "sha256": "bfbcd85bff8b8eb57c2be2368c5cba41aebe25c9892603894a59fc184ff035f6",
+      "expected_sha256": "bfbcd85bff8b8eb57c2be2368c5cba41aebe25c9892603894a59fc184ff035f6",
+      "matches_expected": true
+    },
+    {
+      "experiment_id": "R01",
+      "path": "artifacts/experiments/R01/front/model.engine",
+      "size_bytes": 71359388,
+      "sha256": "9c4cef49331dc94581f92ff10a141a5619caaf3c71aa708c24bfc0a39311efda",
+      "expected_sha256": "9c4cef49331dc94581f92ff10a141a5619caaf3c71aa708c24bfc0a39311efda",
+      "matches_expected": true
+    }
+  ]
+}

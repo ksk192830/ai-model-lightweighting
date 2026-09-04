@@ -40,6 +40,28 @@ memory-controller 1.00~18.67%, GPU 온도 40~55°C였다. 모든 구간이 첫
 시도에 통과했고 timeout 또는 강제 측정은 없었다. 자세한 기준은
 [측정 부하 통제](measurement-load-control.md)에 기록했다.
 
+## 데이터셋 동일성과 최종 엔진 보존 확인
+
+노트북의 test 437장으로 privacy-preserving fingerprint를 생성해 데스크톱 기준과
+비교한 결과는 `equivalent: true`다. 이미지 collection, COCO 평가 의미, 이미지·annotation·
+category 집계 및 최종 dataset fingerprint가 모두 일치했다. 원본 annotation JSON의
+바이트 해시는 직렬화 순서 차이로 다르지만 평가 의미와 이미지 바이트는 동일하다.
+
+| 항목 | 확인값 |
+|---|---|
+| 이미지 / annotation / category | 437 / 593 / 4 |
+| COCO 평가 의미 SHA-256 | `10d03b404c827e332e9438be641327f6336762aec7438be3bd9c2a2c91b1937c` |
+| 이미지 collection SHA-256 | `1d77edb6f138f231ea15cd2d07a186fb741114fff85deab2f506666639e220db` |
+| dataset fingerprint SHA-256 | `fd7e6e95100147959d63d93921d47c83a3b632bfd5280460e3800402eb175bde` |
+
+최종 Pareto 엔진도 로컬 파일을 직접 다시 해시해 기대값과 일치함을 확인했다.
+엔진 파일은 장비 종속 바이너리이므로 Git에는 넣지 않고 이 노트북에 보존한다.
+
+| 후보 | 크기 | SHA-256 | 판정 |
+|---|---:|---|---|
+| C01 | 67,873,396 bytes (64.7 MiB) | `bfbcd85bff8b8eb57c2be2368c5cba41aebe25c9892603894a59fc184ff035f6` | 일치 |
+| R01 | 71,359,388 bytes (68.1 MiB) | `9c4cef49331dc94581f92ff10a141a5619caaf3c71aa708c24bfc0a39311efda` | 일치 |
+
 ## 후보별 최종 결과
 
 | 후보 | Precision | BBox AP | Mask AP | mIoU | Median(ms) | P95(ms) | FPS | CV | Engine(MiB) | 정확도 gate | 30 FPS | Pareto |
@@ -89,11 +111,13 @@ R01에 지배된다.
 
 ## 남은 작업
 
-1. 이 결과와 원시 측정 근거를 데스크톱 저장소에 동기화한다.
-2. 논문 표·그림과 결과 장을 새 Pareto 후보 C01·R01 및 최종 수치로 갱신한다.
-3. 22개 후보 모두의 값이 필요할 때만 Q03을 TensorRT가 지원하는 INT4 형식으로
+노트북에서 요구된 필수 평가는 모두 끝났다. 후속 작업은 다음과 같다.
+
+1. 데스크톱에서 이 커밋을 받아 논문 표·그림과 결과 장을 새 Pareto 후보
+   C01·R01 및 최종 수치로 갱신한다.
+2. 22개 후보 모두의 값이 필요할 때만 Q03을 TensorRT가 지원하는 INT4 형식으로
    다시 export해 Q03만 평가한다.
-4. 외적 일반화 주장이 필요하면 Pareto 선택 이후 별도 촬영 세션 holdout으로 한 번
+3. 외적 일반화 주장이 필요하면 Pareto 선택 이후 별도 촬영 세션 holdout으로 한 번
    검증한다. 현재 437장은 고정 반복 비교용 benchmark로 해석한다.
 
 정확도 평가와 엔진 생성까지 포함한 전체 Stage 2를 다시 실행할 필요는 없다.
@@ -107,6 +131,9 @@ R01에 지배된다.
 - [Stage 3 Pareto CSV](../../results/stage3-pareto.csv)
 - [Excel 평가 보고서](../../results/stage2-evaluation-report.xlsx)
 - [측정 부하 통제 기록](measurement-load-control.md)
+- [노트북 데이터 fingerprint](metrics/dataset-fingerprint-notebook.json)
+- [데스크톱·노트북 fingerprint 비교](metrics/dataset-fingerprint-comparison.json)
+- [최종 엔진 해시 확인](metrics/notebook-final-engine-verification.json)
 
 정적 MAC/FLOP는 Conv·MatMul·Gemm 중 shape를 해석한 연산만 포함하는 dense
 하한 추정치다. TensorRT fusion, 메모리 이동, 전처리와 후처리 비용을 포함하지
