@@ -25,8 +25,9 @@
    중단 뒤 완료 후보를 재사용하도록 구성했다.
 9. RTX 4050 Laptop GPU에서 22개 후보를 terminal 상태로 만들었다. 21개는 전체
    평가를 완료했고 Q03은 TensorRT INT4 block quantization parser 오류를 기록했다.
-   이 최초 결과의 다목적 Pareto 집합은 이후 확정한 3축 주 Pareto의 최종 결과로
-   사용하지 않고, performance 통제 재측정 후 다시 산출한다.
+10. 성공 후보 21개의 latency를 AC 전원 및 `performance` 정책에서 3회씩 총
+    63회 다시 측정했다. 모든 부하 확인이 첫 시도에 통과했고 CV 5% 초과 후보는
+    없었다. 최종 3축 Pareto 및 30 FPS 배포 후보는 C01과 R01이다.
 
 ## 1차 정적평가 판정
 
@@ -49,23 +50,20 @@
 
 ## 현재 실행 상태와 다음 작업
 
-- 1차는 26/26 완료됐고, 최초 2차 실행은 terminal 22/22에 도달했다.
-- 엔진 성공 후보 21개의 latency를 동일 `performance` 전원 조건에서 다시 측정한
-  뒤 주 Pareto를 재산출해야 한다.
-- 기존 21개 후보의 정확도·latency·FPS·memory·engine 크기는 보존하지만 통제 전
-  latency와 기존 7축 Pareto는 최종 논문 수치로 사용하지 않는다.
+- 1차는 26/26, 2차는 terminal 22/22, 성능 우선 지연시간은 63/63 완료됐다.
+- 21개 성공 후보의 최종 결과와 측정 환경은 실행 ID `20260904_104755`에
+  기록했다. 과거 통제 전 latency와 기존 7축 Pareto는 최종 수치로 사용하지 않는다.
 - Q03은 TensorRT 10.16.1.11이 block size 128 INT4 `DequantizeLinear` 입력을
   파싱하지 못해 build-failed로 종료됐다. 같은 환경에서 변경 없이 재실행할 이유는 없다.
-- C02, B03과 R01은 현재 잠정 비교 후보이며 최종 후보는 새 3축 Pareto 이후 정한다.
-- 새 Pareto 중 median latency 33.33 ms 이하인 후보만 30 FPS 실시간 배포 후보로
-  별도 표시한다.
+- 최종 3축 Pareto 후보는 C01과 R01이며 둘 다 median latency 33.33 ms 이하의
+  30 FPS 실시간 배포 기준을 만족한다.
 - P95는 33.33 ms 초과 시 경고하는 보조지표이며 배포 후보·Pareto hard gate로
   사용하지 않는다.
 - 반복 median CV가 5%를 초과한 후보는 지연시간 3회를 한 번 자동 재측정한다.
   재측정 후에도 초과하면 두 라운드를 보존하고 Pareto에는 유지하지만 최종 권장
-  모델에서는 제외한다.
-- 과거 R01은 반복 중앙값 CV 5.25%였으나, 공식 성능 우선 전체 재평가에서 위 자동
-  재측정 정책을 새로 적용한다.
+  모델에서는 제외한다. 이번 실행에서는 21개 후보 모두 5% 이내였다.
+- C01은 B01보다 median latency 44.79%, engine 크기 49.95%가 작고 Mask AP는
+  0.00027 높다. R01은 정확도 gate 통과 후보 중 가장 빠른 24.010 ms다.
 - 전체 결과는 [노트북 Stage 2 최종 평가](reports/notebook-stage2-results.md)와
   `results/stage2-evaluation-report.xlsx`에 있다.
 
@@ -94,12 +92,12 @@
 - PTH 평가는 일부 후보에서 GPU, 일부에서 CPU로 수행했으나 같은 evaluator와
   데이터셋을 사용했다. 속도 비교에는 이 측정 시간을 사용하지 않는다.
 - TensorRT 결과는 RTX 4050 Laptop GPU와 기록된 CUDA/TensorRT 환경에 한정된다.
-- R01의 반복 latency 변동성과 Q03 INT4 parser 호환성은 후속 확인 대상이다.
+- Q03 INT4 parser 호환성과 별도 세션 외적 검증은 후속 확인 대상이다.
 
 ## 후속 작업
 
-- R01을 고정된 전력·온도·백그라운드 조건에서 추가 측정해 속도 순위를 확인
+- 데스크톱에서 최신 노트북 summary를 받아 논문 표·그림과 결과 장 갱신
 - 22개 전부의 수치가 필요하면 Q03을 호환 형식으로 재export한 뒤 Q03만 재평가
-- `paper_results.py`가 최신 노트북 summary를 읽도록 바꾸고 논문 표·그림 갱신
-- 과거 데스크탑/PTH 경로와 파일 mtime에 의존하는 평가 감사 도구를 최신 해시 기반으로 보완
+- 과거 데스크탑/PTH 경로와 파일 mtime에 의존하는 전체 저장소 감사 도구를 최신
+  해시 기반으로 보완
 - 논문에 외부 일반화 주장이 필요하면 별도 촬영 세션 holdout 확보

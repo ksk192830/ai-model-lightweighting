@@ -1,0 +1,290 @@
+공식 비교 전원 프로필: performance
+[진행 0/63 | 0.0%] B01 waiting for stable load repeat 1 | 경과 00:00:00 | 예상 종료 계산 중
+B01 repeat 1: stable load accepted (CPU 2.466666666666667%, GPU 25.666666666666668%, GPU 40.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B01/repeat-01
+[진행 1/63 | 1.6%] B01 latency repetition completed repeat 1 | 경과 00:00:48 | 예상 종료 2026-09-04 11:38:39 KST
+[진행 1/63 | 1.6%] B01 waiting for stable load repeat 2 | 경과 00:00:48 | 예상 종료 2026-09-04 11:38:39 KST
+B01 repeat 2: stable load accepted (CPU 2.3333333333333335%, GPU 8.333333333333334%, GPU 45.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B01/repeat-02
+[진행 2/63 | 3.2%] B01 latency repetition completed repeat 2 | 경과 00:01:07 | 예상 종료 2026-09-04 11:22:51 KST
+[진행 2/63 | 3.2%] B01 waiting for stable load repeat 3 | 경과 00:01:07 | 예상 종료 2026-09-04 11:22:51 KST
+B01 repeat 3: stable load accepted (CPU 2.5%, GPU 7.0%, GPU 48.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B01/repeat-03
+[진행 3/63 | 4.8%] B01 latency repetition completed repeat 3 | 경과 00:01:25 | 예상 종료 2026-09-04 11:17:35 KST
+B01: Stage 2 completed
+[진행 3/63 | 4.8%] B02 waiting for stable load repeat 1 | 경과 00:01:25 | 예상 종료 2026-09-04 11:17:37 KST
+B02 repeat 1: stable load accepted (CPU 2.466666666666667%, GPU 5.666666666666667%, GPU 51.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B02/repeat-01
+[진행 4/63 | 6.3%] B02 latency repetition completed repeat 1 | 경과 00:01:39 | 예상 종료 2026-09-04 11:13:49 KST
+[진행 4/63 | 6.3%] B02 waiting for stable load repeat 2 | 경과 00:01:39 | 예상 종료 2026-09-04 11:13:49 KST
+B02 repeat 2: stable load accepted (CPU 2.4%, GPU 4.333333333333333%, GPU 51.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B02/repeat-02
+[진행 5/63 | 7.9%] B02 latency repetition completed repeat 2 | 경과 00:01:53 | 예상 종료 2026-09-04 11:11:34 KST
+[진행 5/63 | 7.9%] B02 waiting for stable load repeat 3 | 경과 00:01:53 | 예상 종료 2026-09-04 11:11:34 KST
+B02 repeat 3: stable load accepted (CPU 5.433333333333334%, GPU 4.666666666666667%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B02/repeat-03
+[진행 6/63 | 9.5%] B02 latency repetition completed repeat 3 | 경과 00:02:06 | 예상 종료 2026-09-04 11:10:02 KST
+B02: Stage 2 completed
+[진행 6/63 | 9.5%] B03 waiting for stable load repeat 1 | 경과 00:02:06 | 예상 종료 2026-09-04 11:10:03 KST
+B03 repeat 1: stable load accepted (CPU 2.533333333333333%, GPU 6.666666666666667%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B03/repeat-01
+[진행 7/63 | 11.1%] B03 latency repetition completed repeat 1 | 경과 00:02:20 | 예상 종료 2026-09-04 11:08:56 KST
+[진행 7/63 | 11.1%] B03 waiting for stable load repeat 2 | 경과 00:02:20 | 예상 종료 2026-09-04 11:08:56 KST
+B03 repeat 2: stable load accepted (CPU 2.433333333333333%, GPU 7.333333333333333%, GPU 51.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B03/repeat-02
+[진행 8/63 | 12.7%] B03 latency repetition completed repeat 2 | 경과 00:02:34 | 예상 종료 2026-09-04 11:08:08 KST
+[진행 8/63 | 12.7%] B03 waiting for stable load repeat 3 | 경과 00:02:34 | 예상 종료 2026-09-04 11:08:08 KST
+B03 repeat 3: stable load accepted (CPU 2.6333333333333333%, GPU 11.0%, GPU 52.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/B03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/B03/repeat-03
+[진행 9/63 | 14.3%] B03 latency repetition completed repeat 3 | 경과 00:02:48 | 예상 종료 2026-09-04 11:07:29 KST
+B03: Stage 2 completed
+[진행 9/63 | 14.3%] M01 waiting for stable load repeat 1 | 경과 00:02:48 | 예상 종료 2026-09-04 11:07:30 KST
+M01 repeat 1: stable load accepted (CPU 2.9%, GPU 5.0%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/M01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/M01/repeat-01
+[진행 10/63 | 15.9%] M01 latency repetition completed repeat 1 | 경과 00:03:02 | 예상 종료 2026-09-04 11:06:59 KST
+[진행 10/63 | 15.9%] M01 waiting for stable load repeat 2 | 경과 00:03:02 | 예상 종료 2026-09-04 11:06:59 KST
+M01 repeat 2: stable load accepted (CPU 2.8666666666666667%, GPU 5.0%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/M01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/M01/repeat-02
+[진행 11/63 | 17.5%] M01 latency repetition completed repeat 2 | 경과 00:03:15 | 예상 종료 2026-09-04 11:06:34 KST
+[진행 11/63 | 17.5%] M01 waiting for stable load repeat 3 | 경과 00:03:15 | 예상 종료 2026-09-04 11:06:34 KST
+M01 repeat 3: stable load accepted (CPU 2.9%, GPU 6.666666666666667%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/M01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/M01/repeat-03
+[진행 12/63 | 19.0%] M01 latency repetition completed repeat 3 | 경과 00:03:29 | 예상 종료 2026-09-04 11:06:13 KST
+M01: Stage 2 completed
+[진행 12/63 | 19.0%] M02 waiting for stable load repeat 1 | 경과 00:03:29 | 예상 종료 2026-09-04 11:06:14 KST
+M02 repeat 1: stable load accepted (CPU 2.6%, GPU 6.666666666666667%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/M02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/M02/repeat-01
+[진행 13/63 | 20.6%] M02 latency repetition completed repeat 1 | 경과 00:03:43 | 예상 종료 2026-09-04 11:05:56 KST
+[진행 13/63 | 20.6%] M02 waiting for stable load repeat 2 | 경과 00:03:43 | 예상 종료 2026-09-04 11:05:56 KST
+M02 repeat 2: stable load accepted (CPU 2.8000000000000003%, GPU 10.333333333333334%, GPU 52.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/M02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/M02/repeat-02
+[진행 14/63 | 22.2%] M02 latency repetition completed repeat 2 | 경과 00:03:57 | 예상 종료 2026-09-04 11:05:41 KST
+[진행 14/63 | 22.2%] M02 waiting for stable load repeat 3 | 경과 00:03:57 | 예상 종료 2026-09-04 11:05:41 KST
+M02 repeat 3: stable load accepted (CPU 3.4666666666666663%, GPU 4.666666666666667%, GPU 52.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/M02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/M02/repeat-03
+[진행 15/63 | 23.8%] M02 latency repetition completed repeat 3 | 경과 00:04:11 | 예상 종료 2026-09-04 11:05:27 KST
+M02: Stage 2 completed
+[진행 15/63 | 23.8%] S01 waiting for stable load repeat 1 | 경과 00:04:11 | 예상 종료 2026-09-04 11:05:28 KST
+S01 repeat 1: stable load accepted (CPU 3.4333333333333336%, GPU 6.333333333333333%, GPU 51.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S01/repeat-01
+[진행 16/63 | 25.4%] S01 latency repetition completed repeat 1 | 경과 00:04:29 | 예상 종료 2026-09-04 11:05:33 KST
+[진행 16/63 | 25.4%] S01 waiting for stable load repeat 2 | 경과 00:04:29 | 예상 종료 2026-09-04 11:05:33 KST
+S01 repeat 2: stable load accepted (CPU 2.5666666666666664%, GPU 6.666666666666667%, GPU 52.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S01/repeat-02
+[진행 17/63 | 27.0%] S01 latency repetition completed repeat 2 | 경과 00:04:47 | 예상 종료 2026-09-04 11:05:37 KST
+[진행 17/63 | 27.0%] S01 waiting for stable load repeat 3 | 경과 00:04:47 | 예상 종료 2026-09-04 11:05:37 KST
+S01 repeat 3: stable load accepted (CPU 3.0%, GPU 7.0%, GPU 53.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S01/repeat-03
+[진행 18/63 | 28.6%] S01 latency repetition completed repeat 3 | 경과 00:05:04 | 예상 종료 2026-09-04 11:05:41 KST
+S01: Stage 2 completed
+[진행 18/63 | 28.6%] S02 waiting for stable load repeat 1 | 경과 00:05:05 | 예상 종료 2026-09-04 11:05:41 KST
+S02 repeat 1: stable load accepted (CPU 2.733333333333333%, GPU 9.333333333333334%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S02/repeat-01
+[진행 19/63 | 30.2%] S02 latency repetition completed repeat 1 | 경과 00:05:22 | 예상 종료 2026-09-04 11:05:43 KST
+[진행 19/63 | 30.2%] S02 waiting for stable load repeat 2 | 경과 00:05:22 | 예상 종료 2026-09-04 11:05:43 KST
+S02 repeat 2: stable load accepted (CPU 2.1666666666666665%, GPU 6.666666666666667%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S02/repeat-02
+[진행 20/63 | 31.7%] S02 latency repetition completed repeat 2 | 경과 00:05:40 | 예상 종료 2026-09-04 11:05:46 KST
+[진행 20/63 | 31.7%] S02 waiting for stable load repeat 3 | 경과 00:05:40 | 예상 종료 2026-09-04 11:05:46 KST
+S02 repeat 3: stable load accepted (CPU 2.8000000000000003%, GPU 6.333333333333333%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S02/repeat-03
+[진행 21/63 | 33.3%] S02 latency repetition completed repeat 3 | 경과 00:05:57 | 예상 종료 2026-09-04 11:05:47 KST
+S02: Stage 2 completed
+[진행 21/63 | 33.3%] S04 waiting for stable load repeat 1 | 경과 00:05:57 | 예상 종료 2026-09-04 11:05:48 KST
+S04 repeat 1: stable load accepted (CPU 2.6666666666666665%, GPU 8.0%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S04/repeat-01
+[진행 22/63 | 34.9%] S04 latency repetition completed repeat 1 | 경과 00:06:16 | 예상 종료 2026-09-04 11:05:51 KST
+[진행 22/63 | 34.9%] S04 waiting for stable load repeat 2 | 경과 00:06:16 | 예상 종료 2026-09-04 11:05:51 KST
+S04 repeat 2: stable load accepted (CPU 3.033333333333333%, GPU 5.0%, GPU 55.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S04/repeat-02
+[진행 23/63 | 36.5%] S04 latency repetition completed repeat 2 | 경과 00:06:34 | 예상 종료 2026-09-04 11:05:54 KST
+[진행 23/63 | 36.5%] S04 waiting for stable load repeat 3 | 경과 00:06:34 | 예상 종료 2026-09-04 11:05:54 KST
+S04 repeat 3: stable load accepted (CPU 2.5%, GPU 5.333333333333333%, GPU 55.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/S04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/S04/repeat-03
+[진행 24/63 | 38.1%] S04 latency repetition completed repeat 3 | 경과 00:06:52 | 예상 종료 2026-09-04 11:05:57 KST
+S04: Stage 2 completed
+[진행 24/63 | 38.1%] C01 waiting for stable load repeat 1 | 경과 00:06:52 | 예상 종료 2026-09-04 11:05:57 KST
+C01 repeat 1: stable load accepted (CPU 3.0%, GPU 7.0%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C01/repeat-01
+[진행 25/63 | 39.7%] C01 latency repetition completed repeat 1 | 경과 00:07:06 | 예상 종료 2026-09-04 11:05:49 KST
+[진행 25/63 | 39.7%] C01 waiting for stable load repeat 2 | 경과 00:07:06 | 예상 종료 2026-09-04 11:05:49 KST
+C01 repeat 2: stable load accepted (CPU 2.533333333333333%, GPU 8.0%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C01/repeat-02
+[진행 26/63 | 41.3%] C01 latency repetition completed repeat 2 | 경과 00:07:20 | 예상 종료 2026-09-04 11:05:41 KST
+[진행 26/63 | 41.3%] C01 waiting for stable load repeat 3 | 경과 00:07:20 | 예상 종료 2026-09-04 11:05:41 KST
+C01 repeat 3: stable load accepted (CPU 3.0%, GPU 5.333333333333333%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C01/repeat-03
+[진행 27/63 | 42.9%] C01 latency repetition completed repeat 3 | 경과 00:07:34 | 예상 종료 2026-09-04 11:05:34 KST
+C01: Stage 2 completed
+[진행 27/63 | 42.9%] C02 waiting for stable load repeat 1 | 경과 00:07:34 | 예상 종료 2026-09-04 11:05:34 KST
+C02 repeat 1: stable load accepted (CPU 2.8333333333333335%, GPU 5.0%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C02/repeat-01
+[진행 28/63 | 44.4%] C02 latency repetition completed repeat 1 | 경과 00:07:47 | 예상 종료 2026-09-04 11:05:27 KST
+[진행 28/63 | 44.4%] C02 waiting for stable load repeat 2 | 경과 00:07:47 | 예상 종료 2026-09-04 11:05:27 KST
+C02 repeat 2: stable load accepted (CPU 2.8333333333333335%, GPU 7.0%, GPU 53.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C02/repeat-02
+[진행 29/63 | 46.0%] C02 latency repetition completed repeat 2 | 경과 00:08:01 | 예상 종료 2026-09-04 11:05:21 KST
+[진행 29/63 | 46.0%] C02 waiting for stable load repeat 3 | 경과 00:08:01 | 예상 종료 2026-09-04 11:05:21 KST
+C02 repeat 3: stable load accepted (CPU 2.6%, GPU 7.333333333333333%, GPU 53.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C02/repeat-03
+[진행 30/63 | 47.6%] C02 latency repetition completed repeat 3 | 경과 00:08:15 | 예상 종료 2026-09-04 11:05:15 KST
+C02: Stage 2 completed
+[진행 30/63 | 47.6%] C03 waiting for stable load repeat 1 | 경과 00:08:15 | 예상 종료 2026-09-04 11:05:15 KST
+C03 repeat 1: stable load accepted (CPU 2.9%, GPU 6.666666666666667%, GPU 53.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C03/repeat-01
+[진행 31/63 | 49.2%] C03 latency repetition completed repeat 1 | 경과 00:08:31 | 예상 종료 2026-09-04 11:05:15 KST
+[진행 31/63 | 49.2%] C03 waiting for stable load repeat 2 | 경과 00:08:31 | 예상 종료 2026-09-04 11:05:15 KST
+C03 repeat 2: stable load accepted (CPU 2.766666666666667%, GPU 7.666666666666667%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C03/repeat-02
+[진행 32/63 | 50.8%] C03 latency repetition completed repeat 2 | 경과 00:08:48 | 예상 종료 2026-09-04 11:05:14 KST
+[진행 32/63 | 50.8%] C03 waiting for stable load repeat 3 | 경과 00:08:48 | 예상 종료 2026-09-04 11:05:14 KST
+C03 repeat 3: stable load accepted (CPU 2.9%, GPU 8.0%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C03/repeat-03
+[진행 33/63 | 52.4%] C03 latency repetition completed repeat 3 | 경과 00:09:04 | 예상 종료 2026-09-04 11:05:13 KST
+C03: Stage 2 completed
+[진행 33/63 | 52.4%] C04 waiting for stable load repeat 1 | 경과 00:09:04 | 예상 종료 2026-09-04 11:05:13 KST
+C04 repeat 1: stable load accepted (CPU 2.533333333333333%, GPU 4.666666666666667%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C04/repeat-01
+[진행 34/63 | 54.0%] C04 latency repetition completed repeat 1 | 경과 00:09:21 | 예상 종료 2026-09-04 11:05:15 KST
+[진행 34/63 | 54.0%] C04 waiting for stable load repeat 2 | 경과 00:09:21 | 예상 종료 2026-09-04 11:05:15 KST
+C04 repeat 2: stable load accepted (CPU 2.733333333333333%, GPU 11.333333333333334%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C04/repeat-02
+[진행 35/63 | 55.6%] C04 latency repetition completed repeat 2 | 경과 00:09:38 | 예상 종료 2026-09-04 11:05:16 KST
+[진행 35/63 | 55.6%] C04 waiting for stable load repeat 3 | 경과 00:09:38 | 예상 종료 2026-09-04 11:05:16 KST
+C04 repeat 3: stable load accepted (CPU 2.733333333333333%, GPU 7.0%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/C04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/C04/repeat-03
+[진행 36/63 | 57.1%] C04 latency repetition completed repeat 3 | 경과 00:09:55 | 예상 종료 2026-09-04 11:05:17 KST
+C04: Stage 2 completed
+[진행 36/63 | 57.1%] R01 waiting for stable load repeat 1 | 경과 00:09:56 | 예상 종료 2026-09-04 11:05:17 KST
+R01 repeat 1: stable load accepted (CPU 2.6666666666666665%, GPU 7.0%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R01/repeat-01
+[진행 37/63 | 58.7%] R01 latency repetition completed repeat 1 | 경과 00:10:09 | 예상 종료 2026-09-04 11:05:12 KST
+[진행 37/63 | 58.7%] R01 waiting for stable load repeat 2 | 경과 00:10:09 | 예상 종료 2026-09-04 11:05:12 KST
+R01 repeat 2: stable load accepted (CPU 2.466666666666667%, GPU 4.666666666666667%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R01/repeat-02
+[진행 38/63 | 60.3%] R01 latency repetition completed repeat 2 | 경과 00:10:22 | 예상 종료 2026-09-04 11:05:07 KST
+[진행 38/63 | 60.3%] R01 waiting for stable load repeat 3 | 경과 00:10:22 | 예상 종료 2026-09-04 11:05:07 KST
+R01 repeat 3: stable load accepted (CPU 2.533333333333333%, GPU 7.0%, GPU 53.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp16 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R01/repeat-03
+[진행 39/63 | 61.9%] R01 latency repetition completed repeat 3 | 경과 00:10:36 | 예상 종료 2026-09-04 11:05:02 KST
+R01: Stage 2 completed
+[진행 39/63 | 61.9%] R02 waiting for stable load repeat 1 | 경과 00:10:36 | 예상 종료 2026-09-04 11:05:02 KST
+R02 repeat 1: stable load accepted (CPU 2.4%, GPU 4.333333333333333%, GPU 53.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R02/repeat-01
+[진행 40/63 | 63.5%] R02 latency repetition completed repeat 1 | 경과 00:10:54 | 예상 종료 2026-09-04 11:05:05 KST
+[진행 40/63 | 63.5%] R02 waiting for stable load repeat 2 | 경과 00:10:54 | 예상 종료 2026-09-04 11:05:05 KST
+R02 repeat 2: stable load accepted (CPU 2.766666666666667%, GPU 9.666666666666666%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R02/repeat-02
+[진행 41/63 | 65.1%] R02 latency repetition completed repeat 2 | 경과 00:11:11 | 예상 종료 2026-09-04 11:05:06 KST
+[진행 41/63 | 65.1%] R02 waiting for stable load repeat 3 | 경과 00:11:11 | 예상 종료 2026-09-04 11:05:06 KST
+R02 repeat 3: stable load accepted (CPU 2.6333333333333333%, GPU 11.0%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R02/repeat-03
+[진행 42/63 | 66.7%] R02 latency repetition completed repeat 3 | 경과 00:11:30 | 예상 종료 2026-09-04 11:05:10 KST
+R02: Stage 2 completed
+[진행 42/63 | 66.7%] R03 waiting for stable load repeat 1 | 경과 00:11:30 | 예상 종료 2026-09-04 11:05:10 KST
+R03 repeat 1: stable load accepted (CPU 2.6%, GPU 5.0%, GPU 55.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R03/repeat-01
+[진행 43/63 | 68.3%] R03 latency repetition completed repeat 1 | 경과 00:11:45 | 예상 종료 2026-09-04 11:05:08 KST
+[진행 43/63 | 68.3%] R03 waiting for stable load repeat 2 | 경과 00:11:45 | 예상 종료 2026-09-04 11:05:08 KST
+R03 repeat 2: stable load accepted (CPU 2.6%, GPU 6.333333333333333%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R03/repeat-02
+[진행 44/63 | 69.8%] R03 latency repetition completed repeat 2 | 경과 00:12:01 | 예상 종료 2026-09-04 11:05:07 KST
+[진행 44/63 | 69.8%] R03 waiting for stable load repeat 3 | 경과 00:12:01 | 예상 종료 2026-09-04 11:05:07 KST
+R03 repeat 3: stable load accepted (CPU 2.6%, GPU 5.0%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp32 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/R03/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/R03/repeat-03
+[진행 45/63 | 71.4%] R03 latency repetition completed repeat 3 | 경과 00:12:16 | 예상 종료 2026-09-04 11:05:05 KST
+R03: Stage 2 completed
+[진행 45/63 | 71.4%] Q01 waiting for stable load repeat 1 | 경과 00:12:16 | 예상 종료 2026-09-04 11:05:06 KST
+Q01 repeat 1: stable load accepted (CPU 2.9333333333333336%, GPU 5.0%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q01/repeat-01
+[진행 46/63 | 73.0%] Q01 latency repetition completed repeat 1 | 경과 00:12:30 | 예상 종료 2026-09-04 11:05:02 KST
+[진행 46/63 | 73.0%] Q01 waiting for stable load repeat 2 | 경과 00:12:30 | 예상 종료 2026-09-04 11:05:02 KST
+Q01 repeat 2: stable load accepted (CPU 2.766666666666667%, GPU 4.333333333333333%, GPU 54.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q01/repeat-02
+[진행 47/63 | 74.6%] Q01 latency repetition completed repeat 2 | 경과 00:12:44 | 예상 종료 2026-09-04 11:04:59 KST
+[진행 47/63 | 74.6%] Q01 waiting for stable load repeat 3 | 경과 00:12:44 | 예상 종료 2026-09-04 11:04:59 KST
+Q01 repeat 3: stable load accepted (CPU 2.466666666666667%, GPU 4.666666666666667%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label int8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q01/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q01/repeat-03
+[진행 48/63 | 76.2%] Q01 latency repetition completed repeat 3 | 경과 00:12:58 | 예상 종료 2026-09-04 11:04:56 KST
+Q01: Stage 2 completed
+[진행 48/63 | 76.2%] Q02 waiting for stable load repeat 1 | 경과 00:12:58 | 예상 종료 2026-09-04 11:04:56 KST
+Q02 repeat 1: stable load accepted (CPU 2.733333333333333%, GPU 4.666666666666667%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q02/repeat-01
+[진행 49/63 | 77.8%] Q02 latency repetition completed repeat 1 | 경과 00:13:11 | 예상 종료 2026-09-04 11:04:53 KST
+[진행 49/63 | 77.8%] Q02 waiting for stable load repeat 2 | 경과 00:13:11 | 예상 종료 2026-09-04 11:04:53 KST
+Q02 repeat 2: stable load accepted (CPU 2.466666666666667%, GPU 6.666666666666667%, GPU 53.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q02/repeat-02
+[진행 50/63 | 79.4%] Q02 latency repetition completed repeat 2 | 경과 00:13:25 | 예상 종료 2026-09-04 11:04:50 KST
+[진행 50/63 | 79.4%] Q02 waiting for stable load repeat 3 | 경과 00:13:25 | 예상 종료 2026-09-04 11:04:50 KST
+Q02 repeat 3: stable load accepted (CPU 2.8666666666666667%, GPU 7.666666666666667%, GPU 53.0 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q02/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q02/repeat-03
+[진행 51/63 | 81.0%] Q02 latency repetition completed repeat 3 | 경과 00:13:39 | 예상 종료 2026-09-04 11:04:47 KST
+Q02: Stage 2 completed
+Q03: prior terminal failure retained
+[진행 51/63 | 81.0%] Q04 waiting for stable load repeat 1 | 경과 00:13:39 | 예상 종료 2026-09-04 11:04:47 KST
+Q04 repeat 1: stable load accepted (CPU 4.266666666666667%, GPU 4.333333333333333%, GPU 53.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q04/repeat-01
+[진행 52/63 | 82.5%] Q04 latency repetition completed repeat 1 | 경과 00:13:56 | 예상 종료 2026-09-04 11:04:48 KST
+[진행 52/63 | 82.5%] Q04 waiting for stable load repeat 2 | 경과 00:13:56 | 예상 종료 2026-09-04 11:04:48 KST
+Q04 repeat 2: stable load accepted (CPU 3.1666666666666665%, GPU 7.0%, GPU 53.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q04/repeat-02
+[진행 53/63 | 84.1%] Q04 latency repetition completed repeat 2 | 경과 00:14:12 | 예상 종료 2026-09-04 11:04:48 KST
+[진행 53/63 | 84.1%] Q04 waiting for stable load repeat 3 | 경과 00:14:12 | 예상 종료 2026-09-04 11:04:48 KST
+Q04 repeat 3: stable load accepted (CPU 3.533333333333333%, GPU 7.333333333333333%, GPU 54.333333333333336 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label fp8 --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q04/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q04/repeat-03
+[진행 54/63 | 85.7%] Q04 latency repetition completed repeat 3 | 경과 00:14:28 | 예상 종료 2026-09-04 11:04:48 KST
+Q04: Stage 2 completed
+[진행 54/63 | 85.7%] Q05 waiting for stable load repeat 1 | 경과 00:14:28 | 예상 종료 2026-09-04 11:04:48 KST
+Q05 repeat 1: stable load accepted (CPU 2.533333333333333%, GPU 6.666666666666667%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q05/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q05/repeat-01
+[진행 55/63 | 87.3%] Q05 latency repetition completed repeat 1 | 경과 00:14:46 | 예상 종료 2026-09-04 11:04:50 KST
+[진행 55/63 | 87.3%] Q05 waiting for stable load repeat 2 | 경과 00:14:46 | 예상 종료 2026-09-04 11:04:50 KST
+Q05 repeat 2: stable load accepted (CPU 2.9333333333333336%, GPU 6.666666666666667%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q05/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q05/repeat-02
+[진행 56/63 | 88.9%] Q05 latency repetition completed repeat 2 | 경과 00:15:04 | 예상 종료 2026-09-04 11:04:52 KST
+[진행 56/63 | 88.9%] Q05 waiting for stable load repeat 3 | 경과 00:15:04 | 예상 종료 2026-09-04 11:04:52 KST
+Q05 repeat 3: stable load accepted (CPU 2.4%, GPU 7.333333333333333%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q05/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q05/repeat-03
+[진행 57/63 | 90.5%] Q05 latency repetition completed repeat 3 | 경과 00:15:23 | 예상 종료 2026-09-04 11:04:55 KST
+Q05: Stage 2 completed
+[진행 57/63 | 90.5%] Q06 waiting for stable load repeat 1 | 경과 00:15:23 | 예상 종료 2026-09-04 11:04:55 KST
+Q06 repeat 1: stable load accepted (CPU 2.9333333333333336%, GPU 6.666666666666667%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q06/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q06/repeat-01
+[진행 58/63 | 92.1%] Q06 latency repetition completed repeat 1 | 경과 00:15:39 | 예상 종료 2026-09-04 11:04:56 KST
+[진행 58/63 | 92.1%] Q06 waiting for stable load repeat 2 | 경과 00:15:39 | 예상 종료 2026-09-04 11:04:56 KST
+Q06 repeat 2: stable load accepted (CPU 2.6666666666666665%, GPU 6.666666666666667%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q06/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q06/repeat-02
+[진행 59/63 | 93.7%] Q06 latency repetition completed repeat 2 | 경과 00:15:56 | 예상 종료 2026-09-04 11:04:56 KST
+[진행 59/63 | 93.7%] Q06 waiting for stable load repeat 3 | 경과 00:15:56 | 예상 종료 2026-09-04 11:04:56 KST
+Q06 repeat 3: stable load accepted (CPU 2.533333333333333%, GPU 7.0%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q06/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q06/repeat-03
+[진행 60/63 | 95.2%] Q06 latency repetition completed repeat 3 | 경과 00:16:13 | 예상 종료 2026-09-04 11:04:57 KST
+Q06: Stage 2 completed
+[진행 60/63 | 95.2%] Q07 waiting for stable load repeat 1 | 경과 00:16:13 | 예상 종료 2026-09-04 11:04:57 KST
+Q07 repeat 1: stable load accepted (CPU 2.6%, GPU 7.0%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q07/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q07/repeat-01
+[진행 61/63 | 96.8%] Q07 latency repetition completed repeat 1 | 경과 00:16:31 | 예상 종료 2026-09-04 11:04:58 KST
+[진행 61/63 | 96.8%] Q07 waiting for stable load repeat 2 | 경과 00:16:31 | 예상 종료 2026-09-04 11:04:58 KST
+Q07 repeat 2: stable load accepted (CPU 3.4%, GPU 7.666666666666667%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q07/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q07/repeat-02
+[진행 62/63 | 98.4%] Q07 latency repetition completed repeat 2 | 경과 00:16:47 | 예상 종료 2026-09-04 11:04:59 KST
+[진행 62/63 | 98.4%] Q07 waiting for stable load repeat 3 | 경과 00:16:47 | 예상 종료 2026-09-04 11:04:59 KST
+Q07 repeat 3: stable load accepted (CPU 2.566666666666667%, GPU 7.333333333333333%, GPU 54.666666666666664 C)
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/evaluation/benchmark_baseline.py --camera front --backend tensorrt --precision-label mixed --engine /home/sg/kips-ai-model-lightweighting/artifacts/experiments/Q07/front/model.engine --image-dir /home/sg/kips-ai-model-lightweighting/data/training/front_session_split_v1/test --sample-count 32 --seed 42 --threshold 0.25 --warmup 20 --runs 200 --output-dir /home/sg/kips-ai-model-lightweighting/results/benchmarks/notebook-controlled/20260904_104755/Q07/repeat-03
+[진행 63/63 | 100.0%] Q07 latency repetition completed repeat 3 | 경과 00:17:04 | 예상 종료 2026-09-04 11:04:59 KST
+Q07: Stage 2 completed
+Pareto: ['C01', 'R01']
+$ /home/sg/kips-ai-model-lightweighting/.venv/bin/python scripts/reporting/generate_stage2_excel.py --output results/stage2-evaluation-report.xlsx
+[진행 63/63 | 100.0%] None completed | 경과 00:17:04 | 예상 종료 2026-09-04 11:04:59 KST
+Stage 2 terminal: 22/22; pending=[]
+Excel report: results/stage2-evaluation-report.xlsx
+RF-DETR lightweighting project status
+Stage 1 static: COMPLETE | evaluated 26/26 | pass 22 | fail 4 | unperformed 0
+Stage 2 notebook: COMPLETE | terminal 22/22 | completed 21 | failed 1
+  성능 재측정: 63/63 (100.0%) | 현재 - / completed | 예상 종료 2026-09-04 11:04:59 KST
+Stage 3 Pareto: COMPLETE | C01 R01
+  30 FPS 배포 후보: C01 R01
+
+완료 보고서: results/stage2-evaluation-report.xlsx
+전체 상태: results/stage2-notebook-state.json
+후보별 로그: results/stage2-notebook-logs/
