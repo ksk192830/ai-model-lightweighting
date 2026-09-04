@@ -13,6 +13,7 @@
 - 노트북 최종 결과: [Stage 2 TensorRT 평가와 Stage 3 Pareto](docs/reports/notebook-stage2-results.md)
 - 논문 작성 입력: [Stage 3 최종 분석·판정표·추천](docs/reports/stage3-final-analysis.md)
 - 논문 근거 연결표: [Stage 3 evidence map](docs/paper/stage3-evidence-map.md)
+- 논문 시각자료: [본문·부록 그림 배치안과 캡션](docs/paper/figure-placement-plan.md)
 - 평가 방법: [1차 정적 → 2차 노트북 → 3차 Pareto](docs/guides/three-stage-candidate-evaluation.md)
 - 노트북 전달: [TensorRT 노트북 재현 가이드](docs/guides/tensorrt-notebook-portability.md)
 - 논문 개조식 구성안: [한국어 논문 구성안](docs/paper/paper-outline-ko.md)

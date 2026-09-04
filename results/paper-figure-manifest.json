@@ -1,0 +1,91 @@
+{
+  "official_measurement_run_id": "20260904_104755",
+  "generator": "scripts/reporting/generate_paper_visuals.py",
+  "outputs": {
+    "figure_1_pipeline": [
+      "figures/paper/01_overall_pipeline.png",
+      "figures/paper/01_overall_pipeline.pdf"
+    ],
+    "figure_2_dataset_examples": [
+      "figures/paper/02_dataset_examples.png",
+      "figures/paper/02_dataset_examples.pdf"
+    ],
+    "figure_4_training_curves": [
+      "figures/paper/04_training_curves.png",
+      "figures/paper/04_training_curves.pdf"
+    ],
+    "figure_5_candidate_taxonomy": [
+      "figures/paper/05_candidate_taxonomy.png",
+      "figures/paper/05_candidate_taxonomy.pdf"
+    ],
+    "figure_6_candidate_flow": [
+      "figures/paper/06_candidate_flow.png",
+      "figures/paper/06_candidate_flow.pdf"
+    ],
+    "figure_7_accuracy_gate": [
+      "figures/paper/07_accuracy_gate_heatmap.png",
+      "figures/paper/07_accuracy_gate_heatmap.pdf"
+    ],
+    "figure_8_pareto": [
+      "figures/paper/08_pareto_tradeoff.png",
+      "figures/paper/08_pareto_tradeoff.pdf"
+    ],
+    "appendix_a1_static": [
+      "figures/appendix/A1_stage1_static_reductions.png",
+      "figures/appendix/A1_stage1_static_reductions.pdf"
+    ],
+    "appendix_a2_stability": [
+      "figures/appendix/A2_latency_stability.png",
+      "figures/appendix/A2_latency_stability.pdf"
+    ],
+    "appendix_a3_classwise": [
+      "figures/appendix/A3_classwise_accuracy.png",
+      "figures/appendix/A3_classwise_accuracy.pdf"
+    ],
+    "figure_9_qualitative": [
+      "figures/paper/09_qualitative_source_onnx.png",
+      "figures/paper/09_qualitative_source_onnx.pdf"
+    ]
+  },
+  "dataset_examples": {
+    "small_objects": {
+      "id": 74,
+      "file_name": "frame_000105_20251222_185514_143868_png.rf.1c330e46ac7669b8545547ebeb17739b.jpg"
+    },
+    "complex_boundary": {
+      "id": 364,
+      "file_name": "frame_000210_20251222_185524_800847_png.rf.6dd2f552cdb3ac7904441c4de2e5faa3.jpg"
+    },
+    "large_regions": {
+      "id": 8,
+      "file_name": "frame_000220_20251222_185525_636128_png.rf.b9d049546f80856f94d1e88a631a184c.jpg"
+    },
+    "negative": {
+      "id": 9,
+      "file_name": "frame_000225_20251222_185112_722753_png.rf.cfbf1bfd0bfb543d56e6acbb9bdc39a6.jpg"
+    }
+  },
+  "qualitative": {
+    "threshold": 0.25,
+    "warning": "Qualitative panels use source ONNX graphs, not the notebook TensorRT engines.",
+    "models": {
+      "B01": "artifacts/experiments/B01/front/model.onnx",
+      "C01": "artifacts/experiments/S01/front/model.onnx",
+      "R01": "artifacts/experiments/R01/front/model.onnx"
+    },
+    "images": {
+      "small_objects": {
+        "id": 74,
+        "file_name": "frame_000105_20251222_185514_143868_png.rf.1c330e46ac7669b8545547ebeb17739b.jpg"
+      },
+      "complex_boundary": {
+        "id": 364,
+        "file_name": "frame_000210_20251222_185524_800847_png.rf.6dd2f552cdb3ac7904441c4de2e5faa3.jpg"
+      },
+      "large_regions": {
+        "id": 8,
+        "file_name": "frame_000220_20251222_185525_636128_png.rf.b9d049546f80856f94d1e88a631a184c.jpg"
+      }
+    }
+  }
+}

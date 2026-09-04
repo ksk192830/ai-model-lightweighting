@@ -12,6 +12,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import font_manager
 from matplotlib.patches import Patch
 
 from create_leakage_safe_split import (
@@ -28,6 +29,7 @@ DEFAULT_GROUPED = REPOSITORY_ROOT / "data" / "training" / "front_session_split_v
 DEFAULT_REPORT_DATA = REPOSITORY_ROOT / "docs" / "reports" / "metrics"
 DEFAULT_FIGURE_BASE = REPOSITORY_ROOT / "figures" / "dataset_split_validity"
 CLASS_NAMES = {1: "out_line", 2: "parking_lot", 3: "parking_space"}
+DISPLAY_SPLITS = {"train": "train", "valid": "validation", "test": "benchmark"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -109,8 +111,19 @@ def make_figure(
     session_summary: list[dict],
     threshold: float,
 ) -> None:
+    available_fonts = {font.name for font in font_manager.fontManager.ttflist}
+    font_family = next(
+        (
+            family
+            for family in ("Noto Sans CJK KR", "Noto Sans CJK JP", "NanumGothic")
+            if family in available_fonts
+        ),
+        "DejaVu Sans",
+    )
     plt.rcParams.update(
         {
+            "font.family": font_family,
+            "axes.unicode_minus": False,
             "font.size": 9,
             "axes.titlesize": 10,
             "axes.labelsize": 9,
@@ -127,14 +140,14 @@ def make_figure(
     width = 0.34
     target = [100 * TARGET_RATIOS[split] for split in SPLITS]
     actual = [100 * float(next(row["ratio"] for row in split_rows if row["split"] == split)) for split in SPLITS]
-    ax.bar(x - width / 2, target, width, color="#BFBFBF", label="Target")
-    ax.bar(x + width / 2, actual, width, color=[colors[s] for s in SPLITS], label="Achieved")
+    ax.bar(x - width / 2, target, width, color="#BFBFBF", label="목표")
+    ax.bar(x + width / 2, actual, width, color=[colors[s] for s in SPLITS], label="실제")
     for index, value in enumerate(actual):
         ax.text(index + width / 2, value + 1.2, f"{value:.2f}%", ha="center", va="bottom", fontsize=8)
-    ax.set_xticks(x, SPLITS)
+    ax.set_xticks(x, [DISPLAY_SPLITS[split] for split in SPLITS])
     ax.set_ylim(0, 90)
-    ax.set_ylabel("Images (%)")
-    ax.set_title("(a) Target vs. achieved split")
+    ax.set_ylabel("이미지 비율 (%)")
+    ax.set_title("(a) 목표 비율과 실제 분할")
     ax.legend(frameon=False, loc="upper right")
     ax.grid(axis="y", color="#E5E5E5", linewidth=0.7)
 
@@ -155,11 +168,17 @@ def make_figure(
             )
             for label in labels
         ]
-        ax.bar(x + offset * width, values, width, color=colors[split], label=split)
+        ax.bar(
+            x + offset * width,
+            values,
+            width,
+            color=colors[split],
+            label=DISPLAY_SPLITS[split],
+        )
     ax.set_xticks(x, ["Negative", "Out line", "Parking lot", "Parking space"], rotation=16, ha="right")
     ax.set_ylim(0, 85)
-    ax.set_ylabel("Image presence (%)")
-    ax.set_title("(b) Split-wise condition prevalence")
+    ax.set_ylabel("이미지 출현률 (%)")
+    ax.set_title("(b) Split별 조건 출현률")
     ax.legend(frameon=False, ncol=3, loc="upper center")
     ax.grid(axis="y", color="#E5E5E5", linewidth=0.7)
 
@@ -175,7 +194,7 @@ def make_figure(
     ax.scatter(boundary_gaps, [0] * len(boundary_gaps), marker="D", s=28, color="#C00000")
     ax.axvline(threshold, color="#222222", linestyle="--", linewidth=1.2)
     ax.annotate(
-        f"within max = {max(within_gaps):.3f} s",
+        f"세션 내부 최대 = {max(within_gaps):.3f} s",
         (max(within_gaps), 1),
         xytext=(-8, -18),
         textcoords="offset points",
@@ -184,7 +203,7 @@ def make_figure(
         color="#2759A5",
     )
     ax.annotate(
-        f"boundary min = {min(boundary_gaps):.3f} s",
+        f"세션 경계 최소 = {min(boundary_gaps):.3f} s",
         (min(boundary_gaps), 0),
         xytext=(7, 8),
         textcoords="offset points",
@@ -195,16 +214,16 @@ def make_figure(
     ax.text(
         threshold,
         0.53,
-        f"  threshold = {threshold:g} s",
+        f"  임계값 = {threshold:g} s",
         rotation=90,
         va="center",
         ha="left",
         fontsize=8,
     )
     ax.set_xscale("log")
-    ax.set_yticks([0, 1], ["Boundary", "Within"])
-    ax.set_xlabel("Positive timestamp gap (s, log scale)")
-    ax.set_title("(c) Temporal grouping threshold")
+    ax.set_yticks([0, 1], ["세션 경계", "세션 내부"])
+    ax.set_xlabel("양의 timestamp 간격 (s, log scale)")
+    ax.set_title("(c) 시간 기반 세션 분리 임계값")
     ax.grid(axis="x", which="both", color="#E5E5E5", linewidth=0.7)
 
     # (d) Whole capture sessions are the indivisible assignment units.
@@ -216,10 +235,13 @@ def make_figure(
     for index, size in enumerate(sizes):
         ax.text(index, size + 10, str(size), ha="center", va="bottom", fontsize=7)
     ax.set_xticks(x, [f"S{index}" for index in range(len(session_summary))])
-    ax.set_ylabel("Images")
-    ax.set_title("(d) Whole-session assignment")
+    ax.set_ylabel("이미지 수")
+    ax.set_title("(d) 촬영 세션 단위 배정")
     ax.legend(
-        handles=[Patch(color=colors[split], label=split) for split in SPLITS],
+        handles=[
+            Patch(color=colors[split], label=DISPLAY_SPLITS[split])
+            for split in SPLITS
+        ],
         frameon=False,
         loc="upper left",
         ncol=3,

@@ -7,6 +7,7 @@
 - `paper-outline-stage3-ko.md`: 공식 실행 결과와 Pareto 결론을 반영한 Stage 3 개조식 구성안
 - `manuscript-draft-stage3-ko.md`: 같은 근거를 문장형으로 전개한 Stage 3 줄글 초안
 - `stage3-evidence-map.md`: 최종 실험 결과를 논문 주장과 연결하는 근거표
+- `figure-placement-plan.md`: 본문·부록 시각자료의 배치 위치, 해석 주의사항 및 캡션 초안
 
 확정 수치는 저장소의 설정·JSON·보고서에서만 가져온다. 저장소에 근거가 없는
 정보는 문서 안에 `[GitHub 근거 없음]`으로 표시한다. 파일명에 Stage 3가 없는

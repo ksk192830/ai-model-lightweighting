@@ -12,6 +12,7 @@
 .venv/bin/python scripts/reporting/generate_paper_static_analysis.py
 .venv/bin/python scripts/reporting/generate_stage2_excel.py
 .venv/bin/python scripts/reporting/generate_stage3_paper_assets.py
+.venv/bin/python scripts/reporting/generate_paper_visuals.py
 .venv/bin/python scripts/experiments/audit_evaluation_protocol.py
 ```
 
@@ -38,6 +39,10 @@
 - `docs/reports/stage3-final-analysis.md`
 - `docs/paper/stage3-evidence-map.md`
 - `figures/stage3_*.png`
+- `figures/paper/*.{png,pdf}`
+- `figures/appendix/*.{png,pdf}`
+- `results/paper-figure-manifest.json`
+- `docs/paper/figure-placement-plan.md`
 
 `show_project_status.py`는 1차의 평가/통과/불통/미수행 수와 2차의
 완료/실패/실행/대기 후보를 실제 상태 JSON에서 읽는다. 3차 Pareto가 생성되기
@@ -50,3 +55,10 @@ JSON/CSV로 유지하고, 비교·gate 시트는 B01 기준 변화량을 수식�
 `generate_stage3_paper_assets.py`는 공식 3축 Pareto 결과가 C01·R01인지 확인한 뒤
 최초 26개 후보의 최종 판정표, 용도별 추천, 논문 근거 연결표와 출판용 그림을
 동일 JSON에서 재생성한다.
+
+`generate_paper_visuals.py`는 학습 기록, Stage 1/2/3 JSON, COCO benchmark와
+후보별 평가 JSON에서 본문 그림 7종, source ONNX 정성 비교 1종, 부록 그림 3종을
+PNG와 PDF로 함께 만든다. 데이터 분할 그림 1종은 별도의
+`audit_dataset_split.py`가 생성한다. 정성 비교를 제외한 빠른 재생성에는
+`--skip-qualitative`를 사용한다. 사용한 run ID, 입력 모델 경로, 선택 이미지와
+제한 사항은 `results/paper-figure-manifest.json`에 기록한다.
