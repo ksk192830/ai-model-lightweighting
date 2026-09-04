@@ -103,3 +103,41 @@ def test_old_pareto_is_marked_stale_while_stage2_is_incomplete(tmp_path: Path) -
 
     assert status["stage2"]["status"] == "NOT_STARTED"
     assert status["stage3"]["status"] == "STALE"
+
+
+def test_controlled_rerun_shows_repeat_progress_and_eta(tmp_path: Path) -> None:
+    write_json(
+        tmp_path / "results/stage1-static-evaluation.json",
+        {
+            "candidate_count": 1,
+            "evaluated_count": 1,
+            "passed_count": 1,
+            "unperformed_count": 0,
+            "rows": [
+                {"experiment_id": "B01", "stage2_notebook_eligible": True},
+            ],
+        },
+    )
+    write_json(
+        tmp_path / "results/stage2-notebook-state.json",
+        {
+            "status": "running",
+            "measurement_mode": "controlled-latency-remeasurement",
+            "candidates": {"B01": {"status": "running"}},
+            "progress": {
+                "completed_units": 1,
+                "total_units": 3,
+                "percent": 33.333,
+                "current_candidate": "B01",
+                "current_stage": "latency benchmark",
+                "current_repetition": 2,
+                "estimated_finish_at_utc": "2026-09-04T02:00:00+00:00",
+            },
+        },
+    )
+
+    rendered = status_module.render(status_module.collect_status(tmp_path))
+
+    assert "1/3 (33.3%)" in rendered
+    assert "B01 / latency benchmark / 반복 2" in rendered
+    assert "예상 종료" in rendered

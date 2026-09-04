@@ -186,6 +186,15 @@ bbox AP와 mask AP는 IoU 0.50~0.95 구간을 0.05 간격으로 평균해 위치
 교집합/합집합 비율을 평균해 픽셀 수준 품질을 보완한다. 실행 성능은 batch 1,
 고정된 32장에 대해 warm-up 20회 후 200회 측정을 3번 반복하며 pooled median
 latency를 1차 대표값, p95/p99와 반복 median의 CV·95% 구간을 안정성 지표로 사용한다.
+각 반복 직전 CPU 사용률 20% 이하, GPU 사용률 40% 이하, GPU memory-controller
+사용률 25% 이하,
+GPU 온도 65°C 이하인 상태가 1초 간격 5개 표본에서 유지되어야 한다. 표본 간 CPU
+사용률 범위는 10%p, GPU 사용률 범위는 8%p, GPU memory-controller 사용률 범위는
+5%p, GPU 온도 범위는 3°C 이하여야 한다. 첫 안정 구간의 평균과 이후 구간의 차이도
+CPU 10%p, GPU 8%p, GPU memory-controller 5%p, GPU 온도 5°C 이내로 제한한다.
+이 GPU 상주 화면 합성 부하를 포함해 후보 간 시작 조건을 같게 맞추기 위한 기준이다.
+AC 전원 연결도 필수로 확인한다. 조건이 5분 안에 충족되지 않으면 해당 측정을
+시작하지 않는다.
 
 최종 선택에서는 B01 대비 정확도 보존 gate를 먼저 적용한 뒤 bbox AP·mask AP·
 semantic mIoU를 극대화하고 median/p95 latency·peak allocated GPU memory·engine

@@ -812,6 +812,15 @@ def build_report(root: Path, output: Path) -> None:
             )
         },
         "preflight": summary.get("preflight") or state.get("preflight", {}),
+        "environment": summary.get("environment") or state.get("environment", {}),
+        "load_stabilization_protocol": (
+            summary.get("load_stabilization_protocol")
+            or state.get("load_stabilization_protocol", {})
+        ),
+        "load_stabilization_reference": (
+            summary.get("load_stabilization_reference")
+            or state.get("load_stabilization_reference")
+        ),
     }
     environment_rows = [list(item) for item in flatten("", environment_source)]
     add_table(

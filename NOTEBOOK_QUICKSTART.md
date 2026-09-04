@@ -39,5 +39,20 @@ bash run_notebook_pipeline.sh --setup-only
 watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
 ```
 
+기존 엔진과 437장 정확도 결과는 그대로 검증·재사용하고, 모든 성공 후보의
+지연시간만 통제된 환경에서 다시 측정하려면 다음을 실행한다. 각 반복 직전에
+CPU/GPU 부하와 GPU 온도를 1초 간격으로 5회 확인한다. 설정된 유휴 범위 및 첫
+안정 상태의 온도 범위에 들 때만 측정을 시작하며, 5분 안에 안정화되지 않으면
+측정을 강행하지 않고 일시 중단한다.
+
+```bash
+set -o pipefail
+bash run_notebook_pipeline.sh --remeasure-latency 2>&1 | tee results/controlled-rerun-console.log
+```
+
+중단되거나 부하 안정화 대기로 멈춘 뒤에는 위 명령을 그대로 다시 실행한다.
+완료 후보는 재사용하고 남은 후보부터 이어서 측정한다. 진행률은 총 63회
+(21개 성공 후보 × 3회) 기준이며, 첫 반복이 끝난 뒤 예상 종료 시각을 표시한다.
+
 최종 결과는 `results/stage2-evaluation-report.xlsx` 하나에서 확인한다. 원시 JSON,
 CSV와 로그도 `results/`에 그대로 보존되므로 논문 수치의 추적과 재검증이 가능하다.

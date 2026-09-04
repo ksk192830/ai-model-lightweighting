@@ -30,6 +30,72 @@ evaluator = load_module(
 )
 
 
+def load_config() -> dict:
+    return {
+        "enabled": True,
+        "sample_interval_seconds": 0,
+        "required_consecutive_samples": 3,
+        "timeout_seconds": 20,
+        "max_cpu_utilization_percent": 20.0,
+        "max_gpu_utilization_percent": 40.0,
+        "max_gpu_memory_utilization_percent": 25.0,
+        "max_gpu_temperature_c": 65.0,
+        "max_cpu_utilization_span_percent": 10.0,
+        "max_gpu_utilization_span_percent": 8.0,
+        "max_gpu_memory_utilization_span_percent": 5.0,
+        "max_gpu_temperature_span_c": 3.0,
+        "max_cpu_utilization_delta_from_reference_percent": 10.0,
+        "max_gpu_utilization_delta_from_reference_percent": 8.0,
+        "max_gpu_memory_utilization_delta_from_reference_percent": 5.0,
+        "max_gpu_temperature_delta_from_reference_c": 5.0,
+        "require_ac_power": True,
+        "recorded_sample_limit": 10,
+    }
+
+
+def load_sample(*, cpu: float = 2.0, gpu: float = 0.0, temperature: float = 45.0) -> dict:
+    return {
+        "timestamp_utc": "2026-09-04T00:00:00+00:00",
+        "cpu_utilization_percent": cpu,
+        "system_memory_utilization_percent": 20.0,
+        "load_average_1m": 0.1,
+        "ac_power_connected": True,
+        "gpu_utilization_percent": gpu,
+        "gpu_memory_utilization_percent": 0.0,
+        "gpu_temperature_c": temperature,
+    }
+
+
+def test_load_gate_resets_after_busy_sample_then_accepts_stable_window() -> None:
+    samples = iter(
+        [
+            load_sample(),
+            load_sample(cpu=35.0),
+            load_sample(cpu=2.0, temperature=45.0),
+            load_sample(cpu=3.0, temperature=46.0),
+            load_sample(cpu=2.5, temperature=45.0),
+        ]
+    )
+    clock = iter(float(value) for value in range(20))
+    result = stage2.wait_for_stable_load(
+        load_config(),
+        sample_fn=lambda _interval: next(samples),
+        monotonic_fn=lambda: next(clock),
+    )
+    assert result["status"] == "stable"
+    assert result["total_samples"] == 5
+    assert result["accepted_window_mean"]["cpu_utilization_percent"] == pytest.approx(2.5)
+
+
+def test_load_gate_rejects_temperature_far_from_session_reference() -> None:
+    reasons = stage2.assess_load_window(
+        [load_sample(temperature=55.0) for _ in range(3)],
+        load_config(),
+        {"gpu_temperature_c": 45.0},
+    )
+    assert any("session reference" in reason for reason in reasons)
+
+
 def benchmark(timings: list[float]) -> dict:
     ordered = sorted(timings)
     return {

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -72,7 +73,10 @@ def collect_status(root: Path) -> dict[str, Any]:
 
     if len(terminal) == len(eligible):
         stage2_status = "COMPLETE"
-    elif candidate_states:
+    elif candidate_states or (
+        stage2_state
+        and stage2_state.get("status") in {"running", "paused-load-not-stable"}
+    ):
         stage2_status = "RUNNING"
     else:
         stage2_status = "NOT_STARTED"
@@ -106,6 +110,10 @@ def collect_status(root: Path) -> dict[str, Any]:
             "failed": len(failed),
             "running": running,
             "pending": pending,
+            "measurement_mode": (
+                stage2_state.get("measurement_mode") if stage2_state else None
+            ),
+            "progress": stage2_state.get("progress", {}) if stage2_state else {},
             "state_file": (
                 "results/stage2-notebook-state.json" if stage2_state is not None else None
             ),
@@ -141,6 +149,29 @@ def render(status: dict[str, Any]) -> str:
             lines.append("  running: " + " ".join(stage2["running"]))
         if stage2["pending"]:
             lines.append("  pending: " + " ".join(stage2["pending"]))
+        progress = stage2.get("progress", {})
+        if progress and progress.get("total_units"):
+            eta = progress.get("estimated_finish_at_utc")
+            eta_local = (
+                datetime.fromisoformat(eta).astimezone().strftime(
+                    "%Y-%m-%d %H:%M:%S %Z"
+                )
+                if eta
+                else "첫 측정 완료 후 계산"
+            )
+            current = progress.get("current_candidate") or "-"
+            repetition = progress.get("current_repetition")
+            repeat_text = f" / 반복 {repetition}" if repetition else ""
+            lines.append(
+                "  성능 재측정: {completed_units}/{total_units} ({percent:.1f}%) | "
+                "현재 {current} / {stage}{repeat} | 예상 종료 {eta}".format(
+                    **progress,
+                    current=current,
+                    stage=progress.get("current_stage", "-"),
+                    repeat=repeat_text,
+                    eta=eta_local,
+                )
+            )
     if stage3["status"] == "COMPLETE":
         lines.append(
             "Stage 3 Pareto: COMPLETE | "
