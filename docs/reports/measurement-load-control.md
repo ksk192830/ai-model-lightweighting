@@ -2,14 +2,14 @@
 
 ## 적용 범위
 
-이 프로토콜은 보수적인 절전 전원 조건의 TensorRT 지연시간 측정에 적용한다. 기존 엔진과 437장 정확도 결과는
+이 프로토콜은 성능 우선 전원 조건의 TensorRT 지연시간 측정에 적용한다. 기존 엔진과 437장 정확도 결과는
 SHA-256이 일치할 때 재사용하고, Q03을 제외한 엔진 생성 성공 후보 21개의 지연시간을
 각 3회씩 총 63회 다시 측정한다.
 
-실행 전에 `powerprofilesctl`을 `power-saver`로 전환한다. platform profile은
-`quiet`, AMD P-State EPP는 `power`인지 확인하며 AC 연결도 요구한다. 이 조건의
-수치는 성능 우선 모드의 절대 성능으로 해석하지 않고 후보 간 보수적 비교에만
-사용한다.
+실행 전에 `powerprofilesctl`을 `performance`로 전환한다. platform profile과 AMD
+P-State EPP가 모두 `performance`인지 확인하며 AC 연결도 요구한다. AMD P-State
+EPP 드라이버에서는 scaling governor 문자열이 `powersave`로 남을 수 있으므로,
+governor 이름만으로 전원 모드를 판정하지 않는다.
 
 ## 측정 시작 조건
 
@@ -38,9 +38,8 @@ GPU memory-controller 5%p, GPU 온도 5°C 이내여야 한다.
 실행 스크립트는 `systemd-inhibit`의 `idle:sleep` 억제를 자동으로 적용해 화면 유휴
 전환으로 이 상주 부하가 중간에 사라지지 않게 한다.
 
-측정 도중 전원 정책을 바꾸지 않으며, 한 세션의 63회 측정에는 동일한 최초 안정
-구간과 동일한 절전 정책만 사용한다. 다른 전원 정책에서 생성된 부분 결과는 공식
-비교에 섞지 않는다.
+앞서 `power-saver`/`quiet` 상태에서 생성된 부분 재측정값은 최종 비교에서 제외한다.
+성능 우선 재측정은 새 run ID와 새 최초 안정 구간을 사용해 0/63회부터 시작한다.
 
 ## 기록과 중단 동작
 
@@ -73,7 +72,6 @@ watch -n 5 '.venv/bin/python scripts/reporting/show_project_status.py'
 
 ## 전원 조건 결정
 
-논문의 공식 비교는 성공 후보 21개 모두를 `power-saver`/`quiet` 조건에서
-평가한다. 통제 재측정과 Pareto를 완료한 뒤 상위 3개만 `performance` 조건에서
-별도 배포 검증한다. 성능 우선 결과는 별도 표로 제시하고 공식 Pareto 입력에는
-섞지 않는다.
+논문의 공식 비교는 성공 후보 21개 모두를 `performance` 조건에서 평가한다.
+`power-saver`/`quiet` 부분 결과와 성능 우선 결과를 섞지 않는다. 최종 Pareto와
+성능 순위에는 새 성능 우선 세션의 63회 측정값만 사용한다.

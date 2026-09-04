@@ -5,7 +5,7 @@ ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 MODE="run"
-CONTROLLED_RERUN="false"
+PERFORMANCE_RERUN="false"
 PYTHON_ARGS=()
 for argument in "$@"; do
   case "$argument" in
@@ -15,7 +15,7 @@ for argument in "$@"; do
       PYTHON_ARGS+=("--force-build" "--restart")
       ;;
     --remeasure-latency)
-      CONTROLLED_RERUN="true"
+      PERFORMANCE_RERUN="true"
       PYTHON_ARGS+=("$argument")
       ;;
     *) PYTHON_ARGS+=("$argument") ;;
@@ -32,9 +32,9 @@ if [[ "$MODE" == "run" && "${NOTEBOOK_INHIBITOR_ACTIVE:-0}" != "1" ]] \
     bash "$0" "$@"
 fi
 
-if [[ "$CONTROLLED_RERUN" == "true" ]] \
+if [[ "$PERFORMANCE_RERUN" == "true" ]] \
   && command -v powerprofilesctl >/dev/null 2>&1; then
-  powerprofilesctl set power-saver
+  powerprofilesctl set performance
   echo "공식 비교 전원 프로필: $(powerprofilesctl get)"
 fi
 
